@@ -10,7 +10,7 @@ type Props = {
   canvasH: number;
 };
 
-const MagnetsGame = ({ canvasW, canvasH }: Props) => {
+const ElectroMagnetsGame = ({ canvasW, canvasH }: Props) => {
   const canvasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -55,9 +55,10 @@ const MagnetsGame = ({ canvasW, canvasH }: Props) => {
 
       p.draw = () => {
         Engine.update(engine);
-        p.background(220);
+        p.background(200);
 
-        p.text("Magnets are Awesome 🧲!", 50, 100);
+        p.textSize(32);
+        p.text("Electro-Magnets are even Awesomer ⚡+🧲!", 50, 100);
 
         p.rectMode(p.CENTER);
         p.fill(127);
@@ -77,4 +78,4 @@ const MagnetsGame = ({ canvasW, canvasH }: Props) => {
   return <div ref={canvasRef} />;
 };
 
-export default MagnetsGame;
+export default ElectroMagnetsGame;

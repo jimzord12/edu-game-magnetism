@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { routes } from "../constants/routes";
+import MagnetsGame from "../games/magnets/MagnetsGame";
 
 const MagnetismPage = () => {
   return (
@@ -13,6 +14,10 @@ const MagnetismPage = () => {
           Home
         </Link>
       </nav>
+
+      <div>
+        <MagnetsGame canvasW={800} canvasH={400} />
+      </div>
     </article>
   );
 };

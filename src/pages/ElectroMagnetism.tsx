@@ -1,5 +1,6 @@
 import { Link } from "react-router";
 import { routes } from "../constants/routes";
+import ElectroMagnetsGame from "../games/electroMagnets/ElectroMagnetsGame";
 
 const ElectroMagnetism = () => {
   return (
@@ -13,6 +14,10 @@ const ElectroMagnetism = () => {
           Home
         </Link>
       </nav>
+
+      <div>
+        <ElectroMagnetsGame canvasW={800} canvasH={400} />
+      </div>
     </article>
   );
 };
