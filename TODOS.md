@@ -6,7 +6,7 @@
 
 <br />
 
-- [ ] Learn more about 🧲 Magnetism & ⚡Electromagnetism (5h)
+- [ ] Learn more about 🧲 Magnetism & ⚡Electromagnetism (5h - Sat 22/3)
   - [ ] See some videos on YouTube (1h)
   - [ ] Learn more about the physics of magnets (1h)
   - [ ] Solve some exercises (3h)
@@ -15,28 +15,31 @@
 
 ## Create Classes, Factory Functions, Utils, etc. for the Game:
 
-### 📘 Classes
+> ETC – Estimated Time to Completion
 
-🧩 Shapes:
+### 📘 Classes (ETC: Sunday 30 March)
 
-- [ ] Circle
-- [ ] Rectangle
-- [ ] Triangle
-- [ ] Hexagon
+🧩 Shapes (4h - Sun 23/3):
 
-🫠 Behavior Classes:
+- [ ] Circle (1h)
+- [ ] Rectangle (1h)
+- [ ] Triangle (1h)
+- [ ] Hexagon (1h)
 
-- [ ] Staticable (can have a static body)
-- [ ] Attractor
-- [ ] Repeller
-- [ ] Magnet
-- [ ] Electromagnet
+🫠 Behavior Classes (10h - 30/3):
 
-### 🧪 Tests
+- [ ] Staticable (can have a static body) (1h)
+- [ ] Attractor (2h)
+- [ ] Repeller (2h)
+- [ ] Magnet (2h)
+- [ ] Electromagnet (3h)
 
-- [ ] Create individual tests for the classes
-- [ ] Create interaction tests for the classes (Ex. Circle + Attractor, Rectangle + Repeller, etc.)
+### 🧪 Tests (ETC: Sunday 6 April)
 
-### 🤖 Prototype
+- [ ] Create individual tests for the classes (5h)
+- [ ] Create interaction tests for the classes (Ex. Circle + Attractor, Rectangle + Repeller, etc.) (5h)
 
-- [ ] Create a prototype of the 🧲 Magnetism game using the classes
+### 🤖 Prototype Creation (Sun 27 April)
+
+- [ ] Create a prototype of the 🧲 Magnetism game (10h)
+- [ ] Create a prototype of the ⚡Electromagnetism game (20h)
