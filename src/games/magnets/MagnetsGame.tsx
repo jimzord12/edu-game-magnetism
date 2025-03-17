@@ -1,9 +1,9 @@
 import { useEffect, useRef } from "react";
 import p5 from "p5";
-import { Bodies, Engine, Mouse, MouseConstraint, World } from "matter-js";
-import type { Body } from "matter-js";
+import { Engine, Mouse, MouseConstraint, World } from "matter-js";
 import Matter from "matter-js";
-import { Ball } from "../classes/Ball";
+import { Rect } from "../classes/Rect";
+import { Boundary } from "../classes/Boundary";
 
 type Props = {
   canvasW: number;
@@ -18,15 +18,18 @@ const MagnetsGame = ({ canvasW, canvasH }: Props) => {
     // p5's Global Scope
 
     const sketch = (p: p5) => {
-      let ballA: InstanceType<typeof Ball>;
-      let ballB: InstanceType<typeof Ball>;
-      let ballC: InstanceType<typeof Ball>;
-      let ground: InstanceType<typeof Body>;
+      let boxA: InstanceType<typeof Rect>;
+      let boxB: InstanceType<typeof Rect>;
+      let boxC: InstanceType<typeof Rect>;
+      let ground: InstanceType<typeof Rect>;
 
       let engine: Engine;
       let world: World;
       let mouse: Mouse;
       let mouseConstraint: MouseConstraint;
+
+      let boundaryLeft: InstanceType<typeof Boundary>;
+      let boundaryRight: InstanceType<typeof Boundary>;
 
       p.setup = () => {
         p.createCanvas(canvasW, canvasH);
@@ -39,16 +42,28 @@ const MagnetsGame = ({ canvasW, canvasH }: Props) => {
           mouse: mouse,
         });
 
-        ballA = new Ball(p.width / 2 - 25, 10, 10, p);
-        ballB = new Ball(p.width / 2, 50, 15, p);
-        ballC = new Ball(p.width / 2 + 35, 20, 20, p);
-        ground = Bodies.rectangle(400, 380, 810, 20, { isStatic: true });
+        boxA = new Rect(p.width / 2, 0, 100, 100, p);
+        boxB = new Rect(p.width / 2, 100, 100, 100, p);
+        boxC = new Rect(p.width / 2, 200, 100, 100, p);
+        ground = new Rect(p.width / 2, p.height - 10, 810, 20, p, true);
+
+        boundaryLeft = new Boundary(10, 0, 20, p.height * 2, p, world);
+        boundaryRight = new Boundary(
+          p.width - 10,
+          0,
+          20,
+          p.height * 2,
+          p,
+          world,
+        );
+
+        // Boundary.addHorizaontalBoundaries(world, p);
 
         World.add(world, [
-          ballA.body,
-          ballB.body,
-          ballC.body,
-          ground,
+          boxA.body,
+          boxB.body,
+          boxC.body,
+          ground.body,
           mouseConstraint,
         ]);
       };
@@ -57,16 +72,19 @@ const MagnetsGame = ({ canvasW, canvasH }: Props) => {
         Engine.update(engine);
         p.background(220);
 
+        p.textSize(32);
         p.text("Magnets are Awesome 🧲!", 50, 100);
 
-        p.rectMode(p.CENTER);
-        p.fill(127);
-        ballA.show();
-        ballB.show();
-        ballC.show();
+        boxA.show();
+        boxB.show();
+        boxC.show();
+
+        boundaryLeft.show();
+        boundaryRight.show();
 
         p.fill(0);
-        p.rect(ground.position.x, ground.position.y, 810, 20);
+        p.rectMode(p.CENTER);
+        p.rect(ground.body.position.x, ground.body.position.y, 810, 20);
       };
     };
 

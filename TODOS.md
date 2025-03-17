@@ -21,10 +21,10 @@
 
 🧩 Shapes (4h - Sun 23/3):
 
-- [ ] Circle (1h)
-- [ ] Rectangle (1h)
-- [ ] Triangle (1h)
-- [ ] Hexagon (1h)
+- [x] Circle (1h)
+- [x] Rectangle (1h)
+- [x] Polygon (1h)
+- [x] Boundary (1h)
 
 🫠 Behavior Classes (10h - 30/3):
 
