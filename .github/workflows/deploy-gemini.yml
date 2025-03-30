@@ -2,7 +2,8 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [gemini-pro-2.5]
+    branches:
+      - gemini-pro-2.5
   workflow_dispatch:
 
 permissions:
@@ -13,6 +14,8 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+    container:
+      image: node:20 # Use a stable Node.js version
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -20,7 +23,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 20 # Use a stable Node.js version
           cache: 'npm'
 
       - name: Install dependencies
@@ -32,7 +35,7 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
         with:
-          enablement: true  # Add this line to enable GitHub Pages
+          enablement: true
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
