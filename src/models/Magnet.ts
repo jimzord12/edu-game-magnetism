@@ -14,13 +14,6 @@ interface MagnetConstructorProps {
   };
 }
 
-// Augment Matter's Body interface locally to include a link back to our Magnet instance
-declare module 'matter-js' {
-  interface Body {
-    magnetInstance?: Magnet; // Link Body back to our Magnet class instance
-  }
-}
-
 export class Magnet {
   // Public properties
   public isAttracting: boolean;
@@ -40,27 +33,34 @@ export class Magnet {
     this.isAttracting = isAttracting;
 
     // Determine configuration, using defaults from SANDBOX_CONFIG if not provided
-    this.magnetRadius = renderConfig.radius ?? SANDBOX_CONFIG.MAGNET_RADIUS;
+    this.magnetRadius = renderConfig.radius ?? SANDBOX_CONFIG.MAGNETS.RADIUS;
     this.fieldMaxDist =
-      renderConfig.maxDist ?? SANDBOX_CONFIG.MAGNET_MAX_DISTANCE;
+      renderConfig.maxDist ?? SANDBOX_CONFIG.MAGNETS.MAX_DISTANCE;
 
     const label = isAttracting
       ? OBJECT_TYPES.MAGNET_ATTRACT
       : OBJECT_TYPES.MAGNET_REPEL;
 
+    const isStatic = SANDBOX_CONFIG.MAGNETS.IS_STATIC;
+
     // Create the Matter.js body
     this.body = Matter.Bodies.circle(x, y, this.magnetRadius, {
       label: label,
-      density: SANDBOX_CONFIG.MAGNET_DENSITY,
-      frictionAir: 0.02,
-      restitution: 0.5,
+      density: SANDBOX_CONFIG.MAGNETS.DENSITY,
+      friction: SANDBOX_CONFIG.MAGNETS.FRICTION,
+      frictionAir: SANDBOX_CONFIG.MAGNETS.FRICTION_AIR,
+      restitution: SANDBOX_CONFIG.MAGNETS.RESTITUTION,
+      isStatic: SANDBOX_CONFIG.MAGNETS.IS_STATIC,
+      mass: SANDBOX_CONFIG.MAGNETS.MASS,
+      inertia: SANDBOX_CONFIG.MAGNETS.INERTIA,
+      collisionFilter: {
+        category: SANDBOX_CONFIG.MAGNETS.COLLISION_CATEGORY, // Category for collision filtering
+        mask: SANDBOX_CONFIG.MAGNETS.COLLISION_MASK, // Mask for collision filtering
+      },
       ...matterOptions, // Allow overriding defaults
     });
 
-    // Store a reference to this Magnet class instance *on* the Matter.js body
-    // This allows us to easily get back to the Magnet object from the body (e.g., in collision events or mouse events)
-    this.body.magnetInstance = this;
-
+    console.log('Is Magnet Static: ', isStatic);
     // Optionally, still add customData if direct body iteration is needed elsewhere
     // this.body.customData = { isMagnet: true, isAttracting: this.isAttracting };
   }

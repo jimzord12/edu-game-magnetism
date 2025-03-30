@@ -23,14 +23,48 @@ export const OBJECT_TYPES = {
   TARGET: 'target',
 };
 
+const SANDBOX_MAGNET_DIMENSIONS = {
+  RADIUS: 10,
+};
+
 // Add config for dynamic magnets if needed (radius, density etc)
 export const SANDBOX_CONFIG = {
-  MAGNET_RADIUS: 15,
-  MAGNET_DENSITY: 0.05, // Make them reasonably heavy
-  BALL_RADIUS: 10,
-  BALL_DENSITY: 0.01,
-  GRAVITY: { x: 0, y: 0, scale: 0.0001 } satisfies Gravity, // Top-down view,
-  MAGNET_STRENGTH: 0.006, // Adjust force strength for sandbox
-  MAGNET_MAX_DISTANCE: 250,
-  MAGNET_MIN_DISTANCE: 20,
+  MAGNETS: {
+    RADIUS: SANDBOX_MAGNET_DIMENSIONS.RADIUS,
+    IS_STATIC: true, // Must be false to be movable
+    FRICTION_AIR: 0.5, // Higher damping makes it feel heavier
+    FRICTION: 0.8, // Surface friction (reduced from Infinity)
+    RESTITUTION: 0.2, // Lower bounciness
+    MASS: 10, // Increased mass makes it feel heavier
+    STRENGTH: 0.001,
+    DENSITY: 10, // Increased density
+    INERTIA: Infinity, // Prevents rotation
+    MAX_DISTANCE: 250,
+    MIN_DISTANCE: SANDBOX_MAGNET_DIMENSIONS.RADIUS * 2,
+    COLLISION_CATEGORY: 0x0002,
+    COLLISION_MASK: 0xffffffff,
+  },
+  BALL: {
+    RADIUS: 10,
+    DENSITY: 0.2,
+    IS_STATIC: false, // Make them moveable
+    FRICTION_AIR: 0.01, // Damping
+    FRICTION: 0.05, // Surface friction
+    RESTITUTION: 0.5, // Bounciness
+    MASS: 0.5, // Make them moveable
+  },
+  WALL: {
+    IS_STATIC: true, // Static walls
+    FRICTION: 2, // Surface friction
+    RESTITUTION: 0.5, // Bounciness
+    DENSITY: 1, // Make them reasonably heavy
+  },
+  MOUSE: {
+    COLLISION_CATEGORY: 0x0001,
+    STIFFNESS: 0.3,
+    COLLISION_MASK: 0xffffffff,
+  },
+  WORLD: {
+    GRAVITY: { x: 0, y: 0, scale: 0.0001 } satisfies Gravity, // Top-down view,
+  },
 };

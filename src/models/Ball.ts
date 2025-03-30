@@ -1,32 +1,49 @@
+import p5 from 'p5';
 import Matter from 'matter-js';
-import { GAME_CONFIG, OBJECT_TYPES } from '../config/gameConfig';
+import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
 
-export interface BallOptions {
+interface BallConstructorProps {
   x: number;
   y: number;
   radius?: number;
-  options?: Matter.IBodyDefinition;
+  matterOptions?: Matter.IBodyDefinition;
 }
 
 export class Ball {
-  body: Matter.Body;
-  radius: number;
+  public readonly body: Matter.Body;
+  private readonly radius: number;
 
   constructor({
     x,
     y,
-    radius = GAME_CONFIG.BALL_RADIUS,
-    options = {},
-  }: BallOptions) {
+    radius = SANDBOX_CONFIG.BALL.RADIUS,
+    matterOptions = {},
+  }: BallConstructorProps) {
     this.radius = radius;
     this.body = Matter.Bodies.circle(x, y, this.radius, {
       label: OBJECT_TYPES.BALL,
-      density: GAME_CONFIG.BALL_DENSITY,
-      frictionAir: GAME_CONFIG.BALL_FRICTION_AIR,
-      restitution: 0.8,
-      ...options, // Allow overriding defaults
+      density: SANDBOX_CONFIG.BALL.DENSITY,
+      frictionAir: SANDBOX_CONFIG.BALL.FRICTION_AIR,
+      restitution: SANDBOX_CONFIG.BALL.RESTITUTION,
+      friction: SANDBOX_CONFIG.BALL.FRICTION,
+      mass: SANDBOX_CONFIG.BALL.MASS,
+      ...matterOptions,
     });
   }
 
-  // Add methods here if needed later, e.g., applySkin(), updateState()
+  render(p: p5): void {
+    const pos = this.body.position;
+
+    p.push();
+    p.translate(pos.x, pos.y);
+    p.rotate(this.body.angle);
+    p.fill(50, 50, 200); // Blue ball
+    p.noStroke();
+    p.ellipse(0, 0, this.radius * 2);
+    p.pop();
+  }
+
+  getMatterBody(): Matter.Body {
+    return this.body;
+  }
 }

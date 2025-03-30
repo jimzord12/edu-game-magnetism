@@ -1,26 +1,68 @@
-import Matter from 'matter-js';
-import { GAME_CONFIG, OBJECT_TYPES } from '../config/gameConfig';
+import p5 from 'p5';
+import Matter, { IBodyDefinition } from 'matter-js';
+import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
 
-export interface WallOptions {
+interface WallConstructorProps {
   x: number;
   y: number;
-  width: number;
-  height: number;
-  angle?: number;
-  options?: Matter.IBodyDefinition;
+  dimensions: { width: number; height: number };
+  // Optional configuration overrides
+  matterOptions?: Matter.IBodyDefinition;
 }
 
-export class Wall {
-  body: Matter.Body;
+const defaultMatterOptions: IBodyDefinition = {
+  label: OBJECT_TYPES.WALL,
+  density: SANDBOX_CONFIG.WALL.DENSITY,
+  isStatic: SANDBOX_CONFIG.WALL.IS_STATIC,
+  restitution: SANDBOX_CONFIG.WALL.RESTITUTION,
+  friction: SANDBOX_CONFIG.WALL.FRICTION,
+};
 
-  constructor({ x, y, width, height, angle = 0, options = {} }: WallOptions) {
-    this.body = Matter.Bodies.rectangle(x, y, width, height, {
-      isStatic: true,
-      friction: GAME_CONFIG.WALL_FRICTION,
-      restitution: GAME_CONFIG.WALL_RESTITUTION,
-      angle: angle,
-      label: OBJECT_TYPES.WALL,
-      ...options,
-    });
+export class Wall {
+  // Public properties
+  public readonly body: Matter.Body; // The physics body
+  dimensions: { width: number; height: number };
+
+  constructor({
+    x,
+    y,
+    dimensions,
+    matterOptions = defaultMatterOptions,
+  }: WallConstructorProps) {
+    // Create the Matter.js body
+    this.body = Matter.Bodies.rectangle(
+      x,
+      y,
+      dimensions.width,
+      dimensions.height,
+      {
+        isStatic: true,
+        ...matterOptions,
+      }
+    );
+    this.dimensions = dimensions;
+  }
+
+  render(p: p5): void {
+    const pos = this.body.position;
+    const width = this.dimensions.width;
+    const height = this.dimensions.height;
+
+    p.push();
+    p.translate(pos.x, pos.y);
+    p.rotate(this.body.angle);
+    p.fill(100); // Dark grey color
+    // p.noStroke();
+    p.rectMode(p.CENTER);
+    p.rect(0, 0, width, height);
+    p.pop();
+  }
+
+  /**
+   * Provides direct access to the underlying Matter.js body.
+   * Useful for adding/removing from the world or direct physics manipulation.
+   */
+  getMatterBody(): Matter.Body {
+    return this.body;
   }
 }
