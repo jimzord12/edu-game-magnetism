@@ -1,0 +1,42 @@
+.game-canvas-container {
+  display: inline-block; /* Allows centering or positioning */
+  border: 1px solid #333;
+  line-height: 0; /* Prevent extra space below canvas */
+  position: relative; /* Needed for absolute positioning of overlays */
+}
+
+.p5-canvas-wrapper canvas {
+  display: block; /* Prevent extra space */
+}
+
+/* Styles for GamePage layout */
+.game-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.game-area {
+  display: flex;
+  flex-direction: row; /* Controls beside canvas */
+  gap: 20px;
+  margin-top: 20px;
+  align-items: flex-start; /* Align top */
+}
+
+.game-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  min-width: 200px; /* Ensure controls have some width */
+  height: 100%;
+}
+
+.magnet-controls {
+  margin-top: 15px;
+  padding-top: 10px;
+  border-top: 1px solid #eee;
+}
