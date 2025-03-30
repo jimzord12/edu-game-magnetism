@@ -8,7 +8,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/edu-game-magnetism/', // for Github Pages deployment
+  base: `/${import.meta.env.GITHUB_REPO_NAME}/`, // Access via import.meta.env
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
