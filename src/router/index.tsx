@@ -3,24 +3,24 @@ import HomePage from '../pages/HomePage';
 import LevelSelectPage from '../pages/LevelSelectPage';
 import GamePage from '../pages/GamePage';
 import SandboxPage from '../pages/SandboxPage';
+import { routePath } from './routePath';
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <HomePage />,
-    // You can add layout components here if needed
   },
   {
-    path: '/levels',
+    path: routePath.levelSelect,
     element: <LevelSelectPage />,
   },
   {
-    path: '/game/:levelId', // Parameter for level ID
+    path: routePath.game,
     element: <GamePage />,
   },
 
   {
-    path: '/sandbox', // Add the sandbox route
+    path: routePath.sandbox,
     element: <SandboxPage />,
   },
 ]);

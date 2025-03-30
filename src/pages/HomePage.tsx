@@ -10,6 +10,9 @@ const HomePage: React.FC = () => {
       <Link to="/levels">
         <button>Start Playing</button>
       </Link>
+      <Link to="/sandbox">
+        <button>Sandbox</button>
+      </Link>
       {/* Add links to Settings, About etc. later */}
     </div>
   );
