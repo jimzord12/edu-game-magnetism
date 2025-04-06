@@ -28,7 +28,7 @@
       "@/*": ["./src/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
-    "@features/*": ["./src/features/*"],
+      "@features/*": ["./src/features/*"],
       "@models/*": ["./src/models/*"],
       "@config/*": ["./src/config/*"],
       "@pages/*": ["./src/pages/*"],
@@ -36,7 +36,7 @@
       "@services/*": ["./src/services/*"],
       "@store/*": ["./src/store/*"]
     },
-    "types": ["node"]
+    "types": ["node", "vitest/globals"]
   },
-  "include": ["src", "vite.config.ts"]
+  "include": ["src", "vite.config.ts", "drizzle.config.ts"]
 }
