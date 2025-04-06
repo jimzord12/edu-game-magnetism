@@ -1,17 +1,33 @@
 import type { Gravity } from 'matter-js';
 
 export const GAME_CONFIG = {
-  GRAVITY: { x: 0, y: 0, scale: 0.0001 } satisfies Gravity, // Top-down view, no gravity unless desired
-  PHYSICS_TIMESTEP: 1000 / 60, // ~60 FPS
-  MAGNET_DEFAULT_STRENGTH: 0.005, // Adjust based on world scale
-  MAGNET_MAX_DISTANCE: 300, // Max distance magnet affects ball (pixels)
-  MAGNET_MIN_DISTANCE: 20, // Min distance to avoid extreme forces
-  BALL_RADIUS: 10,
-  TARGET_RADIUS: 15,
-  WALL_FRICTION: 0.1,
-  WALL_RESTITUTION: 0.5, // Bounciness
-  BALL_DENSITY: 0.01,
-  BALL_FRICTION_AIR: 0.01, // Damping
+  WORLD: {
+    GRAVITY: { x: 0, y: 0, scale: 0.0001 } satisfies Gravity, // Top-down view, no gravity unless desired
+    PHYSICS_TIMESTEP: 1000 / 60, // ~60 FPS
+  },
+  MAGNETS: {
+    DEFAULT_STRENGTH: 0.005, // Adjust based on world scale
+    MAX_DISTANCE: 300, // Max distance magnet affects ball (pixels)
+    MIN_DISTANCE: 20, // Min distance to avoid extreme forces
+  },
+  ELECTROMAGNETS: {
+    MAX_STRENGTH: 0.01, // Adjust based on world scale
+    MIN_STRENGTH: 0.001, // Adjust based on world scale
+    STRENGTH_INCREMENT: 0.001, // Adjust based on world scale
+    STRENGTH_DECREMENT: 0.001, // Adjust based on world scale
+  },
+  BALL: {
+    RADIUS: 10,
+    DENSITY: 0.01,
+    FRICTION_AIR: 0.01, // Damping
+  },
+  WALLS: {
+    FRICTION: 0.1,
+    RESTITUTION: 0.5, // Bounciness
+  },
+  TARGET: {
+    RADIUS: 15,
+  },
 };
 
 export const OBJECT_TYPES = {

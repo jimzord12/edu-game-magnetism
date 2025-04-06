@@ -249,7 +249,6 @@ export const useSandboxEngine = ({ containerRef }: UseSandboxEngineProps) => {
     }
 
     return cleanup; // Return cleanup function
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     containerRef,
     canvasSize,

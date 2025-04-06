@@ -1,7 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import LevelSelectPage from '../pages/LevelSelectPage';
-import GamePage from '../pages/GamePage';
+import GamePage from '../pages/MagnetGamePage';
 import SandboxPage from '../pages/SandboxPage';
 import { routePath } from './routePath';
 

@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import Matter, { IBodyDefinition } from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
+import { Identifiable } from './base/Identifiable';
 
 interface WallConstructorProps {
   x: number;
@@ -18,7 +19,7 @@ const defaultMatterOptions: IBodyDefinition = {
   friction: SANDBOX_CONFIG.WALL.FRICTION,
 };
 
-export class Wall {
+export class Wall extends Identifiable {
   // Public properties
   public readonly body: Matter.Body; // The physics body
   dimensions: { width: number; height: number };
@@ -29,6 +30,7 @@ export class Wall {
     dimensions,
     matterOptions = defaultMatterOptions,
   }: WallConstructorProps) {
+    super();
     // Create the Matter.js body
     this.body = Matter.Bodies.rectangle(
       x,

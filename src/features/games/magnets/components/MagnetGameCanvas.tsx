@@ -1,17 +1,19 @@
 import React, { useRef, useEffect } from 'react';
 import { useGameEngine } from '../hooks/useGameEngine';
-import { useAppSelector } from '../../../hooks/reduxHooks';
-import { ILevelData } from '../types';
-import './GameCanvas.css'; // For basic styling
+import { useAppSelector } from '../../../../hooks/reduxHooks';
+import './MagnetGameCanvas.css'; // For basic styling
+import { GameType, ILevel } from '@/features/levels/types';
 
-interface GameCanvasProps {
-  levelData: ILevelData | null;
+interface GameCanvasProps<T extends GameType> {
+  levelData: ILevel<T> | null;
 }
 
-const GameCanvas: React.FC<GameCanvasProps> = ({ levelData }) => {
+const MagnetGameCanvas: React.FC<GameCanvasProps<'magnet'>> = ({
+  levelData,
+}) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const { placedMagnets, status: gameStatus } = useAppSelector(
-    (state) => state.game
+    (state) => state.magnetGame
   );
 
   // Use the custom hook to manage the p5/Matter instance
@@ -42,4 +44,4 @@ const GameCanvas: React.FC<GameCanvasProps> = ({ levelData }) => {
   );
 };
 
-export default GameCanvas;
+export default MagnetGameCanvas;

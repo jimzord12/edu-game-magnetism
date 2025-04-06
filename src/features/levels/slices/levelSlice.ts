@@ -1,17 +1,28 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ILevelData } from '../../game/types'; // Re-use game level type
-import { ILevelProgress } from '../../../services/db'; // Re-use Dexie progress type
-import { DEFAULT_LEVELS } from '../../../config/levels';
+
+import {
+  ILevelElectroMagnet,
+  ILevelMagnet,
+  ILevelProgress,
+  isMagnetLevel,
+} from '../types';
+import { ELECTRO_MAGNET_LEVELS, MAGNET_LEVELS } from '../../../config/levels';
 
 interface LevelsState {
-  availableLevels: ILevelData[]; // Static definitions
-  levelProgress: Record<string, ILevelProgress>; // Progress keyed by levelId
+  availableLevels: {
+    magnet?: ILevelMagnet[];
+    electroMagnet?: ILevelElectroMagnet[];
+  }; // Static definitions
+  levelProgress: Record<string, ILevelProgress>;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: LevelsState = {
-  availableLevels: DEFAULT_LEVELS, // Start with default levels
+  availableLevels: {
+    magnet: MAGNET_LEVELS,
+    electroMagnet: ELECTRO_MAGNET_LEVELS,
+  }, // Start with default levels
   levelProgress: {},
   loading: false,
   error: null,
@@ -21,8 +32,19 @@ const levelsSlice = createSlice({
   name: 'levels',
   initialState,
   reducers: {
-    setLevels: (state, action: PayloadAction<ILevelData[]>) => {
-      state.availableLevels = action.payload;
+    setLevels: (
+      state,
+      action: PayloadAction<(ILevelElectroMagnet | ILevelMagnet)[]>
+    ) => {
+      for (const level of action.payload) {
+        if (isMagnetLevel(level) && state.availableLevels.magnet) {
+          state.availableLevels.magnet.push(level);
+          continue;
+        }
+        if (!isMagnetLevel(level) && state.availableLevels.electroMagnet) {
+          state.availableLevels.electroMagnet.push(level);
+        }
+      }
     },
     setProgress: (
       state,
@@ -32,9 +54,10 @@ const levelsSlice = createSlice({
       state.loading = false;
       state.error = null;
     },
-    updateSingleProgress: (state, action: PayloadAction<ILevelProgress>) => {
-      state.levelProgress[action.payload.levelId] = action.payload;
-    },
+    // TODO: IMPLEMENT THIS LATER
+    // updateSingleProgress: (state, action: PayloadAction<ILevelProgress>) => {
+    //   state.levelProgress[action.payload.levelId] = action.payload;
+    // },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -50,7 +73,7 @@ const levelsSlice = createSlice({
 export const {
   setLevels,
   setProgress,
-  updateSingleProgress,
+  // updateSingleProgress,
   setLoading,
   setError,
 } = levelsSlice.actions;

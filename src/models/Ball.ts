@@ -1,6 +1,7 @@
 import p5 from 'p5';
 import Matter from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
+import { Identifiable } from './base/Identifiable';
 
 interface BallConstructorProps {
   x: number;
@@ -9,7 +10,7 @@ interface BallConstructorProps {
   matterOptions?: Matter.IBodyDefinition;
 }
 
-export class Ball {
+export class Ball extends Identifiable {
   public readonly body: Matter.Body;
   private readonly radius: number;
 
@@ -19,6 +20,7 @@ export class Ball {
     radius = SANDBOX_CONFIG.BALL.RADIUS,
     matterOptions = {},
   }: BallConstructorProps) {
+    super();
     this.radius = radius;
     this.body = Matter.Bodies.circle(x, y, this.radius, {
       label: OBJECT_TYPES.BALL,

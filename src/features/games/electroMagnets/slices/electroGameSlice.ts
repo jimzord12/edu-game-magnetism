@@ -1,7 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IGameState, IPlacedMagnet } from '../types';
+import { IGameState } from '../../types';
+import { ElectroMagnet } from '@/models/ElectroMagnet';
 
-const initialState: IGameState = {
+const initialState: IGameState<'electromagnet'> = {
   levelId: null,
   status: 'idle',
   ballPosition: { x: 0, y: 0 }, // Initial placeholder
@@ -9,11 +10,11 @@ const initialState: IGameState = {
   elapsedTime: 0,
 };
 
-const gameSlice = createSlice({
+const electroGameSlice = createSlice({
   name: 'game',
   initialState,
   reducers: {
-    loadLevel: (state, action: PayloadAction<string>) => {
+    loadLevel: (state, action: PayloadAction<number>) => {
       state.levelId = action.payload;
       state.status = 'idle'; // Or 'playing' if auto-starts
       state.placedMagnets = []; // Reset magnets for the new level
@@ -31,7 +32,7 @@ const gameSlice = createSlice({
         state.status = 'idle'; // Treat idle as paused for now
       }
     },
-    placeMagnet: (state, action: PayloadAction<IPlacedMagnet>) => {
+    placeMagnet: (state, action: PayloadAction<ElectroMagnet>) => {
       // Basic placement, replace if ID exists, add if new
       const existingIndex = state.placedMagnets.findIndex(
         (m) => m.id === action.payload.id
@@ -42,13 +43,13 @@ const gameSlice = createSlice({
         state.placedMagnets.push(action.payload);
       }
     },
-    removeMagnet: (state, action: PayloadAction<string>) => {
+    removeMagnet: (state, action: PayloadAction<number>) => {
       // Action payload is magnet ID
       state.placedMagnets = state.placedMagnets.filter(
         (m) => m.id !== action.payload
       );
     },
-    toggleMagnetPolarity: (state, action: PayloadAction<string>) => {
+    toggleMagnetPolarity: (state, action: PayloadAction<number>) => {
       // Action payload is magnet ID
       const magnet = state.placedMagnets.find((m) => m.id === action.payload);
       if (magnet) {
@@ -88,6 +89,6 @@ export const {
   levelWon,
   levelLost,
   resetGame,
-} = gameSlice.actions;
+} = electroGameSlice.actions;
 
-export default gameSlice.reducer;
+export default electroGameSlice.reducer;

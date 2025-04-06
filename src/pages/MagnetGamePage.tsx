@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
-import GameCanvas from '../features/game/components/GameCanvas';
+import GameCanvas from '../features/games/magnets/components/MagnetGameCanvas';
 import {
   loadLevel,
   startGame,
@@ -10,22 +10,22 @@ import {
   placeMagnet,
   toggleMagnetPolarity,
   removeMagnet,
-} from '../features/game/slices/gameSlice';
-import { ILevelData, IPlacedMagnet } from '../features/game/types';
-import { DEFAULT_LEVELS } from '../config/levels'; // Import default levels
-import {
-  /* db, */ saveLevelProgress,
-  initializeDatabase,
-} from '../services/db'; // Import Dexie db and functions
-import { v4 as uuidv4 } from 'uuid'; // For generating magnet IDs
+} from '../features/games/magnets/slices/magnetGameSlice';
 
-// Placeholder - load actual levels from config or Dexie
-const findLevelById = (id: string): ILevelData | null => {
-  return DEFAULT_LEVELS.find((level) => level.id === id) || null;
+import { ILevel, ILevelMagnet } from '@/features/levels/types';
+import { MAGNET_LEVELS } from '@/config/levels';
+import { Magnet } from '@/models/Magnet';
+
+const findLevelById = (id: number): ILevel<'magnet'> | null => {
+  return MAGNET_LEVELS.find((level) => level.id === id) || null;
 };
 
+const getTotalPermittedMagnets = (levelData: ILevel<'magnet'>) =>
+  levelData.availableMagnets.attract + levelData.availableMagnets.repel;
+
 const GamePage: React.FC = () => {
-  const { levelId } = useParams<{ levelId: string }>();
+  const { levelId: levelIdStr } = useParams<{ levelId: string }>();
+  const levelId = levelIdStr ? parseInt(levelIdStr) : null;
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
@@ -33,19 +33,14 @@ const GamePage: React.FC = () => {
     levelId: currentLevelId,
     placedMagnets,
     elapsedTime,
-  } = useAppSelector((state) => state.game);
-  const [currentLevelData, setCurrentLevelData] = useState<ILevelData | null>(
+  } = useAppSelector((state) => state.magnetGame);
+  const [currentLevelData, setCurrentLevelData] = useState<ILevelMagnet | null>(
     null
   );
-  const [selectedMagnetId, setSelectedMagnetId] = useState<string | null>(null);
+  const [selectedMagnetId, setSelectedMagnetId] = useState<number | null>(null);
 
   // Load level data and initialize DB on mount/levelId change
   useEffect(() => {
-    // Initialize DB with default levels if needed (runs once)
-    initializeDatabase(DEFAULT_LEVELS).then(() => {
-      console.log('Database initialized.');
-    });
-
     if (levelId) {
       const levelData = findLevelById(levelId);
       if (levelData) {
@@ -74,14 +69,6 @@ const GamePage: React.FC = () => {
       console.log(
         `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
       );
-      saveLevelProgress({
-        levelId: currentLevelId,
-        completed: true,
-        bestTime: elapsedTime, // TODO: Check against existing best time
-      }).then(() => {
-        console.log(`Progress saved for level ${currentLevelId}`);
-        // Optionally show a success message or navigate automatically
-      });
     }
   }, [gameStatus, currentLevelId, elapsedTime, dispatch]);
 
@@ -130,13 +117,16 @@ const GamePage: React.FC = () => {
       return;
     }
 
-    if (placedMagnets.length < currentLevelData.availableMagnets) {
-      const newMagnet: IPlacedMagnet = {
-        id: uuidv4(), // Generate unique ID
+    const permittedNumOfMagnets =
+      currentLevelData.availableMagnets.attract +
+      currentLevelData.availableMagnets.repel;
+
+    if (placedMagnets.length < permittedNumOfMagnets) {
+      const newMagnet = new Magnet({
         x,
         y,
-        isAttracting: true, // Default to attract
-      };
+        isAttracting: true, // Default to attracting
+      });
       dispatch(placeMagnet(newMagnet));
       setSelectedMagnetId(newMagnet.id); // Select the newly placed magnet
     } else {
@@ -144,7 +134,7 @@ const GamePage: React.FC = () => {
     }
   };
 
-  const handleMagnetClick = (event: React.MouseEvent, magnetId: string) => {
+  const handleMagnetClick = (event: React.MouseEvent, magnetId: number) => {
     event.stopPropagation(); // Prevent canvas click when clicking a magnet representation
     if (gameStatus !== 'idle') return; // Only interact in idle state
     setSelectedMagnetId(magnetId);
@@ -194,7 +184,7 @@ const GamePage: React.FC = () => {
           <p>Time: {elapsedTime.toFixed(2)}s</p>
           <p>
             Magnets Placed: {placedMagnets.length} /{' '}
-            {currentLevelData.availableMagnets}
+            {getTotalPermittedMagnets(currentLevelData)}
           </p>
 
           {selectedMagnet && gameStatus === 'idle' && (
@@ -227,7 +217,7 @@ const GamePage: React.FC = () => {
           style={{
             cursor:
               gameStatus === 'idle' &&
-              placedMagnets.length < currentLevelData.availableMagnets
+              getTotalPermittedMagnets(currentLevelData)
                 ? 'crosshair'
                 : 'default',
           }}
@@ -249,8 +239,8 @@ const GamePage: React.FC = () => {
                   onClick={(e) => handleMagnetClick(e, magnet.id)}
                   style={{
                     position: 'absolute',
-                    left: `${magnet.x - 15}px`, // Center the clickable area
-                    top: `${magnet.y - 15}px`, // Center the clickable area
+                    left: `${magnet.body.position.x - 15}px`, // Center the clickable area
+                    top: `${magnet.body.position.y - 15}px`, // Center the clickable area
                     width: '30px',
                     height: '30px',
                     borderRadius: '50%',
@@ -264,9 +254,9 @@ const GamePage: React.FC = () => {
                     cursor: 'pointer',
                     boxSizing: 'border-box',
                   }}
-                  title={`Magnet at (${Math.round(magnet.x)}, ${Math.round(
-                    magnet.y
-                  )}) - ${
+                  title={`Magnet at (${Math.round(
+                    magnet.body.position.x
+                  )}, ${Math.round(magnet.body.position.y)}) - ${
                     magnet.isAttracting ? 'Attract' : 'Repel'
                   }. Click to select.`}
                 />

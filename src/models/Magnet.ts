@@ -1,8 +1,9 @@
 import p5 from 'p5';
 import Matter from 'matter-js';
-import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
+import { SANDBOX_CONFIG, OBJECT_TYPES, GAME_CONFIG } from '@/config/gameConfig';
+import { Identifiable } from './base/Identifiable';
 
-interface MagnetConstructorProps {
+export interface MagnetConstructorProps {
   x: number;
   y: number;
   isAttracting: boolean;
@@ -12,12 +13,14 @@ interface MagnetConstructorProps {
     radius?: number;
     maxDist?: number;
   };
+  strength?: number;
 }
 
-export class Magnet {
+export class Magnet extends Identifiable {
   // Public properties
   public isAttracting: boolean;
   public readonly body: Matter.Body; // The physics body
+  public strength: number; // [min, max]
 
   // Private properties for configuration
   private readonly magnetRadius: number;
@@ -29,8 +32,11 @@ export class Magnet {
     isAttracting,
     matterOptions = {},
     renderConfig = {},
+    strength = GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH,
   }: MagnetConstructorProps) {
+    super();
     this.isAttracting = isAttracting;
+    this.strength = strength;
 
     // Determine configuration, using defaults from SANDBOX_CONFIG if not provided
     this.magnetRadius = renderConfig.radius ?? SANDBOX_CONFIG.MAGNETS.RADIUS;

@@ -1,28 +1,22 @@
 import p5 from 'p5';
 import Matter from 'matter-js';
 import { useEffect, useRef, useCallback } from 'react';
-import { ILevelData, IPlacedMagnet } from '../types';
-import { GAME_CONFIG, OBJECT_TYPES } from '../../../config/gameConfig';
-import { useAppDispatch } from '../../../hooks/reduxHooks';
+import { GAME_CONFIG, OBJECT_TYPES } from '../../../../config/gameConfig';
+import { useAppDispatch } from '../../../../hooks/reduxHooks';
 import {
   levelWon,
   //   updateBallPosition,
   updateElapsedTime,
-} from '../slices/gameSlice'; // Import actions
+} from '../slices/magnetGameSlice'; // Import actions
+import { UseGameEngineProps } from '../../types';
+import { GameType } from '@/features/levels/types';
 
-interface UseGameEngineProps {
-  levelData: ILevelData | null;
-  magnets: IPlacedMagnet[]; // Magnets controlled via Redux state
-  gameStatus: 'idle' | 'playing' | 'won' | 'lost';
-  containerRef: React.RefObject<HTMLDivElement | null>;
-}
-
-export const useGameEngine = ({
+export const useGameEngine = <T extends GameType>({
   levelData,
   magnets,
   gameStatus,
   containerRef,
-}: UseGameEngineProps) => {
+}: UseGameEngineProps<T>) => {
   const p5InstanceRef = useRef<p5 | null>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);
@@ -64,7 +58,7 @@ export const useGameEngine = ({
 
     // --- Matter.js Setup ---
     const engine = Matter.Engine.create();
-    engine.gravity = { ...GAME_CONFIG.GRAVITY };
+    engine.gravity = { ...GAME_CONFIG.WORLD.GRAVITY };
     engineRef.current = engine;
 
     // --- p5.js Sketch Definition ---
@@ -74,31 +68,14 @@ export const useGameEngine = ({
         p.frameRate(60);
         console.log('p5 Setup complete for level:', levelData.id);
 
-        // --- Create Game Objects (Walls, Ball, Target) ---
-        const walls = levelData.walls.map((wallData) =>
-          Matter.Bodies.rectangle(
-            wallData.x,
-            wallData.y,
-            wallData.width,
-            wallData.height,
-            {
-              isStatic: true,
-              friction: GAME_CONFIG.WALL_FRICTION,
-              restitution: GAME_CONFIG.WALL_RESTITUTION,
-              angle: wallData.angle || 0,
-              label: OBJECT_TYPES.WALL,
-            }
-          )
-        );
-
         const ball = Matter.Bodies.circle(
           levelData.ballStart.x,
           levelData.ballStart.y,
-          GAME_CONFIG.BALL_RADIUS,
+          GAME_CONFIG.BALL.RADIUS,
           {
             label: OBJECT_TYPES.BALL,
-            density: GAME_CONFIG.BALL_DENSITY,
-            frictionAir: GAME_CONFIG.BALL_FRICTION_AIR,
+            density: GAME_CONFIG.BALL.DENSITY,
+            frictionAir: GAME_CONFIG.BALL.FRICTION_AIR,
             restitution: 0.8, // Make ball bouncy
           }
         );
@@ -107,7 +84,7 @@ export const useGameEngine = ({
         const target = Matter.Bodies.circle(
           levelData.targetPosition.x,
           levelData.targetPosition.y,
-          GAME_CONFIG.TARGET_RADIUS,
+          GAME_CONFIG.TARGET.RADIUS,
           {
             label: OBJECT_TYPES.TARGET,
             isStatic: true,
@@ -116,7 +93,9 @@ export const useGameEngine = ({
         );
         targetRef.current = target;
 
-        Matter.World.add(engine.world, [...walls, ball, target]);
+        const wallBodies = levelData.walls.map((wall) => wall.body);
+
+        Matter.World.add(engine.world, [...wallBodies, ball, target]);
 
         // --- Matter.js Runner ---
         // We will manually step the engine in draw for better control with React state
@@ -150,13 +129,16 @@ export const useGameEngine = ({
           let totalForce = { x: 0, y: 0 };
 
           magnets.forEach((magnet) => {
-            const magnetPos = { x: magnet.x, y: magnet.y };
+            const magnetPos = {
+              x: magnet.body.position.x,
+              y: magnet.body.position.y,
+            };
             const direction = Matter.Vector.sub(magnetPos, ballPos);
             const distanceSq = Matter.Vector.magnitudeSquared(direction);
 
             if (
-              distanceSq > GAME_CONFIG.MAGNET_MAX_DISTANCE ** 2 ||
-              distanceSq < GAME_CONFIG.MAGNET_MIN_DISTANCE ** 2
+              distanceSq > GAME_CONFIG.MAGNETS.MAX_DISTANCE ** 2 ||
+              distanceSq < GAME_CONFIG.MAGNETS.MIN_DISTANCE ** 2
             ) {
               return; // Magnet too far or too close
             }
@@ -168,10 +150,10 @@ export const useGameEngine = ({
             // Simple 1/distance or 1/distance^2 can be too strong/weak
             // Let's try linear falloff for simplicity first
             const strengthFactor =
-              (GAME_CONFIG.MAGNET_MAX_DISTANCE - distance) /
-              GAME_CONFIG.MAGNET_MAX_DISTANCE;
+              (GAME_CONFIG.MAGNETS.MAX_DISTANCE - distance) /
+              GAME_CONFIG.MAGNETS.MAX_DISTANCE;
             let forceMagnitude =
-              GAME_CONFIG.MAGNET_DEFAULT_STRENGTH * strengthFactor;
+              GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH * strengthFactor;
 
             // Inverse square (more realistic but harder to tune)
             // forceMagnitude = GAME_CONFIG.MAGNET_DEFAULT_STRENGTH / distanceSq;
@@ -201,7 +183,7 @@ export const useGameEngine = ({
             startTimeRef.current = p.millis();
           }
           // Manually step the engine
-          Matter.Engine.update(engine, GAME_CONFIG.PHYSICS_TIMESTEP);
+          Matter.Engine.update(engine, GAME_CONFIG.WORLD.PHYSICS_TIMESTEP);
 
           // Update elapsed time in Redux (consider throttling this)
           const elapsed = (p.millis() - startTimeRef.current) / 1000;
@@ -252,7 +234,7 @@ export const useGameEngine = ({
           p.ellipse(
             targetRef.current.position.x,
             targetRef.current.position.y,
-            GAME_CONFIG.TARGET_RADIUS * 2
+            GAME_CONFIG.TARGET.RADIUS * 2
           );
         }
 
@@ -263,12 +245,12 @@ export const useGameEngine = ({
           p.ellipse(
             ballRef.current.position.x,
             ballRef.current.position.y,
-            GAME_CONFIG.BALL_RADIUS * 2
+            GAME_CONFIG.BALL.RADIUS * 2
           );
         }
 
         // --- Draw Magnets (Enhanced Visualization) ---
-        const maxDist = GAME_CONFIG.MAGNET_MAX_DISTANCE; // Cache for readability
+        const maxDist = GAME_CONFIG.MAGNETS.MAX_DISTANCE; // Cache for readability
         const layerRadii = [maxDist, maxDist * 0.66, maxDist * 0.33]; // Radii for layers (outer to inner)
         const layerStrokeWeights = [1, 1.5, 2]; // Stroke weights (outer to inner)
         // Base opacities (adjust as needed)
@@ -277,7 +259,7 @@ export const useGameEngine = ({
 
         magnets.forEach((magnet) => {
           p.push(); // Isolate transformations and styles for this magnet
-          p.translate(magnet.x, magnet.y);
+          p.translate(magnet.body.position.x, magnet.body.position.y);
 
           const isAttracting = magnet.isAttracting;
           const baseColor = isAttracting ? [255, 0, 0] : [0, 0, 255]; // Red or Blue

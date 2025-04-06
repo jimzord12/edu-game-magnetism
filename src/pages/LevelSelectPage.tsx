@@ -1,46 +1,60 @@
-import React, { useState, useEffect } from 'react';
+import { ELECTRO_MAGNET_LEVELS, MAGNET_LEVELS } from '@/config/levels';
+import { AllLevels } from '@/features/levels/types';
+import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { DEFAULT_LEVELS } from '../config/levels';
-import { ILevelData } from '../features/game/types';
-import { getAllLevelProgress, ILevelProgress } from '../services/db';
 
 const LevelSelectPage: React.FC = () => {
-  const [levels] = useState<ILevelData[]>(DEFAULT_LEVELS); // Load static levels for now
-  const [progress, setProgress] = useState<Record<string, ILevelProgress>>({});
-
-  useEffect(() => {
-    getAllLevelProgress().then((allProgress) => {
-      const progressMap = allProgress.reduce((acc, p) => {
-        acc[p.levelId] = p;
-        return acc;
-      }, {} as Record<string, ILevelProgress>);
-      setProgress(progressMap);
-    });
-  }, []);
+  const levels: AllLevels = useMemo(
+    (): AllLevels => ({
+      magnet: MAGNET_LEVELS,
+      electromagnet: ELECTRO_MAGNET_LEVELS,
+    }),
+    []
+  );
 
   return (
-    <div>
-      <h1>Select a Level</h1>
-      <ul>
-        {levels.map((level) => {
-          const levelProgress = progress[level.id];
-          const isCompleted = levelProgress?.completed || false;
-          return (
-            <li key={level.id} style={{ margin: '10px 0' }}>
-              <Link to={`/game/${level.id}`}>
-                <button style={{ minWidth: '200px', textAlign: 'left' }}>
-                  {level.name} {isCompleted ? '✅' : ''}
-                  {levelProgress?.bestTime &&
-                    ` (Best: ${levelProgress.bestTime.toFixed(2)}s)`}
-                </button>
-              </Link>
-            </li>
-          );
-        })}
-      </ul>
-      <Link to="/">
-        <button>Back to Home</button>
-      </Link>
+    <div className="flex gap-8 items-center justify-around">
+      <div className="flex gap-8">
+        <div>
+          <h1>Magnets</h1>
+          <ul>
+            {levels.magnet.map((level) => {
+              return (
+                <li key={level.id} style={{ margin: '10px 0' }}>
+                  <Link to={`/game/${level.id}`}>
+                    <button style={{ minWidth: '200px', textAlign: 'left' }}>
+                      {level.name}
+                    </button>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        <div>
+          <h1>ElectroMagnets</h1>
+          <ul className="flex flex-col">
+            {levels.electromagnet.map((level) => {
+              return (
+                <li key={level.id} style={{ margin: '10px 0' }}>
+                  <Link to={`/game/${level.id}`}>
+                    <button style={{ minWidth: '200px', textAlign: 'left' }}>
+                      {level.name}
+                    </button>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      </div>
+
+      <div>
+        <Link to="/">
+          <button>Back to Home</button>
+        </Link>
+      </div>
     </div>
   );
 };
