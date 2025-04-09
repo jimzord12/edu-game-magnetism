@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../hooks/reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
+import GameCanvas from '../../features/games/magnets/components/MagnetGameCanvas';
 import {
   loadLevel,
   startGame,
@@ -9,16 +10,24 @@ import {
   placeMagnet,
   toggleMagnetPolarity,
   removeMagnet,
-} from '../features/games/magnets/slices/magnetGameSlice';
+} from '../../features/games/magnets/slices/magnetGameSlice';
 
-import { ILevel, ILevelElectroMagnet } from '@/features/levels/types';
-import { ELECTRO_MAGNET_LEVELS } from '@/config/levels';
-import ElectroGameCanvas from '@/features/games/electroMagnets/components/ElectroGameCanvas';
-import { ElectroMagnet } from '@/models/ElectroMagnet';
+import { ILevel, ILevelMagnet } from '@/features/levels/types';
+import { Magnet } from '@/models/Magnet';
+import { getMagnetLevels } from '@/config/levels';
 
-const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
-  return ELECTRO_MAGNET_LEVELS.find((level) => level.id === id) || null;
+// ---- Utility Functions
+
+const findLevelById = (id: number): ILevel<'magnet'> | null => {
+  return getMagnetLevels().find((level) => level.id === id) || null;
 };
+
+const findMagnetById = (id: number, magnets: Magnet[]): Magnet | null => {
+  return magnets.find((m) => m.id === id) || null;
+};
+
+const getTotalPermittedMagnets = (levelData: ILevel<'magnet'>) =>
+  levelData.availableMagnets.attract + levelData.availableMagnets.repel;
 
 const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
@@ -30,9 +39,10 @@ const GamePage: React.FC = () => {
     levelId: currentLevelId,
     placedMagnets,
     elapsedTime,
-  } = useAppSelector((state) => state.electroGame);
-  const [currentLevelData, setCurrentLevelData] =
-    useState<ILevelElectroMagnet | null>(null);
+  } = useAppSelector((state) => state.magnetGame);
+  const [currentLevelData, setCurrentLevelData] = useState<ILevelMagnet | null>(
+    null
+  );
   const [selectedMagnetId, setSelectedMagnetId] = useState<number | null>(null);
 
   // Load level data and initialize DB on mount/levelId change
@@ -59,22 +69,16 @@ const GamePage: React.FC = () => {
     // };
   }, [levelId, dispatch, navigate, currentLevelId]);
 
+  useEffect(() => {
+    console.log(placedMagnets);
+  }, [placedMagnets]);
+
   // Handle game winning - save progress
   useEffect(() => {
     if (gameStatus === 'won' && currentLevelId) {
       console.log(
         `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
       );
-      // TODO: Implement Win logic here
-
-      // saveLevelProgress({
-      //   levelId: currentLevelId,
-      //   completed: true,
-      //   bestTime: elapsedTime, // TODO: Check against existing best time
-      // }).then(() => {
-      //   console.log(`Progress saved for level ${currentLevelId}`);
-      //   // Optionally show a success message or navigate automatically
-      // });
     }
   }, [gameStatus, currentLevelId, elapsedTime, dispatch]);
 
@@ -123,25 +127,29 @@ const GamePage: React.FC = () => {
       return;
     }
 
-    if (placedMagnets.length < currentLevelData.availableMagnets) {
-      const newElectroMagnet = new ElectroMagnet({
+    const permittedNumOfMagnets =
+      currentLevelData.availableMagnets.attract +
+      currentLevelData.availableMagnets.repel;
+
+    if (placedMagnets.length < permittedNumOfMagnets) {
+      const newMagnet = new Magnet({
         x,
         y,
         isAttracting: true, // Default to attracting
       });
-      dispatch(placeMagnet(newElectroMagnet));
-      setSelectedMagnetId(newElectroMagnet.id); // Select the newly placed magnet
+      dispatch(placeMagnet(newMagnet));
+      setSelectedMagnetId(newMagnet.id); // Select the newly placed magnet
     } else {
-      alert(
-        `You can only place ${currentLevelData.availableMagnets} Electromagnets.`
-      );
+      alert(`You can only place ${currentLevelData.availableMagnets} magnets.`);
     }
   };
 
-  const handleMagnetClick = (event: React.MouseEvent, magnetId: number) => {
+  const handleMagnetClick = (event: React.MouseEvent, magnetId: Magnet) => {
     event.stopPropagation(); // Prevent canvas click when clicking a magnet representation
     if (gameStatus !== 'idle') return; // Only interact in idle state
-    setSelectedMagnetId(magnetId);
+
+    const magnet = findMagnetById(magnetId.id, placedMagnets);
+    setSelectedMagnetId(magnet?.id || null); // Select the clicked magnet
   };
 
   const handleTogglePolarity = () => {
@@ -165,7 +173,7 @@ const GamePage: React.FC = () => {
 
   return (
     <div className="game-page">
-      <h1>{currentLevelData.name}</h1>
+      <h1 className="text-3xl">{currentLevelData.name}</h1>
       <div className="game-area">
         <div className="game-controls">
           <button
@@ -188,12 +196,19 @@ const GamePage: React.FC = () => {
           <p>Time: {elapsedTime.toFixed(2)}s</p>
           <p>
             Magnets Placed: {placedMagnets.length} /{' '}
-            {currentLevelData.availableMagnets}
+            {getTotalPermittedMagnets(currentLevelData)}
           </p>
 
           {selectedMagnet && gameStatus === 'idle' && (
             <div className="magnet-controls">
-              <h4>Selected Magnet</h4>
+              <h4>
+                Selected Magnet:{' '}
+                {`#${
+                  selectedMagnet.id
+                } (x: ${selectedMagnet.body.position.x.toFixed(
+                  2
+                )}, y: ${selectedMagnet.body.position.y.toFixed(2)})`}
+              </h4>
               <button onClick={handleTogglePolarity}>
                 Toggle Polarity (
                 {selectedMagnet.isAttracting ? 'Attract' : 'Repel'})
@@ -217,30 +232,31 @@ const GamePage: React.FC = () => {
 
         {/* Pass click handler to the wrapper div */}
         <div
+          className="relative outline-1 outline-red-500"
           onClick={handleCanvasClick}
           style={{
             cursor:
               gameStatus === 'idle' &&
-              placedMagnets.length < currentLevelData.availableMagnets
+              getTotalPermittedMagnets(currentLevelData)
                 ? 'crosshair'
                 : 'default',
           }}
         >
-          <ElectroGameCanvas levelData={currentLevelData} />
+          <GameCanvas levelData={currentLevelData} />
           {/* Overlay Magnets for Interaction - Positioned absolutely over the canvas */}
           {gameStatus === 'idle' && (
             <div
-              className="magnet-overlay"
               style={{
-                position: 'relative',
+                position: 'absolute',
+                top: 0,
                 width: currentLevelData.canvasSize.width,
-                height: 0,
+                height: currentLevelData.canvasSize.height,
               }}
             >
               {placedMagnets.map((magnet) => (
                 <div
                   key={magnet.id}
-                  onClick={(e) => handleMagnetClick(e, magnet.id)}
+                  onClick={(e) => handleMagnetClick(e, magnet)}
                   style={{
                     position: 'absolute',
                     left: `${magnet.body.position.x - 15}px`, // Center the clickable area

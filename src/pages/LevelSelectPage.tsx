@@ -1,16 +1,16 @@
-import { ELECTRO_MAGNET_LEVELS, MAGNET_LEVELS } from '@/config/levels';
 import { AllLevels } from '@/features/levels/types';
+import { useAppSelector } from '@/hooks/reduxHooks';
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 
 const LevelSelectPage: React.FC = () => {
-  const levels: AllLevels = useMemo(
-    (): AllLevels => ({
-      magnet: MAGNET_LEVELS,
-      electromagnet: ELECTRO_MAGNET_LEVELS,
-    }),
-    []
-  );
+  const { availableLevels } = useAppSelector((state) => state.levels);
+  const levels: AllLevels = useMemo((): AllLevels => {
+    return {
+      magnet: availableLevels.magnet ?? [],
+      electromagnet: availableLevels.electroMagnet ?? [],
+    };
+  }, [availableLevels.magnet?.length, availableLevels.electroMagnet?.length]);
 
   return (
     <div className="flex gap-8 items-center justify-around">

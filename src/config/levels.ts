@@ -7,7 +7,7 @@ const thinWallDimensions = { width: 10, height: 50 };
 // 100 - 199: Magnet Level
 // 200 - 299: Electromagnet Level
 
-export const MAGNET_LEVELS: ILevelMagnet[] = [
+const MAGNET_LEVELS: ILevelMagnet[] = [
   {
     id: 100,
     gameType: 'magnet',
@@ -24,11 +24,16 @@ export const MAGNET_LEVELS: ILevelMagnet[] = [
       attract: 3,
       repel: 0,
     },
+    progress: {
+      completed: false,
+      bestTime: undefined,
+    },
   },
+
   // Add more levels here...
 ];
 
-export const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
+const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 200,
     gameType: 'electromagnet',
@@ -42,6 +47,18 @@ export const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
     availableMagnets: 2,
+    progress: {
+      completed: false,
+      bestTime: undefined,
+    },
   },
   // Add more levels here...
 ];
+
+export const getMagnetLevels = () => {
+  return MAGNET_LEVELS;
+};
+
+export const getElectroMagnetLevels = () => {
+  return ELECTRO_MAGNET_LEVELS;
+};

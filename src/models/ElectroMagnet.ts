@@ -40,6 +40,8 @@ export class ElectroMagnet extends Magnet {
 
     this.isActive = isActive;
     this.strengthRange = strengthRange;
+
+    console.log('🐦‍🔥 Created this ElectroMagnet: ', this);
   }
 
   public toggleMagnetism(): void {

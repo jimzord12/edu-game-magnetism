@@ -47,8 +47,6 @@ export class Magnet extends Identifiable {
       ? OBJECT_TYPES.MAGNET_ATTRACT
       : OBJECT_TYPES.MAGNET_REPEL;
 
-    const isStatic = SANDBOX_CONFIG.MAGNETS.IS_STATIC;
-
     // Create the Matter.js body
     this.body = Matter.Bodies.circle(x, y, this.magnetRadius, {
       label: label,
@@ -66,7 +64,7 @@ export class Magnet extends Identifiable {
       ...matterOptions, // Allow overriding defaults
     });
 
-    console.log('Is Magnet Static: ', isStatic);
+    console.log('🐦‍🔥 Created this Magnet: ', this);
     // Optionally, still add customData if direct body iteration is needed elsewhere
     // this.body.customData = { isMagnet: true, isAttracting: this.isAttracting };
   }

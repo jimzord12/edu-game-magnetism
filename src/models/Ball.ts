@@ -31,6 +31,8 @@ export class Ball extends Identifiable {
       mass: SANDBOX_CONFIG.BALL.MASS,
       ...matterOptions,
     });
+
+    console.log('🐦‍🔥 Created this Ball: ', this);
   }
 
   render(p: p5): void {

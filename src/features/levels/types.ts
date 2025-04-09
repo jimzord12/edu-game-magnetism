@@ -12,6 +12,9 @@ export interface ILevelBase {
   targetPosition: { x: number; y: number };
   walls: Wall[];
   availableMagnets: number; // How many magnets the player can place
+
+  timeLimit?: number;
+  progress: ILevelProgress;   
   // Optional: Pre-placed fixed magnets, other obstacles, time limit etc.
 }
 

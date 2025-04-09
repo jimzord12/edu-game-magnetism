@@ -6,7 +6,10 @@ import {
   ILevelProgress,
   isMagnetLevel,
 } from '../types';
-import { ELECTRO_MAGNET_LEVELS, MAGNET_LEVELS } from '../../../config/levels';
+import {
+  getMagnetLevels,
+  getElectroMagnetLevels,
+} from '../../../config/levels';
 
 interface LevelsState {
   availableLevels: {
@@ -20,8 +23,8 @@ interface LevelsState {
 
 const initialState: LevelsState = {
   availableLevels: {
-    magnet: MAGNET_LEVELS,
-    electroMagnet: ELECTRO_MAGNET_LEVELS,
+    magnet: getMagnetLevels(),
+    electroMagnet: getElectroMagnetLevels(),
   }, // Start with default levels
   levelProgress: {},
   loading: false,
@@ -55,9 +58,12 @@ const levelsSlice = createSlice({
       state.error = null;
     },
     // TODO: IMPLEMENT THIS LATER
-    // updateSingleProgress: (state, action: PayloadAction<ILevelProgress>) => {
-    //   state.levelProgress[action.payload.levelId] = action.payload;
-    // },
+    updateSingleProgress: (
+      state,
+      action: PayloadAction<ILevelProgress & { levelId: number }>
+    ) => {
+      state.levelProgress[action.payload.levelId] = action.payload;
+    },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
@@ -68,6 +74,13 @@ const levelsSlice = createSlice({
     // Add async thunks later to load progress from DB
     // Add async thunks later to potentially load level designs from DB/API
   },
+  // If many levels exist, refactor this get only magnetic or electromagnetic levels and also add limits to the number of levels to load
+  // extraReducers: (builder) => {
+  //   builder.addCase('levels/loadLevels', (state) => {
+  //     state.availableLevels.magnet = getMagnetLevels();
+  //     state.availableLevels.electroMagnet = getElectroMagnetLevels();
+  //   });
+  // },
 });
 
 export const {

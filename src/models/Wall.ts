@@ -43,6 +43,8 @@ export class Wall extends Identifiable {
       }
     );
     this.dimensions = dimensions;
+
+    console.log('🐦‍🔥 Created this Wall: ', this);
   }
 
   render(p: p5): void {
