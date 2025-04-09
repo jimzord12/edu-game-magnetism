@@ -6,15 +6,17 @@ import {
   loadLevel,
   startGame,
   pauseGame,
-  //   resetGame,
   placeMagnet,
   toggleMagnetPolarity,
   removeMagnet,
+  resetGame,
 } from '../../features/games/magnets/slices/magnetGameSlice';
 
 import { ILevel, ILevelMagnet } from '@/features/levels/types';
 import { Magnet } from '@/models/Magnet';
 import { getMagnetLevels } from '@/config/levels';
+import { useUnmountEffect } from '@/hooks/useUnmountEffect';
+import '../../styles/MagnetGamePage.css';
 
 // ---- Utility Functions
 
@@ -43,37 +45,33 @@ const GamePage: React.FC = () => {
   const [currentLevelData, setCurrentLevelData] = useState<ILevelMagnet | null>(
     null
   );
-  const [selectedMagnetId, setSelectedMagnetId] = useState<number | null>(null);
+  const [selectedMagnet, setSelectedMagnet] = useState<Magnet | null>(null);
 
-  // Load level data and initialize DB on mount/levelId change
   useEffect(() => {
     if (levelId) {
       const levelData = findLevelById(levelId);
       if (levelData) {
         setCurrentLevelData(levelData);
-        // Dispatch action to load level into Redux state if not already loaded
         if (levelId !== currentLevelId) {
           dispatch(loadLevel(levelId));
         }
       } else {
         console.error(`Level with id ${levelId} not found.`);
-        navigate('/levels'); // Redirect if level not found
+        navigate('/levels');
       }
     } else {
-      navigate('/levels'); // Redirect if no levelId
+      navigate('/levels');
     }
-
-    // Cleanup on unmount
-    // return () => {
-    //   dispatch(resetGame()); // Optional: reset game state when leaving page
-    // };
   }, [levelId, dispatch, navigate, currentLevelId]);
+
+  useUnmountEffect(() => {
+    dispatch(resetGame());
+  });
 
   useEffect(() => {
     console.log(placedMagnets);
   }, [placedMagnets]);
 
-  // Handle game winning - save progress
   useEffect(() => {
     if (gameStatus === 'won' && currentLevelId) {
       console.log(
@@ -86,36 +84,36 @@ const GamePage: React.FC = () => {
     if (gameStatus === 'playing') {
       dispatch(pauseGame());
     } else if (gameStatus === 'idle' && currentLevelData) {
-      // Check if magnets are placed (optional requirement)
       if (placedMagnets.length > 0) {
-        // Only start if at least one magnet is placed
         dispatch(startGame());
       } else {
         alert('Place at least one magnet to start!');
       }
     } else if (gameStatus === 'won' || gameStatus === 'lost') {
-      // If game is over, treat button as 'Restart Level'
       if (levelId) {
-        dispatch(loadLevel(levelId)); // Reloads level, resets state
+        dispatch(loadLevel(levelId));
       }
     }
   };
 
   const handleReset = () => {
     if (levelId) {
-      dispatch(loadLevel(levelId)); // Reload level data and reset state
-      setSelectedMagnetId(null);
+      dispatch(loadLevel(levelId));
+      setSelectedMagnet(null);
     }
   };
 
+  const handleLevelSelect = () => {
+    navigate('/levels');
+  };
+
   const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (gameStatus !== 'idle' || !currentLevelData) return; // Only place in idle state
+    if (gameStatus !== 'idle' || !currentLevelData) return;
 
     const canvasRect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - canvasRect.left;
     const y = event.clientY - canvasRect.top;
 
-    // Prevent placing too close to borders or on top of target/start (optional)
     const margin = 20;
     if (
       x < margin ||
@@ -135,120 +133,207 @@ const GamePage: React.FC = () => {
       const newMagnet = new Magnet({
         x,
         y,
-        isAttracting: true, // Default to attracting
+        isAttracting: true,
       });
       dispatch(placeMagnet(newMagnet));
-      setSelectedMagnetId(newMagnet.id); // Select the newly placed magnet
+      setSelectedMagnet(newMagnet);
     } else {
-      alert(`You can only place ${currentLevelData.availableMagnets} magnets.`);
+      alert(
+        `You can only place ${
+          currentLevelData.availableMagnets.attract +
+          currentLevelData.availableMagnets.repel
+        } magnets.`
+      );
     }
   };
 
-  const handleMagnetClick = (event: React.MouseEvent, magnetId: Magnet) => {
-    event.stopPropagation(); // Prevent canvas click when clicking a magnet representation
-    if (gameStatus !== 'idle') return; // Only interact in idle state
+  const handleMagnetClick = (event: React.MouseEvent, Magnet: Magnet) => {
+    event.stopPropagation();
+    if (gameStatus !== 'idle') return;
 
-    const magnet = findMagnetById(magnetId.id, placedMagnets);
-    setSelectedMagnetId(magnet?.id || null); // Select the clicked magnet
+    const magnet = findMagnetById(Magnet.id, placedMagnets);
+    setSelectedMagnet(magnet || null);
   };
 
   const handleTogglePolarity = () => {
-    if (selectedMagnetId && gameStatus === 'idle') {
-      dispatch(toggleMagnetPolarity(selectedMagnetId));
+    if (selectedMagnet && gameStatus === 'idle') {
+      dispatch(toggleMagnetPolarity(selectedMagnet.id));
+      console.log(
+        `Toggled polarity for magnet [${
+          selectedMagnet.isAttracting ? 'Attract' : 'Repel'
+        }]`,
+        selectedMagnet
+      );
     }
   };
 
   const handleRemoveMagnet = () => {
-    if (selectedMagnetId && gameStatus === 'idle') {
-      dispatch(removeMagnet(selectedMagnetId));
-      setSelectedMagnetId(null); // Deselect after removing
+    if (selectedMagnet && gameStatus === 'idle') {
+      dispatch(removeMagnet(selectedMagnet.id));
+      setSelectedMagnet(null);
     }
   };
 
   if (!currentLevelData) {
-    return <div>Loading Level...</div>;
+    return (
+      <div className="game-page">
+        <div className="loading-spinner">Loading Level...</div>
+      </div>
+    );
   }
-
-  const selectedMagnet = placedMagnets.find((m) => m.id === selectedMagnetId);
 
   return (
     <div className="game-page">
-      <h1 className="text-3xl">{currentLevelData.name}</h1>
+      <header className="game-header">
+        <h1 className="game-title">
+          <span className="text-red-500">Mag</span>
+          <span className="text-blue-500">net Maze: </span>
+          {currentLevelData.name}
+        </h1>
+        <p className="game-subtitle">
+          Place magnets strategically to guide the ball to its target
+        </p>
+      </header>
+
       <div className="game-area">
         <div className="game-controls">
-          <button
-            onClick={handleStartPause}
-            disabled={
-              !levelId || (gameStatus === 'idle' && placedMagnets.length === 0)
-            }
-          >
-            {gameStatus === 'playing'
-              ? 'Pause'
-              : gameStatus === 'won' || gameStatus === 'lost'
-              ? 'Restart Level'
-              : 'Start'}
-          </button>
-          <button onClick={handleReset} disabled={gameStatus === 'playing'}>
-            Reset
-          </button>
-          <button onClick={() => navigate('/levels')}>Level Select</button>
-          <p>Status: {gameStatus}</p>
-          <p>Time: {elapsedTime.toFixed(2)}s</p>
-          <p>
-            Magnets Placed: {placedMagnets.length} /{' '}
-            {getTotalPermittedMagnets(currentLevelData)}
-          </p>
+          <div className="control-section">
+            <h3 className="section-title">Game Controls</h3>
+            <div className="button-group">
+              <button
+                className={`game-btn primary-btn ${
+                  placedMagnets.length <= 0 && 'opacity-50 cursor-not-allowed'
+                }`}
+                onClick={handleStartPause}
+                disabled={
+                  !levelId ||
+                  (gameStatus === 'idle' && placedMagnets.length === 0)
+                }
+              >
+                {gameStatus === 'playing'
+                  ? '⏸️ Pause'
+                  : gameStatus === 'won' || gameStatus === 'lost'
+                  ? '🔄 Restart'
+                  : '▶️ Start'}
+              </button>
+              <button
+                className="game-btn secondary-btn"
+                onClick={handleReset}
+                disabled={gameStatus === 'playing'}
+              >
+                🔄 Reset
+              </button>
+            </div>
+            <button
+              className="game-btn secondary-btn w-full"
+              onClick={handleLevelSelect}
+            >
+              📋 Level Select
+            </button>
+          </div>
+
+          <div className="control-section">
+            <h3 className="section-title">Game Stats</h3>
+            <div className="game-stats">
+              <div className="stat-item">
+                <span>Status:</span>
+                <span className={`status-badge status-${gameStatus}`}>
+                  {gameStatus}
+                </span>
+              </div>
+              <div className="stat-item">
+                <span>Time:</span>
+                <span className="stat-value">{elapsedTime.toFixed(2)}s</span>
+              </div>
+              <div className="stat-item">
+                <span>Magnets:</span>
+                <span className="stat-value">
+                  {placedMagnets.length} /{' '}
+                  {getTotalPermittedMagnets(currentLevelData)}
+                </span>
+              </div>
+            </div>
+          </div>
 
           {selectedMagnet && gameStatus === 'idle' && (
-            <div className="magnet-controls">
-              <h4>
-                Selected Magnet:{' '}
-                {`#${
-                  selectedMagnet.id
-                } (x: ${selectedMagnet.body.position.x.toFixed(
-                  2
-                )}, y: ${selectedMagnet.body.position.y.toFixed(2)})`}
-              </h4>
-              <button onClick={handleTogglePolarity}>
-                Toggle Polarity (
-                {selectedMagnet.isAttracting ? 'Attract' : 'Repel'})
-              </button>
-              <button onClick={handleRemoveMagnet}>Remove Magnet</button>
+            <div className="control-section">
+              <h3 className="section-title">Selected Magnet</h3>
+              <div className="magnet-controls">
+                <div className="magnet-info">
+                  <span className="magnet-id">Magnet #{selectedMagnet.id}</span>
+                  <span className="polarity-badge {selectedMagnet.isAttracting ? 'attract-badge' : 'repel-badge'}">
+                    {selectedMagnet.isAttracting ? 'Attract' : 'Repel'}
+                  </span>
+                </div>
+                <div className="magnet-position">
+                  Position: ({selectedMagnet.body.position.x.toFixed(2)},{' '}
+                  {selectedMagnet.body.position.y.toFixed(2)})
+                </div>
+                <div className="button-group mt-3">
+                  <button
+                    className="game-btn primary-btn"
+                    onClick={handleTogglePolarity}
+                  >
+                    🔄 Toggle Polarity
+                  </button>
+                  <button
+                    className="game-btn danger-btn"
+                    onClick={handleRemoveMagnet}
+                  >
+                    🗑️ Remove
+                  </button>
+                </div>
+              </div>
             </div>
           )}
-          {!selectedMagnet && gameStatus === 'idle' && (
-            <p>Click on the canvas to place a magnet.</p>
-          )}
-          {gameStatus === 'idle' && selectedMagnet && (
-            <p>
-              Click canvas to place another, or interact with the selected
-              magnet.
-            </p>
-          )}
-          {gameStatus !== 'idle' && (
-            <p>Game is running. Pause to modify magnets.</p>
-          )}
+
+          <div className="control-section">
+            <h3 className="section-title">Instructions</h3>
+            {!selectedMagnet && gameStatus === 'idle' && (
+              <p className="instructions">
+                Click on the canvas to place a magnet. Red magnets attract, blue
+                magnets repel.
+              </p>
+            )}
+            {gameStatus === 'idle' && selectedMagnet && (
+              <p className="instructions">
+                Click canvas to place another magnet, or modify the selected
+                one.
+              </p>
+            )}
+            {gameStatus === 'playing' && (
+              <p className="instructions">
+                Game is running. Pause to modify magnets.
+              </p>
+            )}
+            {gameStatus === 'won' && (
+              <p className="instructions" style={{ color: '#28a745' }}>
+                Congratulations! You've completed this level! 🎉
+              </p>
+            )}
+            {gameStatus === 'lost' && (
+              <p className="instructions" style={{ color: '#dc3545' }}>
+                Level failed. Try a different magnet arrangement.
+              </p>
+            )}
+          </div>
         </div>
 
-        {/* Pass click handler to the wrapper div */}
         <div
-          className="relative outline-1 outline-red-500"
+          className="game-canvas-wrapper"
           onClick={handleCanvasClick}
           style={{
             cursor:
               gameStatus === 'idle' &&
-              getTotalPermittedMagnets(currentLevelData)
+              placedMagnets.length < getTotalPermittedMagnets(currentLevelData)
                 ? 'crosshair'
                 : 'default',
           }}
         >
-          <GameCanvas levelData={currentLevelData} />
-          {/* Overlay Magnets for Interaction - Positioned absolutely over the canvas */}
           {gameStatus === 'idle' && (
             <div
+              className="magnet-overlay"
               style={{
-                position: 'absolute',
-                top: 0,
                 width: currentLevelData.canvasSize.width,
                 height: currentLevelData.canvasSize.height,
               }}
@@ -257,33 +342,34 @@ const GamePage: React.FC = () => {
                 <div
                   key={magnet.id}
                   onClick={(e) => handleMagnetClick(e, magnet)}
+                  className={`magnet-indicator ${
+                    magnet.isAttracting ? 'attract-magnet' : 'repel-magnet'
+                  } ${
+                    selectedMagnet?.id === magnet.id ? 'selected-magnet' : ''
+                  }`}
                   style={{
-                    position: 'absolute',
-                    left: `${magnet.body.position.x - 15}px`, // Center the clickable area
-                    top: `${magnet.body.position.y - 15}px`, // Center the clickable area
+                    left: `${magnet.body.position.x - 15}px`,
+                    top: `${magnet.body.position.y - 15}px`,
                     width: '30px',
                     height: '30px',
-                    borderRadius: '50%',
-                    border: `2px dashed ${
-                      selectedMagnetId === magnet.id ? 'yellow' : 'transparent'
-                    }`,
-                    backgroundColor:
-                      selectedMagnetId === magnet.id
-                        ? 'rgba(255, 255, 0, 0.2)'
-                        : 'transparent',
-                    cursor: 'pointer',
-                    boxSizing: 'border-box',
                   }}
                   title={`Magnet at (${Math.round(
                     magnet.body.position.x
                   )}, ${Math.round(magnet.body.position.y)}) - ${
-                    magnet.isAttracting ? 'Attract' : 'Repel'
+                    magnet.isAttracting ? 'Attracting' : 'Repelling'
                   }. Click to select.`}
                 />
               ))}
             </div>
           )}
+          <GameCanvas levelData={currentLevelData} />
         </div>
+      </div>
+
+      <div className="navigation-footer">
+        <button className="game-btn secondary-btn" onClick={handleLevelSelect}>
+          ← Back to Level Selection
+        </button>
       </div>
     </div>
   );

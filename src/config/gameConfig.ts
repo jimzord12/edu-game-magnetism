@@ -1,5 +1,12 @@
 import type { Gravity } from 'matter-js';
 
+export const BASE_CONFIG = {
+  MAGNETS: {
+    ATTRACT_COLOR: [255, 0, 0],
+    REPEL_COLOR: [0, 0, 255],
+  },
+};
+
 export const GAME_CONFIG = {
   WORLD: {
     GRAVITY: { x: 0, y: 0, scale: 0.0001 } satisfies Gravity, // Top-down view, no gravity unless desired

@@ -1,8 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAppSelector } from '../../../../hooks/reduxHooks';
-import './ElectroGameCanvas.css'; // For basic styling
 import { GameType, ILevel } from '@/features/levels/types';
-import { useGameEngine } from '../../magnets/hooks/useGameEngine';
+import { useGameEngine } from '../../magnets/hooks/useGameEngineMagnet';
 
 interface GameCanvasProps<T extends GameType> {
   levelData: ILevel<T> | null;

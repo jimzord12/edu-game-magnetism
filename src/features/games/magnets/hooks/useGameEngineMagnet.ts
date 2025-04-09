@@ -1,7 +1,11 @@
 import p5 from 'p5';
 import Matter from 'matter-js';
 import { useEffect, useRef, useCallback } from 'react';
-import { GAME_CONFIG, OBJECT_TYPES } from '../../../../config/gameConfig';
+import {
+  BASE_CONFIG,
+  GAME_CONFIG,
+  OBJECT_TYPES,
+} from '../../../../config/gameConfig';
 import { useAppDispatch } from '../../../../hooks/reduxHooks';
 import {
   levelWon,
@@ -10,8 +14,9 @@ import {
 } from '../slices/magnetGameSlice'; // Import actions
 import { UseGameEngineProps } from '../../types';
 import { GameType } from '@/features/levels/types';
+import { Ball } from '@/models/Ball';
 
-export const useGameEngine = <T extends GameType>({
+export const useGameEngineMagnet = <T extends GameType>({
   levelData,
   magnets,
   gameStatus,
@@ -20,8 +25,8 @@ export const useGameEngine = <T extends GameType>({
   const p5InstanceRef = useRef<p5 | null>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);
-  const ballRef = useRef<Matter.Body | null>(null);
-  const targetRef = useRef<Matter.Body | null>(null);
+  const ballRef = useRef<InstanceType<typeof Ball> | null>(null);
+  const targetRef = useRef<InstanceType<typeof Ball> | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const animationFrameId = useRef<number | null>(null);
 
@@ -68,41 +73,43 @@ export const useGameEngine = <T extends GameType>({
         p.frameRate(60);
         console.log('p5 Setup complete for level:', levelData.id);
 
-        const ball = Matter.Bodies.circle(
-          levelData.ballStart.x,
-          levelData.ballStart.y,
-          GAME_CONFIG.BALL.RADIUS,
-          {
+        // 🌎 --- Matter.js Bodies Setup --- 🌍
+
+        // Create the Ball using the Ball class
+        const ball = new Ball({
+          x: levelData.ballStart.x,
+          y: levelData.ballStart.y,
+          radius: GAME_CONFIG.BALL.RADIUS,
+          matterOptions: {
             label: OBJECT_TYPES.BALL,
             density: GAME_CONFIG.BALL.DENSITY,
             frictionAir: GAME_CONFIG.BALL.FRICTION_AIR,
             restitution: 0.8, // Make ball bouncy
-          }
-        );
+          },
+        });
+
         ballRef.current = ball;
 
-        const target = Matter.Bodies.circle(
-          levelData.targetPosition.x,
-          levelData.targetPosition.y,
-          GAME_CONFIG.TARGET.RADIUS,
-          {
+        // Create the Destination Target
+        const target = new Ball({
+          x: levelData.targetPosition.x,
+          y: levelData.targetPosition.y,
+          radius: GAME_CONFIG.TARGET.RADIUS,
+          matterOptions: {
             label: OBJECT_TYPES.TARGET,
             isStatic: true,
             isSensor: true, // No collision response, just detection
-          }
-        );
+          },
+        });
+
         targetRef.current = target;
 
+        // Load Walls from level data
         const wallBodies = levelData.walls.map((wall) => wall.body);
 
-        Matter.World.add(engine.world, [...wallBodies, ball, target]);
+        Matter.World.add(engine.world, [...wallBodies, ball.body, target.body]);
 
-        // --- Matter.js Runner ---
-        // We will manually step the engine in draw for better control with React state
-        // runnerRef.current = Matter.Runner.create();
-        // Matter.Runner.run(runnerRef.current, engine); // Use manual stepping instead
-
-        // --- Collision Events ---
+        // 💥 --- Collision Events --- 💥
         Matter.Events.on(engine, 'collisionStart', (event) => {
           if (gameStatus !== 'playing') return;
 
@@ -120,12 +127,12 @@ export const useGameEngine = <T extends GameType>({
           });
         });
 
-        // --- Physics Update Event (Before Update) ---
+        // 🚂 --- Physics Update Event (Before Update) --- 🚂
         Matter.Events.on(engine, 'beforeUpdate', () => {
           if (gameStatus !== 'playing' || !ballRef.current) return;
 
           // Apply Magnet Forces
-          const ballPos = ballRef.current.position;
+          const ballPos = ballRef.current.body.position;
           let totalForce = { x: 0, y: 0 };
 
           magnets.forEach((magnet) => {
@@ -170,14 +177,14 @@ export const useGameEngine = <T extends GameType>({
           });
 
           // Apply the total calculated force to the ball
-          Matter.Body.applyForce(ballRef.current, ballPos, totalForce);
+          Matter.Body.applyForce(ballRef.current.body, ballPos, totalForce);
         });
       };
 
       p.draw = () => {
-        p.background(240); // Clear background
+        p.background(220); // Clear background
 
-        // --- Update Physics Engine ---
+        // 🚀 --- Update Physics Engine --- 🚀
         if (gameStatus === 'playing') {
           if (startTimeRef.current === null) {
             startTimeRef.current = p.millis();
@@ -198,7 +205,7 @@ export const useGameEngine = <T extends GameType>({
           startTimeRef.current = null;
         }
 
-        // --- Rendering ---
+        // 🎨 --- Rendering --- 🎨
         // Draw Walls
         const walls = Matter.Composite.allBodies(engine.world).filter(
           (body) => body.label === OBJECT_TYPES.WALL
@@ -232,8 +239,8 @@ export const useGameEngine = <T extends GameType>({
           p.fill(0, 200, 0, 150); // Green semi-transparent target
           p.noStroke();
           p.ellipse(
-            targetRef.current.position.x,
-            targetRef.current.position.y,
+            targetRef.current.body.position.x,
+            targetRef.current.body.position.y,
             GAME_CONFIG.TARGET.RADIUS * 2
           );
         }
@@ -243,13 +250,13 @@ export const useGameEngine = <T extends GameType>({
           p.fill(50, 50, 200); // Blue ball
           p.noStroke();
           p.ellipse(
-            ballRef.current.position.x,
-            ballRef.current.position.y,
+            ballRef.current.body.position.x,
+            ballRef.current.body.position.y,
             GAME_CONFIG.BALL.RADIUS * 2
           );
         }
 
-        // --- Draw Magnets (Enhanced Visualization) ---
+        // 🧲 --- Draw Magnets (Enhanced Visualization) --- 🧲
         const maxDist = GAME_CONFIG.MAGNETS.MAX_DISTANCE; // Cache for readability
         const layerRadii = [maxDist, maxDist * 0.66, maxDist * 0.33]; // Radii for layers (outer to inner)
         const layerStrokeWeights = [1, 1.5, 2]; // Stroke weights (outer to inner)
@@ -262,7 +269,9 @@ export const useGameEngine = <T extends GameType>({
           p.translate(magnet.body.position.x, magnet.body.position.y);
 
           const isAttracting = magnet.isAttracting;
-          const baseColor = isAttracting ? [255, 0, 0] : [0, 0, 255]; // Red or Blue
+          const baseColor = isAttracting
+            ? BASE_CONFIG.MAGNETS.ATTRACT_COLOR
+            : BASE_CONFIG.MAGNETS.REPEL_COLOR; // Red or Blue
 
           // --- Draw Field Layers (Outer to Inner) ---
           for (let i = 0; i < layerRadii.length; i++) {
@@ -336,7 +345,7 @@ export const useGameEngine = <T extends GameType>({
       // };
     };
 
-    // --- Create p5 instance ---
+    // 🚀 --- Create p5 instance --- 🚀
     // Ensure container is empty before creating a new sketch
     if (containerRef?.current) {
       containerRef.current.innerHTML = ''; // Clear previous canvas if any
@@ -372,12 +381,12 @@ export const useGameEngine = <T extends GameType>({
     // Example: function to reset the ball position manually
     resetBall: () => {
       if (ballRef.current && levelData) {
-        Matter.Body.setPosition(ballRef.current, {
+        Matter.Body.setPosition(ballRef.current.body, {
           x: levelData.ballStart.x,
           y: levelData.ballStart.y,
         });
-        Matter.Body.setVelocity(ballRef.current, { x: 0, y: 0 });
-        Matter.Body.setAngularVelocity(ballRef.current, 0);
+        Matter.Body.setVelocity(ballRef.current.body, { x: 0, y: 0 });
+        Matter.Body.setAngularVelocity(ballRef.current.body, 0);
       }
     },
   };

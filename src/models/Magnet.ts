@@ -64,7 +64,8 @@ export class Magnet extends Identifiable {
       ...matterOptions, // Allow overriding defaults
     });
 
-    console.log('🐦‍🔥 Created this Magnet: ', this);
+    console.log('🐦‍🔥 Created this Ball: ', this);
+
     // Optionally, still add customData if direct body iteration is needed elsewhere
     // this.body.customData = { isMagnet: true, isAttracting: this.isAttracting };
   }

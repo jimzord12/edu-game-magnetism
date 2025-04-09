@@ -161,6 +161,8 @@ const GamePage: React.FC = () => {
     return <div>Loading Level...</div>;
   }
 
+  // Move this line outside of the render function to avoid re-renders
+  // Only look up the selected magnet when needed in the UI
   const selectedMagnet = placedMagnets.find((m) => m.id === selectedMagnetId);
 
   return (
@@ -218,6 +220,7 @@ const GamePage: React.FC = () => {
         {/* Pass click handler to the wrapper div */}
         <div
           onClick={handleCanvasClick}
+          className="game-canvas-wrapper"
           style={{
             cursor:
               gameStatus === 'idle' &&
@@ -226,8 +229,6 @@ const GamePage: React.FC = () => {
                 : 'default',
           }}
         >
-          <ElectroGameCanvas levelData={currentLevelData} />
-          {/* Overlay Magnets for Interaction - Positioned absolutely over the canvas */}
           {gameStatus === 'idle' && (
             <div
               className="magnet-overlay"
@@ -267,6 +268,8 @@ const GamePage: React.FC = () => {
               ))}
             </div>
           )}
+          <ElectroGameCanvas levelData={currentLevelData} />
+          {/* Overlay Magnets for Interaction - Positioned absolutely over the canvas */}
         </div>
       </div>
     </div>

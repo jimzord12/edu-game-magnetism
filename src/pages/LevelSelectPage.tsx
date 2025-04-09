@@ -2,6 +2,7 @@ import { AllLevels } from '@/features/levels/types';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
+import '../styles/LevelSelectPage.css';
 
 const LevelSelectPage: React.FC = () => {
   const { availableLevels } = useAppSelector((state) => state.levels);
@@ -13,46 +14,63 @@ const LevelSelectPage: React.FC = () => {
   }, [availableLevels.magnet?.length, availableLevels.electroMagnet?.length]);
 
   return (
-    <div className="flex gap-8 items-center justify-around">
-      <div className="flex gap-8">
-        <div>
-          <h1>Magnets</h1>
-          <ul>
-            {levels.magnet.map((level) => {
-              return (
-                <li key={level.id} style={{ margin: '10px 0' }}>
-                  <Link to={`/game/${level.id}`}>
-                    <button style={{ minWidth: '200px', textAlign: 'left' }}>
-                      {level.name}
-                    </button>
-                  </Link>
-                </li>
-              );
-            })}
+    <div className="level-select-container">
+      <header className="level-select-header">
+        <h1>Choose Your Challenge</h1>
+        <p>
+          Select a level to test your understanding of magnetic forces and
+          interactions
+        </p>
+      </header>
+
+      <div className="categories-container">
+        <div className="category-column">
+          <div className="category-title">
+            <h2 className="text-2xl italic text-shadow-lg/30">
+              <span className="text-red-500">Mag</span>
+              <span className="text-blue-500">nets</span>
+            </h2>
+          </div>
+          <ul className="levels-list">
+            {levels.magnet.map((level) => (
+              <li key={level.id} className="level-item">
+                <Link
+                  to={`/game/${level.id}`}
+                  className="level-button magnet-level-button"
+                >
+                  {level.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
-        <div>
-          <h1>ElectroMagnets</h1>
-          <ul className="flex flex-col">
-            {levels.electromagnet.map((level) => {
-              return (
-                <li key={level.id} style={{ margin: '10px 0' }}>
-                  <Link to={`/game/${level.id}`}>
-                    <button style={{ minWidth: '200px', textAlign: 'left' }}>
-                      {level.name}
-                    </button>
-                  </Link>
-                </li>
-              );
-            })}
+        <div className="category-column">
+          <div className="category-title">
+            <h2 className="text-2xl italic text-shadow-lg/30">
+              <span className="text-amber-400">Electro</span>
+              <span className="text-red-500">Mag</span>
+              <span className="text-blue-500">nets</span>
+            </h2>
+          </div>
+          <ul className="levels-list">
+            {levels.electromagnet.map((level) => (
+              <li key={level.id} className="level-item">
+                <Link
+                  to={`/game/${level.id}`}
+                  className="level-button electromagnet-level-button"
+                >
+                  {level.name}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
 
-      <div>
-        <Link to="/">
-          <button>Back to Home</button>
+      <div className="navigation-footer">
+        <Link to="/" className="back-button">
+          Back to Home
         </Link>
       </div>
     </div>

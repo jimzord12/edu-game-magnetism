@@ -51,9 +51,42 @@ const magnetGameSlice = createSlice({
     },
     toggleMagnetPolarity: (state, action: PayloadAction<number>) => {
       // Action payload is magnet ID
-      const magnet = state.placedMagnets.find((m) => m.id === action.payload);
-      if (magnet) {
-        magnet.isAttracting = !magnet.isAttracting;
+      console.log('Redux - toggleMagnetPolarity', action.payload);
+      const magnetIndex = state.placedMagnets.findIndex(
+        (m) => m.id === action.payload
+      );
+
+      if (magnetIndex !== -1) {
+        // Create a new array with the updated magnet
+        const updatedMagnets = [...state.placedMagnets];
+
+        // Clone the magnet and toggle its polarity
+        const magnet = updatedMagnets[magnetIndex];
+        const updatedMagnet = new Magnet({
+          x: magnet.body.position.x,
+          y: magnet.body.position.y,
+          isAttracting: !magnet.isAttracting,
+          // Copy other properties as needed
+          matterOptions: {
+            isStatic: true, // Maintaining static property
+          },
+          strength: magnet.strength,
+        });
+
+        // Preserve the same ID for the updated magnet
+        updatedMagnet.id = magnet.id;
+
+        // Replace the magnet in the array
+        updatedMagnets[magnetIndex] = updatedMagnet;
+
+      // Update the state with the new array
+        state.placedMagnets = updatedMagnets;
+
+        console.log(
+          `Redux - Magnet polarity toggled to: ${
+            updatedMagnet.isAttracting ? 'Attract' : 'Repel'
+          }`
+        );
       }
     },
     updateBallPosition: (

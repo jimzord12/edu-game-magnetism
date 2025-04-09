@@ -1,2 +1,89 @@
-@import url('styles/global.css');
 @import 'tailwindcss';
+
+@layer base {
+  body {
+    @apply flex items-center justify-center;
+    @apply bg-zinc-900 text-black;
+    @apply mx-auto;
+    @apply min-h-screen;
+    /* @apply max-w-4xl; */
+    @apply p-4 px-8;
+  }
+}
+@layer components {
+  #root {
+    @apply bg-zinc-700 text-black;
+    @apply rounded-2xl;
+    @apply p-4;
+    @apply shadow-2xl;
+    @apply w-full;
+  }
+}
+
+button {
+  @apply px-4 py-2;
+  @apply m-1;
+  @apply cursor-pointer;
+  @apply border border-gray-300;
+  @apply bg-gray-200;
+  @apply rounded-md;
+}
+
+button:hover {
+  @apply bg-gray-300;
+}
+
+button:disabled:hover {
+  @apply bg-gray-200;
+}
+
+button:disabled {
+  @apply cursor-not-allowed;
+  @apply opacity-60;
+}
+
+ul {
+  @apply list-none;
+  @apply p-0;
+}
+
+/* Styles for GamePage layout */
+.game-page {
+  @apply flex flex-col items-center;
+}
+
+.game-area {
+  @apply flex flex-row gap-5 mt-5 items-start;
+  @apply rounded-lg;
+}
+
+.game-controls {
+  @apply flex flex-col gap-2.5 p-4;
+  @apply border border-gray-600 bg-gray-400;
+  @apply w-[400px] h-full;
+  @apply rounded-lg;
+  @apply shadow-2xl;
+}
+
+.magnet-controls {
+  @apply mt-4 pt-2.5;
+  @apply flex flex-col gap-2.5;
+  @apply border-t border-t-gray-100;
+}
+
+.game-canvas-wrapper {
+  @apply relative;
+}
+
+.game-canvas-container {
+  @apply leading-none;
+}
+
+.magnet-overlay {
+  @apply absolute;
+  @apply: inset-0;
+}
+
+.p5-canvas-wrapper canvas {
+  @apply block;
+}
