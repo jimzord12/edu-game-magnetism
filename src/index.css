@@ -50,6 +50,7 @@ ul {
 /* Styles for GamePage layout */
 .game-page {
   @apply flex flex-col items-center;
+  @apply transition-all duration-500;
 }
 
 .game-area {
