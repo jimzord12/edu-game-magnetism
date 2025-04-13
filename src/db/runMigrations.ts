@@ -21,7 +21,7 @@ async function createTables(sql: SQLocal_Runner) {
   await sql`
     CREATE TABLE IF NOT EXISTS players (
       id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-      name TEXT NOT NULL,
+      name TEXT NOT NULL UNIQUE,
       age INTEGER NOT NULL,
       games_played INTEGER NOT NULL,
       created_at INTEGER NOT NULL,
@@ -60,5 +60,19 @@ async function createTables(sql: SQLocal_Runner) {
     );
   `;
   console.log('✅ Created game_sessions table!');
+  console.log('');
+
+  // Create quiz_scores table with foreign key
+  console.log('🔃 Creating quiz_scores table...');
+  await sql`
+    CREATE TABLE IF NOT EXISTS quiz_scores (
+      id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+      player_id INTEGER,
+      score INTEGER NOT NULL,
+      date INTEGER NOT NULL,
+      FOREIGN KEY (player_id) REFERENCES players(id) ON UPDATE NO ACTION ON DELETE NO ACTION
+    );
+  `;
+  console.log('✅ Created quiz_scores table!');
   console.log('');
 }

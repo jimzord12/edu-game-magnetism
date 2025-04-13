@@ -3,7 +3,7 @@
 @layer base {
   body {
     @apply flex items-center justify-center;
-    @apply bg-zinc-900 text-black;
+    @apply bg-zinc-600 text-white;
     @apply mx-auto;
     @apply min-h-screen;
     /* @apply max-w-4xl; */
@@ -11,13 +11,13 @@
   }
 }
 @layer components {
-  #root {
+  /* #root {
     @apply bg-zinc-700 text-black;
     @apply rounded-2xl;
     @apply p-4;
     @apply shadow-2xl;
     @apply w-full;
-  }
+  } */
 }
 
 button {

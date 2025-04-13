@@ -1,4 +1,4 @@
-# Contributing Guide
+# Project: Educational Magnetism Puzzle Game
 
 Welcome to the **Educational Magnetism Puzzle Game**! 🎮🧲  
 This document serves as a comprehensive guide for developers who want to contribute to the project.
@@ -150,36 +150,12 @@ Located in `/hooks` and `/features/.../hooks`:
 - **Unit Tests**: Recommended for models and utility functions
 - **Integration Tests**: Redux slices and game engine
 - **Manual Tests**: Sandbox mode for real-time testing
+- **Unit Testing**: Vitest + React Testing Library
 - **E2E (future)**: Cypress or Playwright
 
 ---
 
-## 🚀 Getting Started
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/your-username/magnetism-game.git
-cd magnetism-game
-```
-
-### 2. Install Dependencies
-
-```bash
-npm install
-# or
-yarn install
-```
-
-### 3. Start the Dev Server
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-### 4. Explore the Game
+### Explore the Game
 
 Open your browser at [http://localhost:5173](http://localhost:5173)
 
@@ -214,12 +190,6 @@ refactor: improve game engine logic
 
 ---
 
-## 🗨️ Need Help?
-
-Open an issue, or ask a question in the Discussions tab. Contributions and feedback are very welcome!
-
----
-
 ## 📘 Further Reading
 
 - [Matter.js Docs](https://brm.io/matter-js/docs/)
@@ -233,4 +203,6 @@ Open an issue, or ask a question in the Discussions tab. Contributions and feedb
 
 Whether you’re fixing a bug, creating a new level, or helping shape the future of the game—thank you for contributing! This project is all about making learning fun.
 
-🧠💡🧲
+You can find a `CONTRIBUTING.md` file in the root directory for more specific guidelines. We highly encourage you to read it before making any contributions.
+
+🧠💡🧲⚡

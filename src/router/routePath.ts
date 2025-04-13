@@ -3,5 +3,5 @@ export const routePath = {
   levelSelect: '/levels',
   game: '/game/:levelId', // Parameter for level ID
   sandbox: '/sandbox', // Sandbox route
-  // Add more routes as needed
+  quiz: '/quiz', // New quiz route
 };

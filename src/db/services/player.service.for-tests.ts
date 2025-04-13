@@ -4,9 +4,9 @@ import { GenericSQLiteInstance, NewPlayer } from '../types';
 import { schema } from '../schema';
 
 export class PlayerService {
-  private db: GenericSQLiteInstance<'async'>;
+  private db: GenericSQLiteInstance<'sync'>;
 
-  constructor(drizzleDbInstance: GenericSQLiteInstance<'async'>) {
+  constructor(drizzleDbInstance: GenericSQLiteInstance<'sync'>) {
     this.db = drizzleDbInstance;
   }
 

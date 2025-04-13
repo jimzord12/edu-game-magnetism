@@ -34,7 +34,8 @@
       "@pages/*": ["./src/pages/*"],
       "@router/*": ["./src/router/*"],
       "@services/*": ["./src/services/*"],
-      "@store/*": ["./src/store/*"]
+      "@store/*": ["./src/store/*"],
+      "@assets/*": ["./src/assets/*"],
     },
     "types": ["node", "vitest/globals"]
   },

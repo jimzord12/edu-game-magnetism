@@ -17,4 +17,9 @@ const getStoragePermission = async () => {
   throw new Error('OPFS persistence not supported');
 };
 
-export { waitFor, getStoragePermission };
+const getAverage = (nums: number[]): number => {
+  const sum = nums.reduce((acc, num) => acc + num, 0);
+  return sum / nums.length;
+};
+
+export { waitFor, getStoragePermission, getAverage };

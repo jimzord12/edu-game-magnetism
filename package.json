@@ -11,7 +11,8 @@
     "build": "tsc -b && vite build",
     "test": "vitest",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "gen:migrations": "drizzle-kit generate"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.6.1",

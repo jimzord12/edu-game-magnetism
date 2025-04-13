@@ -1,12 +1,12 @@
 // src/services/player.service.test.ts
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { PlayerService } from '../services/player.service';
+import { PlayerService } from '../services/player.service.for-tests';
 import { GenericSQLiteInstance } from '../types';
 import { setupTestDb } from './test-setup';
 
 describe('PlayerService', () => {
   let playerService: PlayerService;
-  let db: GenericSQLiteInstance;
+  let db: GenericSQLiteInstance<'sync'>;
   let cleanup: () => Promise<void>;
   let close: () => void;
 
@@ -135,8 +135,12 @@ describe('PlayerService', () => {
 
     expect(updatedPlayer).toBeDefined();
     expect(updatedPlayer?.lastGameDate).toBeInstanceOf(Date);
-    expect(updatedPlayer!.lastGameDate!.getTime()).toBeGreaterThanOrEqual(beforeUpdate);
-    expect(updatedPlayer!.lastGameDate!.getTime()).toBeLessThanOrEqual(afterUpdate);
+    expect(updatedPlayer!.lastGameDate!.getTime()).toBeGreaterThanOrEqual(
+      beforeUpdate
+    );
+    expect(updatedPlayer!.lastGameDate!.getTime()).toBeLessThanOrEqual(
+      afterUpdate
+    );
   });
 
   it('should delete a player by ID', async () => {
@@ -158,5 +162,40 @@ describe('PlayerService', () => {
   it('should return undefined when deleting a non-existent player ID', async () => {
     const deleteResult = await playerService.deletePlayerById(9999);
     expect(deleteResult).toBeUndefined();
+  });
+
+  it('should prevent duplicate usernames', async () => {
+    await playerService.createPlayer({
+      name: 'UniqueUser',
+      age: 25,
+      gamesPlayed: 0,
+    });
+
+    // Attempt to create another player with the same username
+    await expect(
+      playerService.createPlayer({
+        name: 'UniqueUser',
+        age: 30,
+        gamesPlayed: 0,
+      })
+    ).rejects.toThrow(); // Should throw due to unique constraint
+  });
+
+  it('should get a player by username', async () => {
+    const playerData = {
+      name: 'TestUser',
+      age: 20,
+      gamesPlayed: 0,
+    };
+    await playerService.createPlayer(playerData);
+
+    const fetchedPlayer = await playerService.getPlayerByUsername('TestUser');
+    expect(fetchedPlayer).toBeDefined();
+    expect(fetchedPlayer?.name).toBe('TestUser');
+  });
+
+  it('should return undefined for non-existent username', async () => {
+    const player = await playerService.getPlayerByUsername('NonExistentUser');
+    expect(player).toBeUndefined();
   });
 });

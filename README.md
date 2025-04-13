@@ -2,6 +2,17 @@
 
 An interactive physics-based educational game that teaches magnetism concepts through puzzle-solving and experimentation.
 
+## Table of Contents
+
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Technical Stack](#technical-stack)
+- [Architecture](#architecture)
+- [Development Setup](#development-setup)
+- [Game Architecture](#game-architecture)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Project Overview
 
 This project is a physics-based puzzle game where players manipulate magnetic fields to guide a ball to a target. It features two distinct game modes (regular magnets and electromagnets) and a sandbox environment for free experimentation with magnetic forces.
@@ -55,20 +66,68 @@ This project is a physics-based puzzle game where players manipulate magnetic fi
    - `Magnet` and `ElectroMagnet` class hierarchy
    - React component composition
 
+#### Local Storage Sync Pattern
+
+Utilizes a two-tier storage approach:
+
+- SQLite database (via OPFS) for persistent, relational data
+- LocalStorage for quick access and cross-tab synchronization
+- Automatic sync on app initialization
+
+#### Service Layer Pattern
+
+Implements a robust service layer pattern for data management:
+
+- Database services for CRUD operations
+- Error handling and constraint validation
+- Transaction management
+
+#### Redux + Custom Hooks Pattern
+
+Combines Redux state management with React hooks:
+
+- Global state via Redux Toolkit
+- Custom hooks for business logic
+- Local state for UI components
+
 ### Project Structure
 
 ```
 src/
-├── config/         # Game configuration and level definitions
-├── features/       # Core game features
-│   ├── games/      # Game modes implementations
-│   ├── levels/     # Level management
-│   ├── player/     # Player state management
-│   └── sandbox/    # Sandbox mode implementation
-├── models/         # Game object models
+├── config/           # Game configuration and level definitions
+├── db/              # Database layer
+│   ├── services/    # Database services
+│   └── schema.ts    # Database schema definitions
+├── features/        # Core game features
+│   ├── games/       # Game modes implementations
+│   ├── levels/      # Level management
+│   ├── player/      # Player state management
+│   └── sandbox/     # Sandbox mode implementation
+├── hooks/           # Custom React hooks
+├── models/          # Game object models
 ├── pages/          # Game pages/routes
 └── store/          # Redux store configuration
+
 ```
+
+### Authentication Flow
+
+1. App Initialization:
+
+   - Checks for existing database
+   - Syncs players between LocalStorage and SQLite
+   - Handles storage errors and constraints
+
+2. Player Management:
+
+   - Username-based authentication (no passwords)
+   - Unique username constraints
+   - Cross-tab state synchronization
+
+3. Error Handling:
+   - Graceful handling of duplicate usernames
+   - Storage sync error recovery
+   - Clear error state management
 
 ## Development Setup
 
