@@ -111,4 +111,4 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
 
 ## For Later but Do Not Forget
 
-Game & GameSession Services are implemented but NOT used yet!
+- Game & GameSession Services are implemented but NOT used yet!

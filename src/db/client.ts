@@ -5,9 +5,14 @@ import { runMigrations } from './runMigrations';
 import { _getTables } from './helpers';
 import { schema } from './schema';
 
-const { driver, batchDriver, sql, getDatabaseInfo } = new SQLocalDrizzle(
-  'MyGameDB.sqlite3'
-);
+const {
+  driver,
+  batchDriver,
+  sql,
+  getDatabaseInfo,
+  getDatabaseFile,
+  deleteDatabaseFile,
+} = new SQLocalDrizzle('MyGameDB.sqlite3');
 export const db = drizzle(driver, batchDriver, {
   schema, // This is required for type inference by Drizzle ORM
   logger: true,
@@ -20,3 +25,5 @@ export async function initDB() {
 
 export const getDBInfo = getDatabaseInfo;
 export const getTables = () => _getTables(sql);
+export const getDBFile = getDatabaseFile; // Export getDatabaseFile function for downloading database
+export const deleteDBFile = deleteDatabaseFile; // Export deleteDatabaseFile function for database reset

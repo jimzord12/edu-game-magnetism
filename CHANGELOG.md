@@ -1,5 +1,29 @@
 # Change Log
 
+## [0.3.0] - 2025-04-13
+
+### Added
+
+- Enhanced Quiz Game functionality
+  - Added random selection of 10 questions per quiz attempt
+  - Implemented "Try Again" functionality for quiz retakes
+  - Added proper question shuffling mechanism
+  - Added safeguards against quiz state errors
+
+### Changed
+
+- Modified quiz answer selection behavior
+  - Removed immediate color feedback on answer selection
+  - Allow answer changes before submission
+  - Improved quiz state management and error handling
+  - Enhanced quiz reset and retake functionality
+
+### Fixed
+
+- Fixed "Try Again" button error in quiz results screen
+- Fixed quiz state initialization issues
+- Fixed error when attempting to retake quiz before questions load
+
 ## [0.2.0] - 2025-04-13
 
 ### Added

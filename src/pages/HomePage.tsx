@@ -3,13 +3,38 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import '../styles/HomePage.css';
+import { exportDatabase, deleteDatabase } from '../db/helpers';
 
 const HomePage: React.FC = () => {
   const { currentPlayer, isLoading, error, login, createAccount, logout } =
     useAuth();
   const [username, setUsername] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const handleExportDatabase = async () => {
+    try {
+      setIsExporting(true);
+      await exportDatabase();
+      setIsExporting(false);
+    } catch (error) {
+      console.error('Error exporting database:', error);
+      setIsExporting(false);
+    }
+  };
+
+  const handleDeleteDatabase = async () => {
+    try {
+      setIsDeleting(true);
+      await deleteDatabase();
+      // No need to set isDeleting to false since page will refresh
+    } catch (error) {
+      console.error('Error deleting database:', error);
+      setIsDeleting(false);
+    }
+  };
 
   // Focus input on mount and when switching modes
   useEffect(() => {
@@ -166,6 +191,68 @@ const HomePage: React.FC = () => {
 
       <footer className="home-footer">
         <p>Learn through play. Discover the power of magnets!</p>
+        <div
+          className="database-actions"
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            left: '10px',
+            display: 'flex',
+            gap: '10px',
+          }}
+        >
+          <button
+            className="export-button"
+            onClick={handleExportDatabase}
+            disabled={isExporting}
+            style={{
+              backgroundColor: '#2196F3', // Changed to blue color
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '10px 15px',
+              cursor: isExporting ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              fontSize: '14px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              transition: 'all 0.2s ease',
+              opacity: isExporting ? 0.7 : 1,
+            }}
+          >
+            <span role="img" aria-label="Download">
+              💾
+            </span>
+            {isExporting ? 'Exporting...' : 'Export Database'}
+          </button>
+
+          <button
+            className="delete-button"
+            onClick={handleDeleteDatabase}
+            disabled={isDeleting}
+            style={{
+              backgroundColor: '#e53935', // Red color for danger
+              color: 'white',
+              border: 'none',
+              borderRadius: '5px',
+              padding: '10px 15px',
+              cursor: isDeleting ? 'not-allowed' : 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '5px',
+              fontSize: '14px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              transition: 'all 0.2s ease',
+              opacity: isDeleting ? 0.7 : 1,
+            }}
+          >
+            <span role="img" aria-label="Delete">
+              🗑️
+            </span>
+            {isDeleting ? 'Deleting...' : 'Reset Database'}
+          </button>
+        </div>
       </footer>
     </div>
   );
