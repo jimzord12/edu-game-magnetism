@@ -11,18 +11,23 @@ import {
   fetchPlayerScores,
   fetchHighScores,
   setCurrentQuestion,
+  setGameCategory,
 } from '../slices/gameQuizSlice';
 import type { QuestionAnswer, QuizCategory } from '../types';
+import { useNavigate } from 'react-router-dom';
 
 export function useQuiz() {
   const dispatch = useAppDispatch();
   const quizState = useAppSelector((state) => state.gameQuiz);
   const playerId = useAppSelector((state) => state.player.currentPlayer?.id);
+  const navigate = useNavigate();
 
   // Start quiz for a specific category
   const handleStartQuiz = useCallback(
     (category: keyof QuizCategory) => {
+      navigate('/quiz');
       dispatch(startQuiz(category));
+      dispatch(setGameCategory(category));
     },
     [dispatch]
   );
@@ -86,7 +91,22 @@ export function useQuiz() {
   // Reset the quiz state
   const handleResetQuiz = useCallback(() => {
     dispatch(resetQuiz());
-  }, [dispatch]);
+    navigate('/quiz');
+  }, [dispatch, quizState.category]);
+
+  const handleRetakeQuiz = useCallback(async () => {
+    try {
+      const currentCategory = quizState.category;
+      dispatch(resetQuiz());
+      await dispatch(loadQuizQuestions()).unwrap();
+      if (currentCategory) {
+        dispatch(startQuiz(currentCategory));
+      }
+      navigate('/quiz');
+    } catch (error) {
+      console.error('Failed to retake quiz:', error);
+    }
+  }, [dispatch, quizState.category, navigate]);
 
   // Load questions and scores on mount
   useEffect(() => {
@@ -103,5 +123,6 @@ export function useQuiz() {
     handleSelectAnswer,
     handleSubmitAnswer,
     handleResetQuiz,
+    handleRetakeQuiz,
   };
 }

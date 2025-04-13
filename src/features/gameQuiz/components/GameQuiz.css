@@ -61,6 +61,7 @@
   border-radius: 12px;
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
   margin: 2rem 0;
+  color: black;
 }
 
 .question-type {
@@ -92,21 +93,6 @@
   background: rgba(255, 255, 255, 0.9);
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-}
-
-.option-label.correct-answer {
-  border-color: #4caf50;
-  background: rgba(76, 175, 80, 0.1);
-}
-
-.option-label.incorrect-answer {
-  border-color: #f44336;
-  background: rgba(244, 67, 54, 0.1);
-}
-
-.option-label.disabled {
-  opacity: 0.7;
-  cursor: not-allowed;
 }
 
 .option-label input:disabled {

@@ -34,6 +34,7 @@ export interface GameQuizState {
     playerName: string;
   }>;
   questions: QuizCategory | null;
+  currentCategory: keyof QuizCategory | null;
 }
 
 export interface QuestionAnswer {

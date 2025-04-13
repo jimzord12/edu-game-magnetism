@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Question } from '../types';
 
 interface QuizQuestionProps {
@@ -16,13 +15,6 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 }) => {
   const isMultipleChoice = question.type === 'multiple';
 
-  const getAnswerFeedbackClass = (index: number): string => {
-    if (selectedAnswers.length === 0) return '';
-    if (question.correctAnswers.includes(index)) return 'correct-answer';
-    if (selectedAnswers.includes(index)) return 'incorrect-answer';
-    return '';
-  };
-
   return (
     <div className="quiz-question">
       <h3>{question.question}</h3>
@@ -32,16 +24,12 @@ export const QuizQuestion: React.FC<QuizQuestionProps> = ({
 
       <div className="options-list">
         {question.options.map((option, index) => (
-          <label
-            key={index}
-            className={`option-label ${getAnswerFeedbackClass(index)}`}
-          >
+          <label key={index} className="option-label">
             <input
               type={isMultipleChoice ? 'checkbox' : 'radio'}
               name="quiz-answer"
               checked={selectedAnswers.includes(index)}
               onChange={() => onSelect(index)}
-              disabled={selectedAnswers.length > 0}
             />
             <span>{option}</span>
           </label>

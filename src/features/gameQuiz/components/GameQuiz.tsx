@@ -11,6 +11,7 @@ export const GameQuiz: React.FC = () => {
     handleSelectAnswer,
     handleSubmitAnswer,
     handleResetQuiz,
+    handleRetakeQuiz,
   } = useQuiz();
 
   if (quizState.loading || !quizState.questions) {
@@ -53,7 +54,7 @@ export const GameQuiz: React.FC = () => {
       <QuizResults
         score={quizState.score}
         totalQuestions={quizState.questionsAnswered}
-        onReset={handleResetQuiz}
+        onReset={handleRetakeQuiz}
       />
     );
   }

@@ -71,6 +71,16 @@ const initialState: GameQuizState = {
   highScores: [],
   loading: false,
   questions: null,
+  currentCategory: null,
+};
+
+// Helper function to get random questions
+const getRandomQuestions = (
+  questions: Question[],
+  count: number
+): Question[] => {
+  const shuffled = [...questions].sort(() => 0.5 - Math.random());
+  return shuffled.slice(0, count);
 };
 
 const gameQuizSlice = createSlice({
@@ -78,15 +88,27 @@ const gameQuizSlice = createSlice({
   initialState,
   reducers: {
     startQuiz: (state, action: PayloadAction<keyof QuizCategory>) => {
+      if (!state.questions || !state.questions[action.payload]) {
+        state.error = 'Questions not loaded. Please try again.';
+        return;
+      }
+
+      const categoryQuestions = state.questions[action.payload];
+      if (categoryQuestions.length === 0) {
+        state.error = 'No questions available for this category.';
+        return;
+      }
+
       state.category = action.payload;
       state.score = 0;
       state.questionsAnswered = 0;
       state.isComplete = false;
       state.error = null;
-      // Set the first question of the selected category
-      if (state.questions && state.questions[action.payload].length > 0) {
-        state.currentQuestion = state.questions[action.payload][0];
-      }
+
+      const randomQuestions = getRandomQuestions(categoryQuestions, 10);
+      state.questions[action.payload] = randomQuestions;
+      state.currentQuestion = randomQuestions[0];
+      state.currentCategory = action.payload;
     },
     setCurrentQuestion: (state, action: PayloadAction<Question>) => {
       state.currentQuestion = action.payload;
@@ -116,6 +138,9 @@ const gameQuizSlice = createSlice({
     },
     resetQuiz: () => {
       return initialState;
+    },
+    setGameCategory: (state, action: PayloadAction<keyof QuizCategory>) => {
+      state.currentCategory = action.payload;
     },
   },
   extraReducers: (builder) => {
@@ -191,6 +216,7 @@ export const {
   submitAnswer,
   completeQuiz,
   resetQuiz,
+  setGameCategory,
 } = gameQuizSlice.actions;
 
 export default gameQuizSlice.reducer;
