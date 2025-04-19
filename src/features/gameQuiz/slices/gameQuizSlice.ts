@@ -15,7 +15,7 @@ export const loadQuizQuestions = createAsyncThunk(
   'gameQuiz/loadQuestions',
   async () => {
     const response = await import(
-      '@assets/magnetism_electromagnetism_quiz.json'
+      'src/assets/magnetism_electromagnetism_quiz.json'
     );
     const data = response.default;
 
