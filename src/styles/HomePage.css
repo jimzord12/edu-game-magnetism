@@ -1,0 +1,279 @@
+/* HomePage.css - Styling for the game's homepage */
+
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 85vh;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #b8c2e0;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.title {
+  font-size: 3.5rem;
+  background: linear-gradient(45deg, #405dce, #7540c4);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+  font-weight: 800;
+  text-shadow: 2px 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  color: #555;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.info-section {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  margin-bottom: 3rem;
+}
+
+.info-card {
+  flex: 1;
+  min-width: 300px;
+  max-width: 450px;
+  padding: 2rem;
+  border-radius: 12px;
+  color: #b2e5ec;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.magnet-card {
+  background: linear-gradient(135deg, #2c3e50, #4ca1af);
+}
+
+.electro-card {
+  background: linear-gradient(135deg, #614385, #516395);
+}
+
+.info-card h2 {
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.info-card h2::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 60px;
+  height: 3px;
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+.info-card p {
+  line-height: 1.6;
+  font-size: 1.1rem;
+}
+
+.navigation-section {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin: 2rem 0 3rem;
+}
+
+.navigation-subsection {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2rem;
+  margin: 2rem 0 3rem;
+}
+
+.nav-button {
+  padding: 0.9rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.primary-button {
+  background: linear-gradient(45deg, #2b5876, #4e4376);
+  color: white;
+}
+
+.primary-button:hover {
+  background: linear-gradient(45deg, #1a3c53, #3d3660);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.secondary-button {
+  background: white;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.secondary-button:hover {
+  background: #f8f8f8;
+  border-color: #ccc;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+}
+
+.thirdly-button {
+  background: linear-gradient(45deg, #872424, #562ced);
+  color: white;
+}
+
+.thirdly-button:hover {
+  background: linear-gradient(45deg, #561818, #321d80);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.disabled-link {
+  opacity: 0.6;
+  cursor: not-allowed;
+  position: relative;
+}
+
+.disabled-link:hover {
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+.disabled-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: inherit;
+}
+
+.home-footer {
+  margin-top: auto;
+  text-align: center;
+  color: #666;
+  padding-top: 2rem;
+  font-style: italic;
+}
+
+.auth-section {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  backdrop-filter: blur(4px);
+}
+
+.player-info {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  color: #fff;
+  font-size: 1.1rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 300px;
+  margin: 0 auto;
+}
+
+.auth-input {
+  padding: 0.5rem 1rem;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: rgb(26, 31, 88);
+  font-size: 1rem;
+}
+
+.auth-input::placeholder {
+  color: rgba(54, 48, 137, 0.5);
+  font-weight: 500;
+}
+
+.auth-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #4a90e2;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.auth-button:hover {
+  background-color: #357abd;
+}
+
+.auth-switch {
+  background: none;
+  border: none;
+  color: rgba(56, 55, 55, 0.7);
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0.25rem;
+}
+
+.auth-switch:hover {
+  color: white;
+}
+
+.auth-error {
+  color: #ff4444;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.auth-loading {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .title {
+    font-size: 2.5rem;
+  }
+
+  .info-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .info-card {
+    width: 100%;
+  }
+}

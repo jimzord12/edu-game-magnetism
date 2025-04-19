@@ -1,45 +1,114 @@
-# TODOs
+# TODO Tasks
 
-## Getting Started:
+## General
 
-- [x] Create a working example using Vite, React, TS, p5.js and Matter.js
+## Features
 
-<br />
+## ✅ TODO: Player Management Feature
 
-- [ ] Learn more about 🧲 Magnetism & ⚡Electromagnetism (5h - Sat 22/3)
-  - [ ] See some videos on YouTube (1h)
-  - [ ] Learn more about the physics of magnets (1h)
-  - [ ] Solve some exercises (3h)
-    - [ ] 3 Magnetism exercises (1h)
-    - [ ] 5 Electromagnetism exercises (2h)
+### 🎯 Goal
 
-## Create Classes, Factory Functions, Utils, etc. for the Game:
+Implement a simple player account system to:
 
-> ETC – Estimated Time to Completion
+- [x] Allow kids to create and manage accounts (username only, no passwords)
+- [x] Track who is playing for scorekeeping, progress reports, and leaderboards
+- [ ] Enable per-player game data storage and future PDF reporting
 
-### 📘 Classes (ETC: Sunday 30 March)
+---
 
-🧩 Shapes (4h - Sun 23/3):
+## 🔧 Tasks Overview
 
-- [x] Circle (1h)
-- [x] Rectangle (1h)
-- [x] Polygon (1h)
-- [x] Boundary (1h)
+### ✅ Database & ORM
 
-🫠 Behavior Classes (10h - 30/3):
+- [x] Define player table schema using **Drizzle ORM**
+- [x] Generate migrations using **Drizzle Kit**
+- [x] Use **SQLocal's `sql` template** to create tables in **SQLite**
+- [x] Add unique constraint for player names
 
-- [ ] Staticable (can have a static body) (1h)
-- [ ] Attractor (2h)
-- [ ] Repeller (2h)
-- [ ] Magnet (2h)
-- [ ] Electromagnet (3h)
+### ✅ Player Services
 
-### 🧪 Tests (ETC: Sunday 6 April)
+- [x] Create service functions to:
+  - [x] Fetch all players from the DB
+  - [x] Create a new player
+  - [x] Delete an existing player
+  - [x] Add proper unique constraint handling
+  - [x] Add error handling for database operations
 
-- [ ] Create individual tests for the classes (5h)
-- [ ] Create interaction tests for the classes (Ex. Circle + Attractor, Rectangle + Repeller, etc.) (5h)
+### ✅ Redux Slice: `playerSlice`
 
-### 🤖 Prototype Creation (Sun 27 April)
+Manage player authentication with Redux Toolkit. Include the following actions:
 
-- [ ] Create a prototype of the 🧲 Magnetism game (10h)
-- [ ] Create a prototype of the ⚡Electromagnetism game (20h)
+| Action         | Status | Purpose                                |
+| -------------- | ------ | -------------------------------------- |
+| `logPlayerIn`  | ✅     | Set the active player                  |
+| `logPlayerOut` | ✅     | Clear the logged-in player             |
+| `togglePlayer` | ⏳     | Switch to a different player           |
+| `createPlayer` | ✅     | Add a new player to the database       |
+| `getPlayer`    | ✅     | Get the current player                 |
+| `isLoggedIn`   | ✅     | Check if a player is logged in         |
+| `isLoggedOut`  | ✅     | Check if no player is logged in        |
+| `deletePlayer` | ⏳     | Remove a player from the database      |
+| `fetchPlayers` | ⏳     | Retrieve all players from the database |
+| `clearError`   | ✅     | Clear any error state                  |
+
+### ✅ React Hook: `useAuth`
+
+Create a custom hook that wraps `playerSlice` logic. It should expose all Redux actions as hook methods:
+
+- [x] `logPlayerIn`, `logPlayerOut`
+- [x] `createPlayer`, `getPlayer`
+- [x] `isLoggedIn`, `isLoggedOut`
+- [ ] `deletePlayer`, `fetchPlayers`
+- [x] Local storage synchronization
+- [x] Error state management
+- [ ] Support for player switching
+
+### 🆕 Storage Sync & Error Handling
+
+- [x] Implement `useLocalStorage` hook
+- [x] Add localStorage sync on app initialization
+- [x] Improve error handling for duplicate usernames
+- [x] Add error state cleanup
+- [ ] Add retry mechanism for failed storage operations
+- [ ] Add storage quota management
+
+---
+
+## 🧪 Behavior Flow (UI Logic)
+
+### On App Start:
+
+1. [x] Check if the database exists:
+   - [x] If **no DB** or **DB exists but has no players** → Show **"Create Account"** button
+2. [x] If players exist but **no one is logged in** → Show **"Login"** button
+   - [ ] Clicking opens a modal with a list of players to choose from
+
+### When a Player Logs In:
+
+- [x] Replace home screen button with **"Start Your Adventure"**
+- [ ] Show a **profile component** in the top-right corner:
+  - [ ] Displays player icon and username
+  - [ ] Clicking reveals a dropdown with:
+    - [ ] Log Out
+    - [ ] Change Player
+    - [ ] Delete Player
+
+---
+
+## 💡 Why This Matters
+
+- [x] Encourages kids to take ownership of their progress
+- [x] Enables personalized game data (scores, attempts, progress)
+- [ ] Prepares the app for future leaderboard and PDF report features
+
+## 🆕 Future Improvements
+
+- [ ] Add profile pictures support
+- [ ] Implement account recovery mechanism
+- [ ] Add parental controls
+- [ ] Implement data export/backup feature
+- [ ] Add player statistics dashboard
+
+## For Later but Do Not Forget
+
+- Game & GameSession Services are implemented but NOT used yet!

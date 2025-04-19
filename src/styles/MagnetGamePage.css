@@ -1,0 +1,319 @@
+/* MagnetGamePage.css - Styling for the magnet game interface */
+
+.game-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 85vh;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background-color: #f5f7ff;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+}
+
+.game-header {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.game-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(45deg, #ff3b30, #0a84ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.game-subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.game-area {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+@media (max-width: 1024px) {
+  .game-area {
+    flex-direction: column;
+  }
+}
+
+.game-controls {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.control-section {
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  color: #333;
+  border-bottom: 2px solid #eaeaea;
+  padding-bottom: 0.5rem;
+}
+
+.game-btn {
+  display: inline-block;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.game-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.primary-btn {
+  background: linear-gradient(45deg, #2b5876, #4e4376);
+  color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #1a3c53, #3d3660);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.secondary-btn {
+  background: white;
+  color: #333;
+  border: 2px solid #ddd;
+}
+
+.secondary-btn:hover:not(:disabled) {
+  background: #f8f8f8;
+  border-color: #ccc;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.danger-btn {
+  background: linear-gradient(45deg, #ff3b30, #ff9500);
+  color: white;
+}
+
+.danger-btn:hover:not(:disabled) {
+  background: linear-gradient(45deg, #e02e24, #e08600);
+}
+
+.button-group {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.button-group button {
+  flex: 1;
+}
+
+.game-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: #f5f7ff;
+  color: #1a3c53;
+  border-radius: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+}
+
+.stat-value {
+  font-weight: 600;
+  color: #2b5876;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.8rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.status-idle {
+  background-color: #e8ecff;
+  color: #4e4376;
+}
+
+.status-playing {
+  background-color: #dcf7e3;
+  color: #28a745;
+}
+
+.status-won {
+  background-color: #ffd700;
+  color: #333;
+}
+
+.status-lost {
+  background-color: #ffe8e8;
+  color: #dc3545;
+}
+
+.magnet-controls {
+  background: linear-gradient(to right, #e8ecff, #f0f3ff);
+  padding: 1rem;
+  border-radius: 8px;
+  margin: 1rem 0;
+  border-left: 4px solid;
+  border-image: linear-gradient(to bottom, #ff3b30, #0a84ff) 1;
+}
+
+.magnet-info {
+  font-size: 0.9rem;
+  margin-bottom: 0.8rem;
+  color: #444;
+  font-weight: 500;
+}
+
+.magnet-id {
+  font-weight: 700;
+  color: #2b5876;
+}
+
+.magnet-position {
+  font-family: monospace;
+  color: #555;
+}
+
+.polarity-badge {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  margin-left: 0.5rem;
+}
+
+.attract-badge {
+  background-color: #ffe8e8;
+  color: #ff3b30;
+}
+
+.repel-badge {
+  background-color: #e8f4ff;
+  color: #0a84ff;
+}
+
+.instructions {
+  font-size: 0.9rem;
+  color: #666;
+  font-style: italic;
+  margin: 1rem 0;
+  padding: 0.8rem;
+  background-color: #fff;
+  border-radius: 8px;
+  border-left: 3px solid #ccc;
+}
+
+.game-canvas-wrapper {
+  flex: 1;
+  position: relative;
+  background-color: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+  min-height: 500px;
+}
+
+.magnet-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.magnet-indicator {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: all;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.magnet-indicator:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.magnet-indicator::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.attract-magnet {
+  background: radial-gradient(
+    circle,
+    rgba(255, 59, 48, 0.7) 0%,
+    rgba(255, 59, 48, 0.1) 70%
+  );
+  border: 2px solid rgba(255, 59, 48, 0.8);
+}
+
+.repel-magnet {
+  background: radial-gradient(
+    circle,
+    rgba(10, 132, 255, 0.7) 0%,
+    rgba(10, 132, 255, 0.1) 70%
+  );
+  border: 2px solid rgba(10, 132, 255, 0.8);
+}
+
+.selected-magnet {
+  border: 2px solid #ffd700;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+.navigation-footer {
+  display: flex;
+  justify-content: center;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 2px solid #eaeaea;
+  width: 100%;
+}

@@ -1,54 +1,215 @@
-# React + TypeScript + Vite
+# Magnetic Educational Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+An interactive physics-based educational game that teaches magnetism concepts through puzzle-solving and experimentation.
 
-Currently, two official plugins are available:
+## Table of Contents
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- [Project Overview](#project-overview)
+- [Key Features](#key-features)
+- [Technical Stack](#technical-stack)
+- [Architecture](#architecture)
+- [Development Setup](#development-setup)
+- [Game Architecture](#game-architecture)
+- [Contributing](#contributing)
+- [License](#license)
 
-## Expanding the ESLint configuration
+## Project Overview
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+This project is a physics-based puzzle game where players manipulate magnetic fields to guide a ball to a target. It features two distinct game modes (regular magnets and electromagnets) and a sandbox environment for free experimentation with magnetic forces.
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### Key Features
+
+- **Two Game Modes:**
+  - Regular Magnets: Place attracting/repelling magnets strategically
+  - Electromagnets: Advanced mode with controllable magnetic field strength
+- **Level-based Progression System**
+- **Interactive Sandbox Mode**
+- **Real-time Physics Simulation**
+- **Visual Magnetic Field Representation**
+
+## Technical Stack
+
+- **Frontend Framework:** React + TypeScript + Vite
+- **State Management:** Redux (Redux Toolkit)
+- **Physics Engine:** Matter.js
+- **Rendering:** p5.js
+- **Database:** SQLite with Drizzle ORM
+- **Testing:** Jest
+
+## Architecture
+
+### Design Patterns
+
+1. **Redux Pattern (Flux Architecture)**
+
+   - Feature-based slices organization
+   - Centralized store configuration
+
+2. **Feature-First Architecture**
+
+   - Organized by features rather than technical types
+   - Modular component structure
+
+3. **Custom Hook Pattern**
+
+   - `useGameEngineMagnet` - Game engine logic
+   - `useSandboxEngine` - Sandbox environment
+   - `useDB` - Database interactions
+
+4. **Model-View Pattern**
+
+   - Clear separation between models, views, and state management
+   - Structured component hierarchy
+
+5. **Inheritance & Composition**
+   - Base `Identifiable` class
+   - `Magnet` and `ElectroMagnet` class hierarchy
+   - React component composition
+
+#### Local Storage Sync Pattern
+
+Utilizes a two-tier storage approach:
+
+- SQLite database (via OPFS) for persistent, relational data
+- LocalStorage for quick access and cross-tab synchronization
+- Automatic sync on app initialization
+
+#### Service Layer Pattern
+
+Implements a robust service layer pattern for data management:
+
+- Database services for CRUD operations
+- Error handling and constraint validation
+- Transaction management
+
+#### Redux + Custom Hooks Pattern
+
+Combines Redux state management with React hooks:
+
+- Global state via Redux Toolkit
+- Custom hooks for business logic
+- Local state for UI components
+
+### Project Structure
+
+```
+src/
+├── config/           # Game configuration and level definitions
+├── db/              # Database layer
+│   ├── services/    # Database services
+│   └── schema.ts    # Database schema definitions
+├── features/        # Core game features
+│   ├── games/       # Game modes implementations
+│   ├── levels/      # Level management
+│   ├── player/      # Player state management
+│   └── sandbox/     # Sandbox mode implementation
+├── hooks/           # Custom React hooks
+├── models/          # Game object models
+├── pages/          # Game pages/routes
+└── store/          # Redux store configuration
+
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Authentication Flow
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+1. App Initialization:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
+   - Checks for existing database
+   - Syncs players between LocalStorage and SQLite
+   - Handles storage errors and constraints
+
+2. Player Management:
+
+   - Username-based authentication (no passwords)
+   - Unique username constraints
+   - Cross-tab state synchronization
+
+3. Error Handling:
+   - Graceful handling of duplicate usernames
+   - Storage sync error recovery
+   - Clear error state management
+
+## Development Setup
+
+### Prerequisites
+
+- Node.js (v16 or higher)
+- npm or yarn
+- SQLite
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone [repository-url]
+cd edu-game-magnetism
 ```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Set up the database:
+
+```bash
+npm run db:migrate
+```
+
+### Running the Application
+
+1. Start the development server:
+
+```bash
+npm run dev
+```
+
+2. Open your browser and navigate to `http://localhost:5173`
+
+### Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run lint` - Run ESLint
+- `npm run test` - Run tests
+- `npm run db:migrate` - Run database migrations
+
+## Game Architecture
+
+### Physics Implementation
+
+The game uses Matter.js for physics simulation with custom implementations for:
+
+- Magnetic force calculations
+- Distance-based force falloff
+- Collision detection
+- Wall interactions
+
+### Game Mechanics
+
+1. **Regular Magnets Mode**
+
+   - Place attracting (red) or repelling (blue) magnets
+   - Strategic positioning to guide the ball
+   - Limited number of magnets per level
+
+2. **Electromagnets Mode**
+
+   - Adjustable magnetic field strength
+   - More complex puzzle solutions
+   - Advanced physics interactions
+
+3. **Sandbox Mode**
+   - Free experimentation with magnetic forces
+   - No restrictions on magnet placement
+   - Educational tool for understanding magnetic fields
+
+## Contributing
+
+We welcome contributions! Please read our contributing guidelines and code of conduct before submitting pull requests.
+
+## License
+
+[Add your license here]
