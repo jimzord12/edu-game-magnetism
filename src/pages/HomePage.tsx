@@ -198,6 +198,7 @@ const HomePage: React.FC = () => {
             bottom: '10px',
             left: '10px',
             display: 'flex',
+            flexDirection: 'column',
             gap: '10px',
           }}
         >
