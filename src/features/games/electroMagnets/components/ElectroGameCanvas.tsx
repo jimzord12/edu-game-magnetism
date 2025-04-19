@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import { useAppSelector } from '../../../../hooks/reduxHooks';
 import { GameType, ILevel } from '@/features/levels/types';
-import { useGameEngine } from '../../magnets/hooks/useGameEngineMagnet';
+import { useGameEngineElectromagnet } from '../../electroMagnets/hooks/useGameEngineElectromagnet';
 
 interface GameCanvasProps<T extends GameType> {
   levelData: ILevel<T> | null;
@@ -16,7 +16,7 @@ const ElectroGameCanvas: React.FC<GameCanvasProps<'electromagnet'>> = ({
   );
 
   // Use the custom hook to manage the p5/Matter instance
-  const { resetBall } = useGameEngine<'electromagnet'>({
+  const { resetBall } = useGameEngineElectromagnet({
     levelData,
     magnets: placedMagnets,
     gameStatus,

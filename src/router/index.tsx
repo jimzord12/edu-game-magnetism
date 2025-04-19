@@ -1,11 +1,13 @@
 import { HashRouter, Routes, Route } from 'react-router-dom';
 import HomePage from '../pages/HomePage';
 import LevelSelectPage from '../pages/LevelSelectPage';
-import GamePage from '../pages/games/MagnetGamePage';
+import MagnetsGamePage from '../pages/games/MagnetGamePage';
+import ElectroMagnetsGamePage from '../pages/games/ElectroMagnetGamePage';
 import SandboxPage from '../pages/SandboxPage';
 import GameQuizPage from '../pages/GameQuizPage';
 import { routePath } from './routePath';
 import { PrivateRoute } from './PrivateRoute';
+
 
 export const AppRouter: React.FC = () => {
   return (
@@ -21,10 +23,18 @@ export const AppRouter: React.FC = () => {
           }
         />
         <Route
-          path={routePath.game}
+          path={routePath.magnetsGame}
           element={
             <PrivateRoute>
-              <GamePage />
+              <MagnetsGamePage />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path={routePath.electromagnetsGame}
+          element={
+            <PrivateRoute>
+              <ElectroMagnetsGamePage />
             </PrivateRoute>
           }
         />

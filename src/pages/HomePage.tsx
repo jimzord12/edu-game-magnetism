@@ -8,7 +8,7 @@ import { exportDatabase, deleteDatabase } from '../db/helpers';
 const HomePage: React.FC = () => {
   const { currentPlayer, isLoading, error, login, createAccount, logout } =
     useAuth();
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState('test');
   const [isCreating, setIsCreating] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);

@@ -1,4 +1,4 @@
-import { AllLevels } from '@/features/levels/types';
+import type { AllLevels } from '@/features/levels/types';
 import { useAppSelector } from '@/hooks/reduxHooks';
 import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
@@ -35,7 +35,7 @@ const LevelSelectPage: React.FC = () => {
             {levels.magnet.map((level) => (
               <li key={level.id} className="level-item">
                 <Link
-                  to={`/game/${level.id}`}
+                  to={`/magnetsGame/${level.id}`}
                   className="level-button magnet-level-button"
                 >
                   {level.name}
@@ -57,7 +57,7 @@ const LevelSelectPage: React.FC = () => {
             {levels.electromagnet.map((level) => (
               <li key={level.id} className="level-item">
                 <Link
-                  to={`/game/${level.id}`}
+                  to={`/electromagnetsGame/${level.id}`}
                   className="level-button electromagnet-level-button"
                 >
                   {level.name}

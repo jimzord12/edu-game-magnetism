@@ -88,7 +88,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
-    availableMagnets: 2,
+    availableMagnets: 4,
     progress: {
       completed: false,
       bestTime: undefined,

@@ -2,12 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { IGameState } from '../../types';
 import { Magnet } from '@/models/Magnet';
 
-const initialState: IGameState<'magnet'> = {
+const initialState: IGameState<'magnet'> & { selectedMagnet: Magnet | null } = {
   levelId: null,
   status: 'idle',
   ballPosition: { x: 0, y: 0 }, // Initial placeholder
   placedMagnets: [],
   elapsedTime: 0,
+  selectedMagnet: null,
 };
 
 const magnetGameSlice = createSlice({
@@ -79,7 +80,7 @@ const magnetGameSlice = createSlice({
         // Replace the magnet in the array
         updatedMagnets[magnetIndex] = updatedMagnet;
 
-      // Update the state with the new array
+        // Update the state with the new array
         state.placedMagnets = updatedMagnets;
 
         console.log(
@@ -107,6 +108,13 @@ const magnetGameSlice = createSlice({
       state.status = 'lost';
     },
     resetGame: () => initialState, // Reset to initial state
+
+    setSelectedMagnet: (state, action: PayloadAction<Magnet | null>) => {
+      state.selectedMagnet = action.payload;
+    },
+    clearSelectedMagnet: (state) => {
+      state.selectedMagnet = null;
+    },
   },
 });
 
@@ -122,6 +130,7 @@ export const {
   levelWon,
   levelLost,
   resetGame,
+  setSelectedMagnet,
 } = magnetGameSlice.actions;
 
 export default magnetGameSlice.reducer;

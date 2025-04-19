@@ -62,4 +62,12 @@ export class ElectroMagnet extends Magnet {
     }
     this.strength = strength;
   }
+
+  /**
+   * Returns a multiplier for force calculation: 0 if inactive, 1 if active.
+   * Use this in physics calculations to instantly enable/disable the magnet's effect.
+   */
+  public getForceMultiplier(): number {
+    return this.isActive ? 1 : 0;
+  }
 }

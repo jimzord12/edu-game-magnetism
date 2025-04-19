@@ -10,6 +10,7 @@ import {
   pauseGame,
   placeMagnet,
   resetGame,
+  setSelectedMagnet,
 } from '../../features/games/magnets/slices/magnetGameSlice';
 
 import { ILevel, ILevelMagnet } from '@/features/levels/types';
@@ -41,11 +42,12 @@ const GamePage: React.FC = () => {
     levelId: currentLevelId,
     placedMagnets,
     elapsedTime,
+    selectedMagnet,
   } = useAppSelector((state) => state.magnetGame);
   const [currentLevelData, setCurrentLevelData] = useState<ILevelMagnet | null>(
     null
   );
-  const [selectedMagnet, setSelectedMagnet] = useState<Magnet | null>(null);
+  // const [selectedMagnet, setSelectedMagnet] = useState<Magnet | null>(null);
 
   useEffect(() => {
     if (levelId) {
@@ -99,7 +101,7 @@ const GamePage: React.FC = () => {
   const handleReset = () => {
     if (levelId) {
       dispatch(loadLevel(levelId));
-      setSelectedMagnet(null);
+      dispatch(setSelectedMagnet(null));
     }
   };
 
@@ -136,7 +138,7 @@ const GamePage: React.FC = () => {
         isAttracting: true,
       });
       dispatch(placeMagnet(newMagnet));
-      setSelectedMagnet(newMagnet);
+      dispatch(setSelectedMagnet(newMagnet));
     } else {
       alert(
         `You can only place ${
@@ -152,30 +154,8 @@ const GamePage: React.FC = () => {
     if (gameStatus !== 'idle') return;
 
     const magnet = findMagnetById(Magnet.id, placedMagnets);
-    setSelectedMagnet(magnet || null);
-  };
-
-  // const handleTogglePolarity = () => {
-  //   if (selectedMagnet && gameStatus === 'idle') {
-  //     dispatch(toggleMagnetPolarity(selectedMagnet.id));
-  //     console.log(
-  //       `Toggled polarity for magnet [${
-  //         selectedMagnet.isAttracting ? 'Attract' : 'Repel'
-  //       }]`,
-  //       selectedMagnet
-  //     );
-  //   }
-  // };
-
-  // const handleRemoveMagnet = () => {
-  //   if (selectedMagnet && gameStatus === 'idle') {
-  //     dispatch(removeMagnet(selectedMagnet.id));
-  //     setSelectedMagnet(null);
-  //   }
-  // };
-
-  const handlePanelSelect = (magnet: Magnet | null) => {
-    setSelectedMagnet(magnet);
+    if (!magnet) return;
+    dispatch(setSelectedMagnet(magnet));
   };
 
   if (!currentLevelData) {
@@ -353,8 +333,8 @@ const GamePage: React.FC = () => {
       <MagnetPanel
         gameStatus={gameStatus}
         magnets={placedMagnets}
-        selectedMagnetId={selectedMagnet?.id ?? null}
-        onSelect={handlePanelSelect}
+        // selectedMagnetId={selectedMagnet?.id ?? null}
+        // onSelect={handlePanelSelect}
       />
       <div className="navigation-footer">
         <button className="game-btn secondary-btn" onClick={handleLevelSelect}>
