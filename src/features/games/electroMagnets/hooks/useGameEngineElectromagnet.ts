@@ -7,11 +7,7 @@ import {
   OBJECT_TYPES,
 } from '../../../../config/gameConfig';
 import { useAppDispatch } from '../../../../hooks/reduxHooks';
-import {
-  levelWon,
-  //   updateBallPosition,
-  updateElapsedTime,
-} from '../slices/electroGameSlice'; // Import actions
+import { levelWon, updateElapsedTime } from '../slices/electroGameSlice'; // Import actions
 import { UseGameEngineProps } from '../../types';
 import { Ball } from '@/models/Ball';
 
@@ -28,6 +24,8 @@ export const useGameEngineElectromagnet = ({
   const targetRef = useRef<InstanceType<typeof Ball> | null>(null);
   const startTimeRef = useRef<number | null>(null);
   const animationFrameId = useRef<number | null>(null);
+  const worldReadyRef = useRef<boolean>(false);
+  const wallBodiesRef = useRef<Matter.Body[]>([]);
 
   const dispatch = useAppDispatch();
 
@@ -51,28 +49,29 @@ export const useGameEngineElectromagnet = ({
     ballRef.current = null;
     targetRef.current = null;
     startTimeRef.current = null;
+    worldReadyRef.current = false;
+    wallBodiesRef.current = [];
   }, []);
 
-  // Initialize p5 sketch
+  // Initialize p5 sketch and Matter.js engine ONLY when levelData or containerRef changes
   useEffect(() => {
-    if (!levelData || !containerRef?.current || p5InstanceRef.current) {
-      // Don't initialize if no level data, container isn't ready, or already initialized
+    if (!levelData || !containerRef?.current) {
       return;
     }
 
-    // --- Matter.js Setup ---
+    // Clean up any existing instances before creating new ones
+    cleanup();
+
     const engine = Matter.Engine.create();
     engine.gravity = { ...GAME_CONFIG.WORLD.GRAVITY };
     engineRef.current = engine;
 
-    // --- p5.js Sketch Definition ---
+    // Create p5 sketch
     const sketch = (p: p5) => {
       p.setup = () => {
         p.createCanvas(levelData.canvasSize.width, levelData.canvasSize.height);
         p.frameRate(60);
         console.log('p5 Setup complete for level:', levelData.id);
-
-        // 🌎 --- Matter.js Bodies Setup --- 🌍
 
         // Create the Ball using the Ball class
         const ball = new Ball({
@@ -103,10 +102,17 @@ export const useGameEngineElectromagnet = ({
 
         targetRef.current = target;
 
-        // Load Walls from level data
-        const wallBodies = levelData.walls.map((wall) => wall.body);
+        // Load Walls from level data - store in ref to avoid recreation issues
+        wallBodiesRef.current = levelData.walls.map((wall) => wall.body);
 
-        Matter.World.add(engine.world, [...wallBodies, ball.body, target.body]);
+        // Add elements to the world one by one to avoid array modification issues
+        wallBodiesRef.current.forEach((wall) => {
+          Matter.World.add(engine.world, wall);
+        });
+
+        // Add ball and target separately
+        Matter.World.add(engine.world, ball.body);
+        Matter.World.add(engine.world, target.body);
 
         // 💥 --- Collision Events --- 💥
         Matter.Events.on(engine, 'collisionStart', (event) => {
@@ -155,16 +161,11 @@ export const useGameEngineElectromagnet = ({
             const normalizedDirection = Matter.Vector.normalise(direction);
 
             // Force calculation (Inverse Square-like, but tunable)
-            // Simple 1/distance or 1/distance^2 can be too strong/weak
-            // Let's try linear falloff for simplicity first
             const strengthFactor =
               (GAME_CONFIG.MAGNETS.MAX_DISTANCE - distance) /
               GAME_CONFIG.MAGNETS.MAX_DISTANCE;
             let forceMagnitude =
               GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH * strengthFactor;
-
-            // Inverse square (more realistic but harder to tune)
-            // forceMagnitude = GAME_CONFIG.MAGNET_DEFAULT_STRENGTH / distanceSq;
 
             if (!magnet.isAttracting) {
               forceMagnitude *= -1; // Repel
@@ -180,6 +181,8 @@ export const useGameEngineElectromagnet = ({
           // Apply the total calculated force to the ball
           Matter.Body.applyForce(ballRef.current.body, ballPos, totalForce);
         });
+
+        worldReadyRef.current = true;
       };
 
       p.draw = () => {
@@ -193,14 +196,9 @@ export const useGameEngineElectromagnet = ({
           // Manually step the engine
           Matter.Engine.update(engine, GAME_CONFIG.WORLD.PHYSICS_TIMESTEP);
 
-          // Update elapsed time in Redux (consider throttling this)
+          // Update elapsed time in Redux
           const elapsed = (p.millis() - startTimeRef.current) / 1000;
           dispatch(updateElapsedTime(elapsed));
-
-          // Optionally update ball position in Redux for external UI
-          // if (ballRef.current) {
-          //    dispatch(updateBallPosition(ballRef.current.position));
-          // }
         } else {
           // Reset start time if game is not playing
           startTimeRef.current = null;
@@ -219,7 +217,6 @@ export const useGameEngineElectromagnet = ({
           p.rotate(wall.angle);
           p.rectMode(p.CENTER);
           // vertices aren't simple width/height for rotated rects
-          // For simplicity, draw using vertices if available, otherwise approx.
           if (wall.vertices) {
             p.beginShape();
             wall.vertices.forEach((vert) =>
@@ -227,9 +224,6 @@ export const useGameEngineElectromagnet = ({
             ); // Adjust for translation
             p.endShape(p.CLOSE);
           } else {
-            // Fallback if vertices are not directly available (should be)
-            // This might not render rotation correctly
-            // p.rect(0, 0, wallData., wallData.height);
             console.warn('Wall vertices not found for rendering');
           }
           p.pop();
@@ -337,39 +331,46 @@ export const useGameEngineElectromagnet = ({
           );
         }
       };
-
-      // --- Mouse Interaction (Example: Placing Magnets - better handled by React UI) ---
-      // p.mousePressed = () => {
-      //     if (p.mouseX > 0 && p.mouseX < p.width && p.mouseY > 0 && p.mouseY < p.height) {
-      //         // Example: Dispatch action to place a magnet via Redux state
-      //         // This logic should ideally be in the React component controlling the canvas
-      //         console.log("Mouse clicked at:", p.mouseX, p.mouseY);
-      //     }
-      // };
     };
 
-    // 🚀 --- Create p5 instance --- 🚀
-    // Ensure container is empty before creating a new sketch
-    if (containerRef?.current) {
-      containerRef.current.innerHTML = ''; // Clear previous canvas if any
+    // Create p5 instance only if container ref is available
+    if (containerRef.current) {
+      containerRef.current.innerHTML = '';
       p5InstanceRef.current = new p5(sketch, containerRef.current);
     } else {
       console.error('Container ref is not available for p5 sketch.');
     }
 
-    // --- Cleanup on unmount or dependency change ---
     return () => {
       cleanup();
     };
-  }, [levelData, containerRef, dispatch, cleanup, magnets, gameStatus]); // Re-run if levelData or container changes
+  }, [levelData, containerRef, dispatch, cleanup, magnets, gameStatus]); // Remove magnets and gameStatus dependencies
 
-  // Effect to update game state based on external Redux state changes
+  // Separate effect to update magnets in Matter.js world without re-initializing
   useEffect(() => {
-    // Example: If game status changes externally (e.g., Pause button),
-    // you might need to stop/start the Matter Runner or adjust logic here.
+    // Only update if engine and world are ready and we have magnets
+    if (!engineRef.current || !worldReadyRef.current || !magnets) return;
+
+    const world = engineRef.current.world;
+
+    // Remove all existing magnet bodies from the world
+    const allBodies = Matter.Composite.allBodies(world);
+    allBodies.forEach((body) => {
+      if (body.label === OBJECT_TYPES.MAGNET) {
+        Matter.World.remove(world, body, true);
+      }
+    });
+
+    // Add current magnets' bodies to world individually
+    magnets.forEach((magnet) => {
+      Matter.World.add(world, magnet.body);
+    });
+  }, [magnets]);
+
+  // Effect to update game state based on gameStatus changes
+  useEffect(() => {
     console.log('Game status changed to:', gameStatus);
     if (gameStatus !== 'playing' && startTimeRef.current !== null) {
-      // Ensure timer stops if game paused/won/lost
       startTimeRef.current = null;
     }
   }, [gameStatus]);
@@ -379,9 +380,8 @@ export const useGameEngineElectromagnet = ({
     return cleanup;
   }, [cleanup]);
 
-  // Return any methods or refs needed by the parent component (optional)
+  // Return any methods or refs needed by the parent component
   return {
-    // Example: function to reset the ball position manually
     resetBall: () => {
       if (ballRef.current && levelData) {
         Matter.Body.setPosition(ballRef.current.body, {

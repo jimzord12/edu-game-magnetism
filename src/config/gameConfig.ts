@@ -13,7 +13,7 @@ export const GAME_CONFIG = {
     PHYSICS_TIMESTEP: 1000 / 60, // ~60 FPS
   },
   MAGNETS: {
-    DEFAULT_STRENGTH: 0.005, // Adjust based on world scale
+    DEFAULT_STRENGTH: 0.0001, // Adjust based on world scale
     MAX_DISTANCE: 300, // Max distance magnet affects ball (pixels)
     MIN_DISTANCE: 20, // Min distance to avoid extreme forces
   },

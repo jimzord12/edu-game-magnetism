@@ -13,15 +13,14 @@ import {
   updateElapsedTime,
 } from '../slices/magnetGameSlice'; // Import actions
 import { UseGameEngineProps } from '../../types';
-import { GameType } from '@/features/levels/types';
 import { Ball } from '@/models/Ball';
 
-export const useGameEngineMagnet = <T extends GameType>({
+export const useGameEngineMagnet = ({
   levelData,
   magnets,
   gameStatus,
   containerRef,
-}: UseGameEngineProps<T>) => {
+}: UseGameEngineProps<'magnet'>) => {
   const p5InstanceRef = useRef<p5 | null>(null);
   const engineRef = useRef<Matter.Engine | null>(null);
   const runnerRef = useRef<Matter.Runner | null>(null);

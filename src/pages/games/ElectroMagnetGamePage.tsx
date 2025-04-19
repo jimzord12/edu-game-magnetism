@@ -5,6 +5,8 @@ import {
   loadLevel,
   startGame,
   pauseGame,
+  resumeGame,
+  toggleGamePause,
   placeMagnet,
   setSelectedElectromagnet,
 } from '../../features/games/electroMagnets/slices/electroGameSlice';
@@ -53,17 +55,11 @@ const GamePage: React.FC = () => {
     }
   }, [levelId, dispatch, navigate, currentLevelId]);
 
-  useEffect(() => {
-    if (gameStatus === 'won' && currentLevelId) {
-      console.log(
-        `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
-      );
-    }
-  }, [gameStatus, currentLevelId, elapsedTime, dispatch]);
-
   const handleStartPause = () => {
     if (gameStatus === 'playing') {
       dispatch(pauseGame());
+    } else if (gameStatus === 'paused') {
+      dispatch(resumeGame());
     } else if (gameStatus === 'idle' && currentLevelData) {
       if (placedMagnets.length > 0) {
         dispatch(startGame());
@@ -105,7 +101,9 @@ const GamePage: React.FC = () => {
   };
 
   const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (gameStatus !== 'idle' || !currentLevelData) return;
+    // Allow placing magnets when game is either idle or paused
+    if ((gameStatus !== 'idle' && gameStatus !== 'paused') || !currentLevelData)
+      return;
 
     const canvasRect = event.currentTarget.getBoundingClientRect();
     const x = event.clientX - canvasRect.left;
@@ -164,7 +162,9 @@ const GamePage: React.FC = () => {
             <div className="button-group">
               <button
                 className={`game-btn primary-btn ${
-                  placedMagnets.length <= 0 && 'opacity-50 cursor-not-allowed'
+                  placedMagnets.length <= 0 &&
+                  gameStatus === 'idle' &&
+                  'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={handleStartPause}
                 disabled={
@@ -174,6 +174,8 @@ const GamePage: React.FC = () => {
               >
                 {gameStatus === 'playing'
                   ? '⏸️ Pause'
+                  : gameStatus === 'paused'
+                  ? '▶️ Resume'
                   : gameStatus === 'won' || gameStatus === 'lost'
                   ? '🔄 Restart'
                   : '▶️ Start'}
@@ -227,6 +229,11 @@ const GamePage: React.FC = () => {
                 Game is running. You can still toggle ON/OFF and polarity.
               </p>
             )}
+            {gameStatus === 'paused' && (
+              <p className="instructions" style={{ color: '#FFA500' }}>
+                Game paused. Press Resume to continue.
+              </p>
+            )}
             {gameStatus === 'won' && (
               <p className="instructions" style={{ color: '#28a745' }}>
                 Congratulations! You've completed this level! 🎉
@@ -244,7 +251,7 @@ const GamePage: React.FC = () => {
           onClick={handleCanvasClick}
           style={{
             cursor:
-              gameStatus === 'idle' &&
+              (gameStatus === 'idle' || gameStatus === 'paused') &&
               placedMagnets.length < currentLevelData.availableMagnets
                 ? 'crosshair'
                 : 'default',

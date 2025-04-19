@@ -1,50 +1,68 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IGameState } from '../../types';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
 
-const initialState: IGameState<'electromagnet'> & {
+interface ElectroGameState {
+  levelId: number | null;
+  placedMagnets: ElectroMagnet[];
+  status: 'idle' | 'playing' | 'paused' | 'won' | 'lost';
+  elapsedTime: number;
   selectedElectromagnet: ElectroMagnet | null;
-} = {
+}
+
+const initialState: ElectroGameState = {
   levelId: null,
-  status: 'idle',
-  ballPosition: { x: 0, y: 0 }, // Initial placeholder
   placedMagnets: [],
+  status: 'idle',
   elapsedTime: 0,
   selectedElectromagnet: null,
 };
 
 const electroGameSlice = createSlice({
-  name: 'game',
+  name: 'electroGame',
   initialState,
   reducers: {
     loadLevel: (state, action: PayloadAction<number>) => {
+      // Reset everything for a new level
       state.levelId = action.payload;
-      state.status = 'idle'; // Or 'playing' if auto-starts
-      state.placedMagnets = []; // Reset magnets for the new level
+      state.placedMagnets = [];
+      state.status = 'idle';
       state.elapsedTime = 0;
-      // Ball position will be set by the game engine based on level data
+      state.selectedElectromagnet = null;
     },
     startGame: (state) => {
-      if (state.levelId) {
+      // Start the game (if in idle or paused state)
+      if (state.status === 'idle' || state.status === 'paused') {
         state.status = 'playing';
-        state.elapsedTime = 0;
       }
     },
     pauseGame: (state) => {
+      // Pause the game (if currently playing)
       if (state.status === 'playing') {
-        state.status = 'idle'; // Treat idle as paused for now
+        state.status = 'paused';
       }
     },
-    placeMagnet: (state, action: PayloadAction<ElectroMagnet>) => {
-      // Basic placement, replace if ID exists, add if new
-      const existingIndex = state.placedMagnets.findIndex(
-        (m) => m.id === action.payload.id
-      );
-      if (existingIndex > -1) {
-        state.placedMagnets[existingIndex] = action.payload;
-      } else {
-        state.placedMagnets.push(action.payload);
+    resumeGame: (state) => {
+      // Resume the game (if currently paused)
+      if (state.status === 'paused') {
+        state.status = 'playing';
       }
+    },
+    toggleGamePause: (state) => {
+      // Toggle between playing and paused
+      if (state.status === 'playing') {
+        state.status = 'paused';
+      } else if (state.status === 'paused') {
+        state.status = 'playing';
+      }
+    },
+    levelWon: (state) => {
+      state.status = 'won';
+    },
+    levelLost: (state) => {
+      state.status = 'lost';
+    },
+    placeMagnet: (state, action: PayloadAction<ElectroMagnet>) => {
+      state.placedMagnets.push(action.payload);
     },
     removeMagnet: (state, action: PayloadAction<number>) => {
       state.placedMagnets = state.placedMagnets.filter(
@@ -52,6 +70,30 @@ const electroGameSlice = createSlice({
       );
       if (state.selectedElectromagnet?.id === action.payload) {
         state.selectedElectromagnet = null;
+      }
+    },
+    toggleMagnetActive: (state, action: PayloadAction<number>) => {
+      const idx = state.placedMagnets.findIndex((m) => m.id === action.payload);
+      if (idx !== -1) {
+        const old = state.placedMagnets[idx];
+        // Create a new instance with toggled isActive
+        const updated = new ElectroMagnet({
+          ...old,
+          x: old.body.position.x,
+          y: old.body.position.y,
+          isActive: !old.isActive,
+        });
+        updated.id = old.id;
+        state.placedMagnets = [
+          ...state.placedMagnets.slice(0, idx),
+          updated,
+          ...state.placedMagnets.slice(idx + 1),
+        ];
+
+        // Update selected magnet if needed
+        if (state.selectedElectromagnet?.id === action.payload) {
+          state.selectedElectromagnet = updated;
+        }
       }
     },
     toggleMagnetPolarity: (state, action: PayloadAction<number>) => {
@@ -71,58 +113,48 @@ const electroGameSlice = createSlice({
           updated,
           ...state.placedMagnets.slice(idx + 1),
         ];
+
+        // Update selected magnet if needed
+        if (state.selectedElectromagnet?.id === action.payload) {
+          state.selectedElectromagnet = updated;
+        }
       }
     },
-    toggleMagnetActive: (state, action: PayloadAction<number>) => {
-      const idx = state.placedMagnets.findIndex((m) => m.id === action.payload);
+    updateMagnetStrength: (
+      state,
+      action: PayloadAction<{ id: number; strength: number }>
+    ) => {
+      const { id, strength } = action.payload;
+      const idx = state.placedMagnets.findIndex((m) => m.id === id);
       if (idx !== -1) {
         const old = state.placedMagnets[idx];
-        // Create a new instance with toggled isActive
         const updated = new ElectroMagnet({
           ...old,
           x: old.body.position.x,
           y: old.body.position.y,
-          isActive: !old.isActive,
         });
         updated.id = old.id;
-        // state.placedMagnets = [
-        //   ...state.placedMagnets.slice(0, idx),
-        //   updated,
-        //   ...state.placedMagnets.slice(idx + 1),
-        // ];
-        const newState = [...state.placedMagnets];
-        newState[idx] = updated;
-        state.placedMagnets = newState;
+        updated.updateStrength(strength);
+        state.placedMagnets = [
+          ...state.placedMagnets.slice(0, idx),
+          updated,
+          ...state.placedMagnets.slice(idx + 1),
+        ];
+
+        // Update selected magnet if needed
+        if (state.selectedElectromagnet?.id === id) {
+          state.selectedElectromagnet = updated;
+        }
       }
     },
-    updateBallPosition: (
-      state,
-      action: PayloadAction<{ x: number; y: number }>
-    ) => {
-      // Use sparingly - primarily for UI display if needed outside canvas
-      state.ballPosition = action.payload;
-    },
-    updateElapsedTime: (state, action: PayloadAction<number>) => {
-      state.elapsedTime = action.payload;
-    },
-    levelWon: (state) => {
-      state.status = 'won';
-    },
-    levelLost: (state) => {
-      // Need criteria for losing (e.g., time limit, ball out of bounds?)
-      state.status = 'lost';
-    },
-    resetGame: () => initialState, // Reset to initial state
-
     setSelectedElectromagnet: (
       state,
       action: PayloadAction<ElectroMagnet | null>
     ) => {
       state.selectedElectromagnet = action.payload;
     },
-
-    clearSelectedElectromagnet: (state) => {
-      state.selectedElectromagnet = null;
+    updateElapsedTime: (state, action: PayloadAction<number>) => {
+      state.elapsedTime = action.payload;
     },
   },
 });
@@ -131,16 +163,17 @@ export const {
   loadLevel,
   startGame,
   pauseGame,
-  placeMagnet,
-  removeMagnet,
-  toggleMagnetPolarity,
-  toggleMagnetActive,
-  updateBallPosition,
-  updateElapsedTime,
+  resumeGame,
+  toggleGamePause,
   levelWon,
   levelLost,
-  resetGame,
+  placeMagnet,
+  removeMagnet,
+  toggleMagnetActive,
+  toggleMagnetPolarity,
+  updateMagnetStrength,
   setSelectedElectromagnet,
+  updateElapsedTime,
 } = electroGameSlice.actions;
 
 export default electroGameSlice.reducer;
