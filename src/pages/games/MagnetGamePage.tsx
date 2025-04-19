@@ -2,14 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks/reduxHooks';
 import GameCanvas from '../../features/games/magnets/components/MagnetGameCanvas';
-import { motion, AnimatePresence } from 'motion/react';
+import MagnetPanel from '../../features/games/magnets/components/MagnetPanel';
+import { motion } from 'motion/react';
 import {
   loadLevel,
   startGame,
   pauseGame,
   placeMagnet,
-  toggleMagnetPolarity,
-  removeMagnet,
   resetGame,
 } from '../../features/games/magnets/slices/magnetGameSlice';
 
@@ -156,23 +155,27 @@ const GamePage: React.FC = () => {
     setSelectedMagnet(magnet || null);
   };
 
-  const handleTogglePolarity = () => {
-    if (selectedMagnet && gameStatus === 'idle') {
-      dispatch(toggleMagnetPolarity(selectedMagnet.id));
-      console.log(
-        `Toggled polarity for magnet [${
-          selectedMagnet.isAttracting ? 'Attract' : 'Repel'
-        }]`,
-        selectedMagnet
-      );
-    }
-  };
+  // const handleTogglePolarity = () => {
+  //   if (selectedMagnet && gameStatus === 'idle') {
+  //     dispatch(toggleMagnetPolarity(selectedMagnet.id));
+  //     console.log(
+  //       `Toggled polarity for magnet [${
+  //         selectedMagnet.isAttracting ? 'Attract' : 'Repel'
+  //       }]`,
+  //       selectedMagnet
+  //     );
+  //   }
+  // };
 
-  const handleRemoveMagnet = () => {
-    if (selectedMagnet && gameStatus === 'idle') {
-      dispatch(removeMagnet(selectedMagnet.id));
-      setSelectedMagnet(null);
-    }
+  // const handleRemoveMagnet = () => {
+  //   if (selectedMagnet && gameStatus === 'idle') {
+  //     dispatch(removeMagnet(selectedMagnet.id));
+  //     setSelectedMagnet(null);
+  //   }
+  // };
+
+  const handlePanelSelect = (magnet: Magnet | null) => {
+    setSelectedMagnet(magnet);
   };
 
   if (!currentLevelData) {
@@ -260,88 +263,45 @@ const GamePage: React.FC = () => {
             </div>
           </div>
 
-          <AnimatePresence mode="wait">
-            {selectedMagnet && gameStatus === 'idle' && (
-              <motion.div
-                className="control-section"
-                key="selected-magnet"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                transition={{ duration: 0.3 }}
-              >
-                <h3 className="section-title">Selected Magnet</h3>
-                <div className="magnet-controls">
-                  <div className="magnet-info">
-                    <span className="magnet-id">
-                      Magnet #{selectedMagnet.id}
-                    </span>
-                    <span className="polarity-badge {selectedMagnet.isAttracting ? 'attract-badge' : 'repel-badge'}">
-                      {selectedMagnet.isAttracting ? 'Attract' : 'Repel'}
-                    </span>
-                  </div>
-                  <div className="magnet-position">
-                    Position: ({selectedMagnet.body.position.x.toFixed(2)},{' '}
-                    {selectedMagnet.body.position.y.toFixed(2)})
-                  </div>
-                  <div className="button-group mt-3">
-                    <button
-                      className="game-btn primary-btn"
-                      onClick={handleTogglePolarity}
-                    >
-                      🔄 Toggle Polarity
-                    </button>
-                    <button
-                      className="game-btn danger-btn"
-                      onClick={handleRemoveMagnet}
-                    >
-                      🗑️ Remove
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
+          {/* <AnimatePresence mode="wait"> */}
+          <motion.div
+            className="control-section"
+            key={gameStatus + (selectedMagnet ? '-selected' : '-none')}
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <h3 className="section-title">Instructions</h3>
+            {!selectedMagnet && gameStatus === 'idle' && (
+              <p className="instructions">
+                Click on the canvas to place a magnet. Red magnets attract, blue
+                magnets repel.
+              </p>
             )}
-          </AnimatePresence>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              className="control-section"
-              key={gameStatus + (selectedMagnet ? '-selected' : '-none')}
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <h3 className="section-title">Instructions</h3>
-              {!selectedMagnet && gameStatus === 'idle' && (
-                <p className="instructions">
-                  Click on the canvas to place a magnet. Red magnets attract,
-                  blue magnets repel.
-                </p>
-              )}
-              {gameStatus === 'idle' && selectedMagnet && (
-                <p className="instructions">
-                  Click canvas to place another magnet, or modify the selected
-                  one.
-                </p>
-              )}
-              {gameStatus === 'playing' && (
-                <p className="instructions">
-                  Game is running. Pause to modify magnets.
-                </p>
-              )}
-              {gameStatus === 'won' && (
-                <p className="instructions" style={{ color: '#28a745' }}>
-                  Congratulations! You've completed this level! 🎉
-                </p>
-              )}
-              {gameStatus === 'lost' && (
-                <p className="instructions" style={{ color: '#dc3545' }}>
-                  Level failed. Try a different magnet arrangement.
-                </p>
-              )}
-            </motion.div>
-          </AnimatePresence>
+            {gameStatus === 'idle' && selectedMagnet && (
+              <p className="instructions">
+                Click canvas to place another magnet, or modify the selected
+                one.
+              </p>
+            )}
+            {gameStatus === 'playing' && (
+              <p className="instructions">
+                Game is running. Pause to modify magnets.
+              </p>
+            )}
+            {gameStatus === 'won' && (
+              <p className="instructions" style={{ color: '#28a745' }}>
+                Congratulations! You've completed this level! 🎉
+              </p>
+            )}
+            {gameStatus === 'lost' && (
+              <p className="instructions" style={{ color: '#dc3545' }}>
+                Level failed. Try a different magnet arrangement.
+              </p>
+            )}
+          </motion.div>
+          {/* </AnimatePresence> */}
         </motion.div>
 
         <div
@@ -390,7 +350,12 @@ const GamePage: React.FC = () => {
           <GameCanvas levelData={currentLevelData} />
         </div>
       </div>
-
+      <MagnetPanel
+        gameStatus={gameStatus}
+        magnets={placedMagnets}
+        selectedMagnetId={selectedMagnet?.id ?? null}
+        onSelect={handlePanelSelect}
+      />
       <div className="navigation-footer">
         <button className="game-btn secondary-btn" onClick={handleLevelSelect}>
           ← Back to Level Selection
