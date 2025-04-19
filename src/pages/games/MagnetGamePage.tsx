@@ -188,7 +188,7 @@ const GamePage: React.FC = () => {
       <header className="game-header">
         <h1 className="game-title">
           <span className="text-red-500">Mag</span>
-          <span className="text-blue-500">net Maze: </span>
+          <span className="text-blue-500">net Games: </span>
           {currentLevelData.name}
         </h1>
         <p className="game-subtitle">
