@@ -62,9 +62,17 @@ This project is a physics-based puzzle game where players manipulate magnetic fi
    - Structured component hierarchy
 
 5. **Inheritance & Composition**
+
    - Base `Identifiable` class
    - `Magnet` and `ElectroMagnet` class hierarchy
    - React component composition
+
+6. **Singleton Pattern (`GameEngine.ts`)**
+   - A dedicated `GameEngine` class (e.g., for Electromagnet mode) implemented as a Singleton ensures a single, persistent instance manages the physics simulation (Matter.js) and rendering (p5.js).
+   - This decouples the core game loop and state from React's component lifecycle, preventing resets during UI updates or state changes (like pausing/resuming).
+   - It holds the Matter.js engine, p5.js instance, game objects (ball, target, walls, magnets), and internal state (like game status and timer).
+   - It provides methods (`initialize`, `update`, `updateMagnets`, `setGameStatus`, `resetBall`, etc.) controlled indirectly by React/Redux via a bridge hook (`useGameEngineBridge`).
+   - Uses an observer pattern (callbacks like `onWin`) to notify the bridge hook of internal events.
 
 #### Local Storage Sync Pattern
 

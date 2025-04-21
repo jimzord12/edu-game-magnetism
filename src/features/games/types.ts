@@ -4,7 +4,7 @@ import { ILevelMagnet, ILevelElectroMagnet, GameType } from '../levels/types';
 import { Ball } from '@/models/Ball';
 import Matter from 'matter-js';
 
-export type GameState = 'idle' | 'playing' | 'won' | 'lost';
+export type GameState = 'idle' | 'playing' | 'won' | 'lost' | 'paused';
 
 // Represents the dynamic state of the game during play
 export interface IGameState<T extends GameType> {

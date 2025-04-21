@@ -9,6 +9,10 @@ const initialState: IGameState<'magnet'> & { selectedMagnet: Magnet | null } = {
   placedMagnets: [],
   elapsedTime: 0,
   selectedMagnet: null,
+  ball: null,
+  engine: null,
+  startTime: null,
+  target: null,
 };
 
 const magnetGameSlice = createSlice({

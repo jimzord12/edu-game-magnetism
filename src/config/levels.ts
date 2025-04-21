@@ -80,19 +80,35 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
     id: 200,
     gameType: 'electromagnet',
     name: 'The Basics',
-    canvasSize: { width: 800, height: 600 },
+    canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 100, y: 300 },
     targetPosition: { x: 700, y: 300 },
     walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
+      new Wall({
+        x: 400,
+        y: 5,
+        dimensions: thinWallDimensions,
+        isHazard: true,
+      }),
+      new Wall({
+        x: 400,
+        y: 595,
+        dimensions: thinWallDimensions,
+        isHazard: true,
+      }),
+      new Wall({
+        x: 5,
+        y: 300,
+        dimensions: thinWallDimensions,
+        isHazard: true,
+      }),
     ],
     availableMagnets: 4,
     progress: {
       completed: false,
       bestTime: undefined,
     },
+    magnetsOnlySensors: true, // Magnets are only sensors, no physical bodies
   },
   {
     id: 201,

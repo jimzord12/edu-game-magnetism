@@ -1,8 +1,14 @@
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
 import GameEngine from '../engine/GameEngine';
 import { ILevel } from '@/features/levels/types';
-import { levelWon, updateElapsedTime } from '../slices/electroGameSlice';
+import {
+  levelLost,
+  levelWon,
+  updateElapsedTime,
+} from '../slices/electroGameSlice';
+
+// let prevGameStatus: null | GameState = null;
 
 /**
  * A hook that interfaces with the GameEngine singleton
@@ -22,6 +28,15 @@ export const useGameEngineBridge = (
     (state) => state.electroGame
   );
 
+  const recreateGameInstance = useCallback(() => {
+    // If the game engine is already initialized, destroy it first
+    if (!levelData || !containerRef.current) return;
+
+    gameEngine.cleanup();
+    // Create a new instance of the game engine
+    gameEngine.initialize(levelData, containerRef.current);
+  }, [levelData, containerRef]);
+
   // Initialize game engine when level changes
   useEffect(() => {
     if (!levelData || !containerRef.current) return;
@@ -33,10 +48,14 @@ export const useGameEngineBridge = (
     const unsubscribeWin = gameEngine.onWin(() => {
       dispatch(levelWon());
     });
+    const unsubscribeLose = gameEngine.onLose(() => {
+      dispatch(levelLost());
+    });
 
     return () => {
       // Cleanup event listeners
       unsubscribeWin();
+      unsubscribeLose();
 
       // Stop game loop if it's running
       if (gameTimerRef.current) {
@@ -45,6 +64,12 @@ export const useGameEngineBridge = (
       }
     };
   }, [levelData, containerRef]);
+
+  useEffect(() => {
+    if (gameStatus === 'idle' && gameEngine.engine === null) {
+      gameEngine.initialize(levelData!, containerRef.current!);
+    }
+  }, [gameStatus, levelData, containerRef]);
 
   // Update magnets in the physics world when they change
   useEffect(() => {
@@ -56,6 +81,7 @@ export const useGameEngineBridge = (
 
   // Handle game status changes (play, pause, etc.)
   useEffect(() => {
+    console.log('AAAAAAAAAAAAAAA');
     // Stop any existing game loop
     if (gameTimerRef.current) {
       cancelAnimationFrame(gameTimerRef.current);
@@ -109,5 +135,6 @@ export const useGameEngineBridge = (
   return {
     resetBall: () => gameEngine.resetBall(),
     getEngine: () => gameEngine,
+    recreateGameInstance,
   };
 };

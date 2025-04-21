@@ -5,6 +5,10 @@ export const BASE_CONFIG = {
     ATTRACT_COLOR: [255, 0, 0],
     REPEL_COLOR: [0, 0, 255],
   },
+  TARGET: {
+    COLOR: [0, 150, 45],
+    STROKE_COLOR: [0, 200, 0],
+  },
 };
 
 export const GAME_CONFIG = {
@@ -13,7 +17,7 @@ export const GAME_CONFIG = {
     PHYSICS_TIMESTEP: 1000 / 60, // ~60 FPS
   },
   MAGNETS: {
-    DEFAULT_STRENGTH: 0.0001, // Adjust based on world scale
+    DEFAULT_STRENGTH: 0.001, // Adjust based on world scale
     MAX_DISTANCE: 300, // Max distance magnet affects ball (pixels)
     MIN_DISTANCE: 20, // Min distance to avoid extreme forces
   },
@@ -33,7 +37,7 @@ export const GAME_CONFIG = {
     RESTITUTION: 0.5, // Bounciness
   },
   TARGET: {
-    RADIUS: 15,
+    RADIUS: 20,
   },
 };
 
@@ -44,6 +48,7 @@ export const OBJECT_TYPES = {
   MAGNET_ATTRACT: 'magnet_attract',
   MAGNET_REPEL: 'magnet_repel',
   TARGET: 'target',
+  HAZARD: 'hazard', // Added for spikes/hazards
 };
 
 const SANDBOX_MAGNET_DIMENSIONS = {

@@ -6,7 +6,6 @@ import {
   startGame,
   pauseGame,
   resumeGame,
-  toggleGamePause,
   placeMagnet,
   setSelectedElectromagnet,
 } from '../../features/games/electroMagnets/slices/electroGameSlice';
@@ -69,6 +68,7 @@ const GamePage: React.FC = () => {
     } else if (gameStatus === 'won' || gameStatus === 'lost') {
       if (levelId) {
         dispatch(loadLevel(levelId));
+        // console.log('Game reset and level loaded.');
       }
     }
   };
@@ -125,6 +125,9 @@ const GamePage: React.FC = () => {
         x,
         y,
         isAttracting: true,
+        matterOptions: {
+          isSensor: currentLevelData.magnetsOnlySensors,
+        },
       });
       dispatch(placeMagnet(newElectroMagnet));
     } else {
@@ -255,6 +258,8 @@ const GamePage: React.FC = () => {
               placedMagnets.length < currentLevelData.availableMagnets
                 ? 'crosshair'
                 : 'default',
+            width: currentLevelData.canvasSize.width,
+            height: currentLevelData.canvasSize.height,
           }}
         >
           {gameStatus === 'idle' && (

@@ -9,6 +9,7 @@ interface WallConstructorProps {
   dimensions: { width: number; height: number };
   // Optional configuration overrides
   matterOptions?: Matter.IBodyDefinition;
+  isHazard?: boolean; // Added for spikes
 }
 
 const defaultMatterOptions: IBodyDefinition = {
@@ -23,14 +24,18 @@ export class Wall extends Identifiable {
   // Public properties
   public readonly body: Matter.Body; // The physics body
   dimensions: { width: number; height: number };
+  public isHazard: boolean; // Added
 
   constructor({
     x,
     y,
     dimensions,
     matterOptions = defaultMatterOptions,
+    isHazard = false, // Default to false
   }: WallConstructorProps) {
     super();
+    this.isHazard = isHazard;
+
     // Create the Matter.js body
     this.body = Matter.Bodies.rectangle(
       x,
@@ -38,13 +43,19 @@ export class Wall extends Identifiable {
       dimensions.width,
       dimensions.height,
       {
-        isStatic: true,
         ...matterOptions,
+        isStatic: true,
+        label: isHazard ? OBJECT_TYPES.HAZARD : OBJECT_TYPES.WALL,
+        isSensor: isHazard, // Hazards should be sensors to detect collision without physical reaction
       }
     );
     this.dimensions = dimensions;
 
-    console.log('🐦‍🔥 Created this Wall: ', this);
+    if (this.isHazard) {
+      console.log('☢️ Created this Hazard: ', this);
+    }
+
+    console.log('🧱 Created this Wall: ', this);
   }
 
   render(p: p5): void {
@@ -55,7 +66,7 @@ export class Wall extends Identifiable {
     p.push();
     p.translate(pos.x, pos.y);
     p.rotate(this.body.angle);
-    p.fill(100); // Dark grey color
+    p.fill(this.isHazard ? 'red' : 'gray'); // Red for hazards, dark grey otherwise
     // p.noStroke();
     p.rectMode(p.CENTER);
     p.rect(0, 0, width, height);

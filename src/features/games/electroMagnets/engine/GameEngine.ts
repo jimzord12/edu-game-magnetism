@@ -3,9 +3,11 @@
 import Matter from 'matter-js';
 import p5 from 'p5';
 import { Ball } from '@/models/Ball';
-import { GAME_CONFIG, OBJECT_TYPES, BASE_CONFIG } from '@/config/gameConfig';
+import { Wall } from '@/models/Wall';
+import { BASE_CONFIG, GAME_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
 import { ILevel } from '@/features/levels/types';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
+import { GameState } from '../../types';
 
 type GameEventCallback = (data?: unknown) => void;
 
@@ -15,23 +17,24 @@ type GameEventCallback = (data?: unknown) => void;
  */
 class GameEngine {
   private static instance: GameEngine | null = null;
-  private engine: Matter.Engine | null = null;
+  public engine: Matter.Engine | null = null;
   private p5Instance: p5 | null = null;
   private ball: Ball | null = null;
-  private target: Ball | null = null;
+  private target: Ball | null = null; // Target is also represented as a Ball model for simplicity
   private containerElement: HTMLElement | null = null;
   private currentLevel: ILevel<'electromagnet'> | null = null;
-  private wallBodies: Matter.Body[] = [];
+  private walls: Wall[] = []; // Changed from wallBodies: Matter.Body[]
   private isWorldReady: boolean = false;
   private startTime: number | null = null;
   private magnets: ElectroMagnet[] = [];
-  private gameStatus: 'idle' | 'playing' | 'paused' | 'won' | 'lost' = 'idle';
+  private gameStatus: GameState = 'idle';
   private isInitialized: boolean = false;
 
   // Event callbacks
   private onCollisionCallbacks: GameEventCallback[] = [];
   private onRenderCallbacks: GameEventCallback[] = [];
   private onWinCallbacks: GameEventCallback[] = [];
+  private onLoseCallbacks: GameEventCallback[] = [];
 
   // Prevent direct instantiation outside this class
   private constructor() {}
@@ -66,6 +69,7 @@ class GameEngine {
     this.containerElement = container;
     this.isWorldReady = false;
     this.gameStatus = 'idle';
+    this.walls = []; // Clear walls array
 
     // Create Matter.js engine
     this.engine = Matter.Engine.create();
@@ -78,6 +82,7 @@ class GameEngine {
         p.frameRate(60);
         console.log('GameEngine: p5 setup complete for level:', levelData.id);
 
+        //// --- Create Game Objects --- ////
         // Create Ball
         this.ball = new Ball({
           x: levelData.ballStart.x,
@@ -103,16 +108,21 @@ class GameEngine {
           },
         });
 
-        // Load Walls
-        this.wallBodies = levelData.walls.map((wall) => wall.body);
+        // Load Walls & Hazards (using the Wall model)
+        // Walls and Hazards are expected to be pre-instantiated in levelData.walls
+        this.walls = levelData.walls;
 
-        // Add elements to world one by one
-        this.wallBodies.forEach((wall) => {
-          Matter.World.add(this.engine!.world, wall);
+        //// --- Add Game Objects to the Physics World --- ////
+
+        // Add elements to world
+        this.walls.forEach((wall) => {
+          Matter.World.add(this.engine!.world, wall.body);
         });
 
         Matter.World.add(this.engine!.world, this.ball.body);
         Matter.World.add(this.engine!.world, this.target.body);
+
+        //// --- Collisions --- ////
 
         // Collision events
         Matter.Events.on(this.engine!, 'collisionStart', (event) => {
@@ -125,11 +135,27 @@ class GameEngine {
               labels.includes(OBJECT_TYPES.BALL) &&
               labels.includes(OBJECT_TYPES.TARGET)
             ) {
-              this.gameStatus = 'won';
-              this.onWinCallbacks.forEach((cb) => cb());
+              this.setGameStatus('won'); // Callbacks handled by setGameStatus
             }
 
-            // Notify collision listeners
+            // Handle ball-hazard collision
+            if (
+              labels.includes(OBJECT_TYPES.BALL) &&
+              labels.includes(OBJECT_TYPES.HAZARD)
+            ) {
+              console.log('Collision: Ball hit Hazard!');
+              this.setGameStatus('lost'); // Callbacks handled by setGameStatus
+            }
+
+            // Handle ball-wall collision (for logging/debugging)
+            if (
+              labels.includes(OBJECT_TYPES.BALL) &&
+              labels.includes(OBJECT_TYPES.WALL)
+            ) {
+              console.log('Collision: Ball hit Wall!'); // Added log
+            }
+
+            // Notify generic collision listeners
             this.onCollisionCallbacks.forEach((cb) => cb({ bodyA, bodyB }));
           });
         });
@@ -140,49 +166,34 @@ class GameEngine {
       p.draw = () => {
         p.background(220);
 
-        // Draw Walls
-        p.fill(100);
-        p.noStroke();
-        const walls = this.wallBodies;
-        walls.forEach((wall) => {
-          p.push();
-          p.translate(wall.position.x, wall.position.y);
-          p.rotate(wall.angle);
-          p.rectMode(p.CENTER);
-          if (wall.vertices) {
-            p.beginShape();
-            wall.vertices.forEach((vert) =>
-              p.vertex(vert.x - wall.position.x, vert.y - wall.position.y)
-            );
-            p.endShape(p.CLOSE);
-          }
-          p.pop();
+        // Render Walls and Hazards (using their own render methods)
+        this.walls.forEach((wall) => {
+          wall.render(p);
         });
 
-        // Draw Target
+        // Render Target (using Ball's render method)
         if (this.target) {
-          p.fill(0, 200, 0, 150);
-          p.noStroke();
-          p.ellipse(
-            this.target.body.position.x,
-            this.target.body.position.y,
-            GAME_CONFIG.TARGET.RADIUS * 2
-          );
+          const [r, g, b] = BASE_CONFIG.TARGET.COLOR;
+          const [strokeR, strokeG, strokeB] = BASE_CONFIG.TARGET.STROKE_COLOR;
+          p.push();
+          this.target.render(p, {
+            r: r,
+            g: g,
+            b: b,
+          });
+          p.stroke(strokeR, strokeG, strokeB); // Darker green
+          p.pop();
         }
 
-        // Draw Ball
+        // Render Ball (using its own render method)
         if (this.ball) {
-          p.fill(50, 50, 200);
-          p.noStroke();
-          p.ellipse(
-            this.ball.body.position.x,
-            this.ball.body.position.y,
-            GAME_CONFIG.BALL.RADIUS * 2
-          );
+          this.ball.render(p);
         }
 
-        // 🧲 --- Draw Magnets (Enhanced Visualization) --- 🧲
-        this.drawMagnets(p);
+        // Render Magnets (using their own render methods)
+        this.magnets.forEach((magnet) => {
+          magnet.render(p);
+        });
 
         // Display Game Status
         this.drawGameStatus(p);
@@ -198,58 +209,6 @@ class GameEngine {
       this.p5Instance = new p5(sketch, this.containerElement);
       this.isInitialized = true;
     }
-  }
-
-  /**
-   * Draw magnets and their magnetic fields
-   */
-  private drawMagnets(p: p5): void {
-    if (!this.magnets || this.magnets.length === 0) return;
-
-    const maxDist = GAME_CONFIG.MAGNETS.MAX_DISTANCE;
-    const layerRadii = [maxDist, maxDist * 0.66, maxDist * 0.33];
-    const layerStrokeWeights = [1, 1.5, 2];
-    const baseStrokeAlpha = [50, 75, 100];
-    const baseFillAlpha = [0, 20, 40];
-
-    this.magnets.forEach((magnet) => {
-      p.push();
-      p.translate(magnet.body.position.x, magnet.body.position.y);
-
-      const isAttracting = magnet.isAttracting;
-      const baseColor = isAttracting
-        ? BASE_CONFIG.MAGNETS.ATTRACT_COLOR
-        : BASE_CONFIG.MAGNETS.REPEL_COLOR;
-
-      // Draw magnetic field layers
-      for (let i = 0; i < layerRadii.length; i++) {
-        if (!magnet.isActive) continue;
-
-        const radius = layerRadii[i];
-        const weight = layerStrokeWeights[i];
-        const strokeAlpha = baseStrokeAlpha[i];
-        const fillAlpha = baseFillAlpha[i];
-
-        p.strokeWeight(weight);
-        p.stroke(baseColor[0], baseColor[1], baseColor[2], strokeAlpha);
-
-        if (fillAlpha > 0) {
-          p.fill(baseColor[0], baseColor[1], baseColor[2], fillAlpha);
-        } else {
-          p.noFill();
-        }
-
-        p.ellipse(0, 0, radius * 2, radius * 2);
-      }
-
-      // Draw magnet body
-      p.strokeWeight(1);
-      p.stroke(0);
-      p.fill(isAttracting ? [200, 0, 0] : [0, 0, 200]);
-      p.ellipse(0, 0, 20, 20);
-
-      p.pop();
-    });
   }
 
   /**
@@ -292,10 +251,32 @@ class GameEngine {
    * Update the physics world (called from game loop or Redux)
    */
   public update(deltaTime: number = GAME_CONFIG.WORLD.PHYSICS_TIMESTEP): void {
-    if (!this.engine || !this.isWorldReady || this.gameStatus !== 'playing')
+    if (
+      !this.engine ||
+      !this.isWorldReady ||
+      this.gameStatus !== 'playing' ||
+      !this.ball || // Add null check for ball
+      !this.currentLevel // Add null check for currentLevel
+    )
       return;
 
     Matter.Engine.update(this.engine, deltaTime);
+
+    // Check if ball is out of bounds
+    const ballPos = this.ball.body.position;
+    const canvasWidth = this.currentLevel.canvasSize.width;
+    const canvasHeight = this.currentLevel.canvasSize.height;
+
+    if (
+      ballPos.x < -25 ||
+      ballPos.x > canvasWidth + 25 ||
+      ballPos.y < -25 ||
+      ballPos.y > canvasHeight + 25
+    ) {
+      console.log('Game Over: Ball went out of bounds!');
+      this.setGameStatus('lost'); // Callbacks handled by setGameStatus
+      return; // Stop further updates in this frame if lost
+    }
 
     if (this.startTime === null) {
       this.startTime = Date.now();
@@ -305,9 +286,17 @@ class GameEngine {
   /**
    * Set the game status
    */
-  public setGameStatus(
-    status: 'idle' | 'playing' | 'paused' | 'won' | 'lost'
-  ): void {
+  public setGameStatus(status: GameState): void {
+    // Prevent setting the same status again or changing from won/lost
+    if (
+      this.gameStatus === status ||
+      this.gameStatus === 'won' ||
+      this.gameStatus === 'lost'
+    ) {
+      return;
+    }
+
+    console.log(`Game status changing from ${this.gameStatus} to ${status}`); // Add log
     this.gameStatus = status;
 
     if (status === 'playing') {
@@ -315,9 +304,22 @@ class GameEngine {
         this.startTime = Date.now();
       }
     } else if (status === 'paused') {
-      // Just pause, don't reset startTime
+      // Pause logic (currently just stops timer implicitly)
+      // If you need to store elapsed time before pause, do it here
     } else {
-      this.startTime = null;
+      // Handle idle, won, lost
+
+      if (status === 'won') {
+        console.log('Triggering onWin callbacks');
+        this.onWinCallbacks.forEach((cb) => cb());
+      } else if (status === 'lost') {
+        console.log('Triggering onLose callbacks');
+        this.onLoseCallbacks.forEach((cb) => cb());
+      } else if (status === 'idle') {
+        console.log('Game is idle, waiting for player action.');
+        this.startTime = null; // Reset timer for terminal states or idle
+      }
+      // No specific action needed for 'idle' here besides resetting timer
     }
   }
 
@@ -434,7 +436,7 @@ class GameEngine {
 
     this.ball = null;
     this.target = null;
-    this.wallBodies = [];
+    this.walls = []; // Clear walls array on cleanup
     this.isWorldReady = false;
     this.startTime = null;
     this.magnets = [];
@@ -466,6 +468,15 @@ class GameEngine {
     this.onWinCallbacks.push(callback);
     return () => {
       this.onWinCallbacks = this.onWinCallbacks.filter((cb) => cb !== callback);
+    };
+  }
+
+  public onLose(callback: GameEventCallback): () => void {
+    this.onLoseCallbacks.push(callback);
+    return () => {
+      this.onLoseCallbacks = this.onLoseCallbacks.filter(
+        (cb) => cb !== callback
+      );
     };
   }
 

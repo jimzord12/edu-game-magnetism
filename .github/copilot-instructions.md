@@ -190,6 +190,22 @@ refactor: improve game engine logic
 
 ---
 
+## 📐 Ground Rules
+
+**Before** making a change in the code, please ensure:
+
+- You MUST read the contents of the file again, because I might have changed it. You must respect the changes I made.
+- You don't break existing functionality.
+- You must must express what your plan and every step is in detail.
+- You must ask questions if you are unsure about something.
+
+**After** you have made a change, please ensure:
+
+- You have tested your changes thoroughly.
+- You achieve the desired outcome with the minimum code changes.
+
+---
+
 ## 📘 Further Reading
 
 - [Matter.js Docs](https://brm.io/matter-js/docs/)

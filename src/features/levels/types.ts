@@ -11,10 +11,12 @@ export interface ILevelBase {
   ballStart: { x: number; y: number };
   targetPosition: { x: number; y: number };
   walls: Wall[];
+  // hazards?: Wall[]; // Added optional hazards array
   availableMagnets: number; // How many magnets the player can place
 
   timeLimit?: number;
-  progress: ILevelProgress;   
+  progress: ILevelProgress;
+  magnetsOnlySensors?: boolean; // Whether the magnets have physical bodies or not
   // Optional: Pre-placed fixed magnets, other obstacles, time limit etc.
 }
 

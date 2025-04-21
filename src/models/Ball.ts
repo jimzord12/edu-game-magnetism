@@ -35,13 +35,21 @@ export class Ball extends Identifiable {
     console.log('🐦‍🔥 Created this Ball: ', this);
   }
 
-  render(p: p5): void {
+  render(
+    p: p5,
+    {
+      r = 50,
+      g = 50,
+      b = 200,
+      a = 1000,
+    }: { r?: number; g?: number; b?: number; a?: number } = {}
+  ): void {
     const pos = this.body.position;
 
     p.push();
     p.translate(pos.x, pos.y);
     p.rotate(this.body.angle);
-    p.fill(50, 50, 200); // Blue ball
+    p.fill(r, g, b, a); // Use provided color parameters with alpha
     p.noStroke();
     p.ellipse(0, 0, this.radius * 2);
     p.pop();

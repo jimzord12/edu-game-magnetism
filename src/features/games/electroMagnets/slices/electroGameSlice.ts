@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
-
+import GameEngine from '../engine/GameEngine';
 interface ElectroGameState {
   levelId: number | null;
   placedMagnets: ElectroMagnet[];
@@ -28,6 +28,7 @@ const electroGameSlice = createSlice({
       state.status = 'idle';
       state.elapsedTime = 0;
       state.selectedElectromagnet = null;
+      GameEngine.getInstance().cleanup(); // Cleanup previous game engine instance
     },
     startGame: (state) => {
       // Start the game (if in idle or paused state)

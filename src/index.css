@@ -86,5 +86,5 @@ ul {
 }
 
 .p5-canvas-wrapper canvas {
-  @apply block;
+  @apply block w-fit h-fit;
 }
