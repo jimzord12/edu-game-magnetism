@@ -178,6 +178,15 @@ const electroGameSlice = createSlice({
     updateElapsedTime: (state, action: PayloadAction<number>) => {
       state.elapsedTime = action.payload;
     },
+    resetGame: (state) => {
+      // Reset the game state to initial state
+      state.levelId = null;
+      state.placedMagnets = new Set<ElectroMagnet>();
+      state.status = 'idle';
+      state.elapsedTime = 0;
+      state.selectedElectromagnet = null;
+      GameEngine.getInstance().cleanup(); // Cleanup previous game engine instance
+    },
   },
 });
 
@@ -196,6 +205,7 @@ export const {
   updateMagnetStrength,
   setSelectedElectromagnet,
   updateElapsedTime,
+  resetGame,
 } = electroGameSlice.actions;
 
 export default electroGameSlice.reducer;

@@ -7,12 +7,14 @@ import {
   pauseGame,
   resumeGame,
   placeMagnet,
+  resetGame,
 } from '../../features/games/electroMagnets/slices/electroGameSlice';
 
 import { ILevel, ILevelElectroMagnet } from '@/features/levels/types';
 import ElectroGameCanvas from '@/features/games/electroMagnets/components/ElectroGameCanvas';
 import ElectromagnetPanel from '@/features/games/electroMagnets/components/ElectromagnetPanel';
 import { getElectroMagnetLevels } from '@/config/levels';
+import useForceRerender from '@/hooks/useForceRerender';
 
 const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
   return getElectroMagnetLevels().find((level) => level.id === id) || null;
@@ -21,7 +23,7 @@ const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
 const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
   const levelId = levelIdStr ? parseInt(levelIdStr) : null;
-  // const { forceUpdate } = useForceRerender();
+  const { value, forceUpdate } = useForceRerender(); // Updated to use the correct variable name
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
@@ -36,6 +38,7 @@ const GamePage: React.FC = () => {
 
   // Add Level Magnets to the Redux Slice
   useEffect(() => {
+    console.log('llllllllllllllllllllllllllllllllllllllll');
     if (
       currentLevelData?.electromagnets &&
       currentLevelData?.electromagnets.length > 0
@@ -44,7 +47,7 @@ const GamePage: React.FC = () => {
         dispatch(placeMagnet(magnet));
       });
     }
-  }, [currentLevelData, dispatch]);
+  }, [currentLevelData, dispatch, value]);
 
   useEffect(() => {
     if (levelId) {
@@ -61,7 +64,7 @@ const GamePage: React.FC = () => {
     } else {
       navigate('/levels');
     }
-  }, [levelId, dispatch, navigate, currentLevelId]);
+  }, [levelId, dispatch, navigate, currentLevelId, value]);
 
   const handleStartPause = () => {
     if (gameStatus === 'playing') {
@@ -87,7 +90,13 @@ const GamePage: React.FC = () => {
   const handleReset = () => {
     if (levelId) {
       dispatch(loadLevel(levelId));
+      forceUpdate(); // Force a re-render to update the UI
     }
+  };
+
+  const handleResetGame = () => {
+    dispatch(resetGame());
+    navigate('/levels');
   };
 
   // const findMagnetById = (
@@ -168,7 +177,7 @@ const GamePage: React.FC = () => {
             </div>
             <button
               className="game-btn secondary-btn w-full"
-              onClick={() => navigate('/levels')}
+              onClick={handleResetGame}
             >
               📋 Level Select
             </button>
@@ -279,10 +288,7 @@ const GamePage: React.FC = () => {
         magnets={Array.from(placedMagnets)}
       />
       <div className="navigation-footer">
-        <button
-          className="game-btn secondary-btn"
-          onClick={() => navigate('/levels')}
-        >
+        <button className="game-btn secondary-btn" onClick={handleResetGame}>
           ← Back to Level Selection
         </button>
       </div>
