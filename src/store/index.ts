@@ -1,3 +1,6 @@
+import { enableMapSet } from 'immer';
+enableMapSet();
+
 import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './rootReducer';
 // import { logger } from 'redux-logger'; // Optional: for debugging

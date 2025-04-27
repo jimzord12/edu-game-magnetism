@@ -1,4 +1,5 @@
 import { ILevelElectroMagnet, ILevelMagnet } from '@/features/levels/types';
+import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Wall } from '@/models/Wall';
 
 const thinWallDimensions = { width: 10, height: 50 };
@@ -104,6 +105,25 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       }),
     ],
     availableMagnets: 4,
+    electromagnets: [
+      new ElectroMagnet({
+        x: 200,
+        y: 300,
+        isAttracting: true,
+        isRemovable: false,
+        restrictedMovement: 'vertical',
+        matterOptions: {
+          isSensor: true,
+        },
+      }),
+      new ElectroMagnet({
+        x: 400,
+        y: 500,
+        isAttracting: true,
+        isRemovable: false,
+        restrictedMovement: 'horizontal',
+      }),
+    ],
     progress: {
       completed: false,
       bestTime: undefined,
@@ -123,6 +143,8 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
     availableMagnets: 2,
+    electromagnets: [],
+
     progress: {
       completed: false,
       bestTime: undefined,
@@ -141,6 +163,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
     availableMagnets: 2,
+    electromagnets: [],
     progress: {
       completed: false,
       bestTime: undefined,

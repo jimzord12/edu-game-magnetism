@@ -3,9 +3,14 @@ import { idGen } from '@/utils/idGenerator';
 export class Identifiable {
   static idGenerator = idGen();
 
-  id: number;
+  public id: number;
 
-  constructor() {
+  constructor(id?: number) {
+    if (id) {
+      this.id = id;
+      return;
+    }
+
     this.id = Identifiable.createId();
   }
 

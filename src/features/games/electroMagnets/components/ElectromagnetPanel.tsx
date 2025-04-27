@@ -17,18 +17,20 @@ interface ElectromagnetPanelProps {
 
 const ElectromagnetPanel: React.FC<ElectromagnetPanelProps> = ({
   gameStatus,
-  magnets,
+  magnets: placedMagnets,
 }) => {
   //   const { forceUpdate } = useForceRerender();
   const dispatch = useAppDispatch();
-  const selectedElectromagnet = useAppSelector(
-    (state) => state.electroGame.selectedElectromagnet
+  const { selectedElectromagnet } = useAppSelector(
+    (state) => state.electroGame
   );
 
   const isInteractive =
     gameStatus === 'idle' ||
     gameStatus === 'playing' ||
     gameStatus === 'paused';
+
+  const magnets = placedMagnets.sort((a, b) => a.id - b.id);
 
   return (
     <div className="magnet-panel electromagnet-panel">
@@ -91,6 +93,7 @@ const ElectromagnetPanel: React.FC<ElectromagnetPanelProps> = ({
                   disabled={!isInteractive}
                   onChange={(e) => {
                     e.stopPropagation();
+                    console.log('AAAAAAA: ', placedMagnets);
                     dispatch(toggleMagnetPolarity(magnet.id));
                     // forceUpdate();
                   }}
@@ -105,21 +108,23 @@ const ElectromagnetPanel: React.FC<ElectromagnetPanelProps> = ({
                   {magnet.isAttracting ? '🧲 Attract' : '🚫 Repel'}
                 </span>
               </label>
-              <button
-                className="game-btn small-btn danger-btn"
-                disabled={!isInteractive}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  dispatch(removeMagnet(magnet.id));
-                  if (selectedElectromagnet?.id === magnet.id) {
-                    dispatch(setSelectedElectromagnet(null));
-                    // forceUpdate(); // Force update to re-render the list
-                  }
-                }}
-                title="Remove Electromagnet"
-              >
-                🗑️
-              </button>
+              {magnet.isRemovable && (
+                <button
+                  className="game-btn small-btn danger-btn"
+                  disabled={!isInteractive}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    dispatch(removeMagnet(magnet.id));
+                    if (selectedElectromagnet?.id === magnet.id) {
+                      dispatch(setSelectedElectromagnet(null));
+                      // forceUpdate(); // Force update to re-render the list
+                    }
+                  }}
+                  title="Remove Electromagnet"
+                >
+                  🗑️
+                </button>
+              )}
             </li>
           ))}
         </ul>

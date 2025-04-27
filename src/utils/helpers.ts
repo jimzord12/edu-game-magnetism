@@ -23,3 +23,31 @@ const getAverage = (nums: number[]): number => {
 };
 
 export { waitFor, getStoragePermission, getAverage };
+
+export const removeById = <T extends { id: number }>(
+  set: Set<T>,
+  idToRemove: number
+) => {
+  for (const obj of set) {
+    if (obj.id === idToRemove) {
+      set.delete(obj);
+      break; // stop once you’ve found & removed it
+    }
+  }
+
+  return set;
+};
+
+export const toggleProperty = <T extends { id: number }>(
+  set: Set<T>,
+  idToRemove: number
+) => {
+  for (const obj of set) {
+    if (obj.id === idToRemove) {
+      set.delete(obj);
+      break; // stop once you’ve found & removed it
+    }
+  }
+
+  return set;
+};

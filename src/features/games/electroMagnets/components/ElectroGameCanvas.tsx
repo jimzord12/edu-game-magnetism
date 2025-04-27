@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { GameType, ILevel } from '@/features/levels/types';
-import { useGameEngineBridge } from '../hooks/useGameEngineBridge';
+import { useGameEngineSimple } from '../hooks/useGameEngineSimple';
 
 interface GameCanvasProps<T extends GameType> {
   levelData: ILevel<T> | null;
@@ -12,7 +12,8 @@ const ElectroGameCanvas: React.FC<GameCanvasProps<'electromagnet'>> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   // Use the bridge hook to connect to the singleton GameEngine
-  useGameEngineBridge(levelData, containerRef);
+  // useGameEngineBridge(levelData, containerRef);
+  useGameEngineSimple(levelData, containerRef);
 
   return (
     <div className="game-canvas-container">

@@ -1,17 +1,18 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
-import GameEngine from '../engine/GameEngine';
+import GameEngine from '../engine/GameEngineElectro';
+import { GameState } from '../../types';
 interface ElectroGameState {
   levelId: number | null;
-  placedMagnets: ElectroMagnet[];
-  status: 'idle' | 'playing' | 'paused' | 'won' | 'lost';
+  placedMagnets: Set<ElectroMagnet>;
+  status: GameState;
   elapsedTime: number;
   selectedElectromagnet: ElectroMagnet | null;
 }
 
 const initialState: ElectroGameState = {
   levelId: null,
-  placedMagnets: [],
+  placedMagnets: new Set<ElectroMagnet>(),
   status: 'idle',
   elapsedTime: 0,
   selectedElectromagnet: null,
@@ -24,7 +25,7 @@ const electroGameSlice = createSlice({
     loadLevel: (state, action: PayloadAction<number>) => {
       // Reset everything for a new level
       state.levelId = action.payload;
-      state.placedMagnets = [];
+      state.placedMagnets = new Set<ElectroMagnet>();
       state.status = 'idle';
       state.elapsedTime = 0;
       state.selectedElectromagnet = null;
@@ -63,33 +64,46 @@ const electroGameSlice = createSlice({
       state.status = 'lost';
     },
     placeMagnet: (state, action: PayloadAction<ElectroMagnet>) => {
-      state.placedMagnets.push(action.payload);
+      if (!state.placedMagnets.has(action.payload)) {
+        console.log('🐦🚀 Placing magnet: ', action.payload);
+        state.placedMagnets.add(action.payload);
+      }
     },
     removeMagnet: (state, action: PayloadAction<number>) => {
-      state.placedMagnets = state.placedMagnets.filter(
+      const newPlacedMagnets = Array.from(state.placedMagnets).filter(
         (m) => m.id !== action.payload
       );
+      state.placedMagnets = new Set(newPlacedMagnets);
+
       if (state.selectedElectromagnet?.id === action.payload) {
         state.selectedElectromagnet = null;
       }
     },
     toggleMagnetActive: (state, action: PayloadAction<number>) => {
-      const idx = state.placedMagnets.findIndex((m) => m.id === action.payload);
+      let magnets = Array.from(state.placedMagnets);
+      const idx = magnets.findIndex((m) => m.id === action.payload);
       if (idx !== -1) {
-        const old = state.placedMagnets[idx];
+        const old = magnets[idx];
         // Create a new instance with toggled isActive
         const updated = new ElectroMagnet({
           ...old,
           x: old.body.position.x,
           y: old.body.position.y,
           isActive: !old.isActive,
+          matterOptions: {
+            isStatic: old.body.isStatic,
+            isSensor: old.body.isSensor,
+          },
         });
         updated.id = old.id;
-        state.placedMagnets = [
-          ...state.placedMagnets.slice(0, idx),
+        console.log('🐦🚀 Toggling magnet active: ', old.id);
+        magnets = [
+          ...magnets.slice(0, idx),
           updated,
-          ...state.placedMagnets.slice(idx + 1),
+          ...magnets.slice(idx + 1),
         ];
+
+        state.placedMagnets = new Set(magnets);
 
         // Update selected magnet if needed
         if (state.selectedElectromagnet?.id === action.payload) {
@@ -98,9 +112,11 @@ const electroGameSlice = createSlice({
       }
     },
     toggleMagnetPolarity: (state, action: PayloadAction<number>) => {
-      const idx = state.placedMagnets.findIndex((m) => m.id === action.payload);
+      let magnets = Array.from(state.placedMagnets);
+
+      const idx = magnets.findIndex((m) => m.id === action.payload);
       if (idx !== -1) {
-        const old = state.placedMagnets[idx];
+        const old = magnets[idx];
         // Create a new instance with toggled polarity
         const updated = new ElectroMagnet({
           ...old,
@@ -109,11 +125,13 @@ const electroGameSlice = createSlice({
           isAttracting: !old.isAttracting,
         });
         updated.id = old.id;
-        state.placedMagnets = [
-          ...state.placedMagnets.slice(0, idx),
+        magnets = [
+          ...magnets.slice(0, idx),
           updated,
-          ...state.placedMagnets.slice(idx + 1),
+          ...magnets.slice(idx + 1),
         ];
+
+        state.placedMagnets = new Set(magnets);
 
         // Update selected magnet if needed
         if (state.selectedElectromagnet?.id === action.payload) {
@@ -126,9 +144,10 @@ const electroGameSlice = createSlice({
       action: PayloadAction<{ id: number; strength: number }>
     ) => {
       const { id, strength } = action.payload;
-      const idx = state.placedMagnets.findIndex((m) => m.id === id);
+      let magnets = Array.from(state.placedMagnets);
+      const idx = magnets.findIndex((m) => m.id === id);
       if (idx !== -1) {
-        const old = state.placedMagnets[idx];
+        const old = magnets[idx];
         const updated = new ElectroMagnet({
           ...old,
           x: old.body.position.x,
@@ -136,11 +155,13 @@ const electroGameSlice = createSlice({
         });
         updated.id = old.id;
         updated.updateStrength(strength);
-        state.placedMagnets = [
-          ...state.placedMagnets.slice(0, idx),
+        magnets = [
+          ...magnets.slice(0, idx),
           updated,
-          ...state.placedMagnets.slice(idx + 1),
+          ...magnets.slice(idx + 1),
         ];
+
+        state.placedMagnets = new Set(magnets);
 
         // Update selected magnet if needed
         if (state.selectedElectromagnet?.id === id) {

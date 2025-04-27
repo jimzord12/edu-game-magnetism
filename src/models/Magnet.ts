@@ -3,7 +3,10 @@ import Matter from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES, GAME_CONFIG } from '@/config/gameConfig';
 import { Identifiable } from './base/Identifiable';
 
+export type MovementRestriction = 'horizontal' | 'vertical' | 'none';
+
 export interface MagnetConstructorProps {
+  id?: number; // Unique ID for the magnet
   x: number;
   y: number;
   isAttracting: boolean;
@@ -13,30 +16,40 @@ export interface MagnetConstructorProps {
     radius?: number;
     maxDist?: number;
   };
+
   strength?: number;
+  readonly restrictedMovement?: MovementRestriction; // Restrict movement to horizontal or vertical
+  isRemovable?: boolean; // Whether the magnet can be removed by the player
 }
 
 export class Magnet extends Identifiable {
   // Public properties
   public isAttracting: boolean;
-  public readonly body: Matter.Body; // The physics body
+  public readonly body: Matter.Body & {
+    restrictedMovement: MovementRestriction;
+  };
   public strength: number; // [min, max]
+  public isRemovable: boolean;
 
   // Private properties for configuration
-  private readonly magnetRadius: number;
-  private readonly fieldMaxDist: number;
+  protected readonly magnetRadius: number;
+  protected readonly fieldMaxDist: number;
 
   constructor({
+    id,
     x,
     y,
     isAttracting,
     matterOptions = {},
     renderConfig = {},
     strength = GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH,
+    restrictedMovement = 'none',
+    isRemovable = true,
   }: MagnetConstructorProps) {
-    super();
+    super(id);
     this.isAttracting = isAttracting;
     this.strength = strength;
+    this.isRemovable = isRemovable;
 
     // Determine configuration, using defaults from SANDBOX_CONFIG if not provided
     this.magnetRadius = renderConfig.radius ?? SANDBOX_CONFIG.MAGNETS.RADIUS;
@@ -47,8 +60,7 @@ export class Magnet extends Identifiable {
       ? OBJECT_TYPES.MAGNET_ATTRACT
       : OBJECT_TYPES.MAGNET_REPEL;
 
-    // Create the Matter.js body
-    this.body = Matter.Bodies.circle(x, y, this.magnetRadius, {
+    const _body = Matter.Bodies.circle(x, y, this.magnetRadius, {
       label: label,
       density: SANDBOX_CONFIG.MAGNETS.DENSITY,
       friction: SANDBOX_CONFIG.MAGNETS.FRICTION,
@@ -64,6 +76,8 @@ export class Magnet extends Identifiable {
       ...matterOptions, // Allow overriding defaults
     });
 
+    // Create the Matter.js body
+    this.body = Object.assign(_body, { restrictedMovement });
     console.log('🐦‍🔥 Created this Ball: ', this);
 
     // Optionally, still add customData if direct body iteration is needed elsewhere

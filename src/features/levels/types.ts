@@ -1,3 +1,4 @@
+import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Wall } from '@/models/Wall';
 
 export type GameType = 'magnet' | 'electromagnet';
@@ -30,6 +31,7 @@ export interface ILevelMagnet extends Omit<ILevelBase, 'availableMagnets'> {
 
 export interface ILevelElectroMagnet extends ILevelBase {
   gameType: 'electromagnet';
+  electromagnets: ElectroMagnet[];
 }
 
 export const isMagnetLevel = (

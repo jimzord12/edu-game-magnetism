@@ -1,14 +1,16 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { useAppDispatch, useAppSelector } from '@/hooks/reduxHooks';
-import GameEngine from '../engine/GameEngine';
+import GameEngineElectro from '../engine/GameEngineElectro';
 import { ILevel } from '@/features/levels/types';
 import {
   levelLost,
   levelWon,
+  placeMagnet,
   updateElapsedTime,
 } from '../slices/electroGameSlice';
-
-// let prevGameStatus: null | GameState = null;
+import { attachMatterMouseConstraintWithRestriction } from '@/utils/attachMatterMouseConstraintWithRestriction';
+import { OBJECT_TYPES, SANDBOX_CONFIG } from '@/config/gameConfig';
+import { ElectroMagnet } from '@/models/ElectroMagnet';
 
 /**
  * A hook that interfaces with the GameEngine singleton
@@ -18,31 +20,97 @@ export const useGameEngineBridge = (
   levelData: ILevel<'electromagnet'> | null,
   containerRef: React.RefObject<HTMLDivElement | null>
 ) => {
-  const gameEngine = GameEngine.getInstance();
+  const gameEngine = GameEngineElectro.getInstance();
   const dispatch = useAppDispatch();
   const gameTimerRef = useRef<number | null>(null);
   const pausedTimeRef = useRef<number | null>(null);
+  const mouseConstraintCleanupRef = useRef<null | (() => void)>(null);
+
+  const onPlaceMagnet = (x: number, y: number) => {
+    const newElectroMagnet = new ElectroMagnet({
+      x,
+      y,
+      isAttracting: true,
+
+      matterOptions: {
+        isStatic: false,
+        isSensor: false, // It allows the particualar games' magnets to be sensors or to have physical bodies
+        // isSensor: levelData?.magnetsOnlySensors, // It allows the particualar games' magnets to be sensors or to have physical bodies
+        collisionFilter: {
+          category: SANDBOX_CONFIG.MOUSE.COLLISION_CATEGORY, // <--- whatever category your magnets use
+          mask: SANDBOX_CONFIG.MOUSE.COLLISION_MASK, // <--- who they collide with
+        },
+      },
+    });
+    dispatch(placeMagnet(newElectroMagnet));
+  };
+
+  const handleUpdateTime = (time: number) => {
+    if (gameEngine.engine) {
+      dispatch(updateElapsedTime(time));
+    }
+  };
 
   // Get Redux state
   const { placedMagnets: magnets, status: gameStatus } = useAppSelector(
     (state) => state.electroGame
   );
 
-  const recreateGameInstance = useCallback(() => {
-    // If the game engine is already initialized, destroy it first
-    if (!levelData || !containerRef.current) return;
-
-    gameEngine.cleanup();
-    // Create a new instance of the game engine
-    gameEngine.initialize(levelData, containerRef.current);
-  }, [levelData, containerRef]);
+  // Attach mouse constraint with drag restriction (non-React version)
+  // useEffect(() => {
+  //   if (!gameEngine.engine) return;
+  //   const canvasContainer = gameEngine.containerElement; // This exists and returns the canvas element ✅
+  //   if (!canvasContainer) return;
+  //   // Clean up previous constraint if any
+  //   if (mouseConstraintCleanupRef.current) {
+  //     mouseConstraintCleanupRef.current();
+  //     mouseConstraintCleanupRef.current = null;
+  //   }
+  //   const { MAGNET, MAGNET_ATTRACT, MAGNET_REPEL } = OBJECT_TYPES;
+  //   // Patch: get the mouseConstraint from the utility and set it on the game engine
+  //   let mouseConstraint: Matter.MouseConstraint | null = null;
+  //   const cleanup = attachMatterMouseConstraintWithRestriction(
+  //     gameEngine.engine,
+  //     canvas,
+  //     (body) =>
+  //       body.label === MAGNET ||
+  //       body.label === MAGNET_ATTRACT ||
+  //       body.label === MAGNET_REPEL
+  //   );
+  //   // Try to find the mouseConstraint in the engine's world
+  //   const allConstraints = (gameEngine.engine as any)?.world?.constraints || [];
+  //   mouseConstraint = allConstraints.find((c: any) => c.mouse);
+  //   if (mouseConstraint) {
+  //     gameEngine.setMouseConstraint(mouseConstraint);
+  //   }
+  //   mouseConstraintCleanupRef.current = cleanup;
+  //   return () => {
+  //     if (mouseConstraintCleanupRef.current) {
+  //       mouseConstraintCleanupRef.current();
+  //       mouseConstraintCleanupRef.current = null;
+  //     }
+  //     gameEngine.setMouseConstraint(null);
+  //   };
+  // }, [gameEngine.engine, gameEngine.getCanvasElement, magnets]);
 
   // Initialize game engine when level changes
   useEffect(() => {
     if (!levelData || !containerRef.current) return;
 
     // Initialize game engine with level data
-    gameEngine.initialize(levelData, containerRef.current);
+    gameEngine.initialize(
+      levelData,
+      containerRef.current,
+      onPlaceMagnet,
+      handleUpdateTime
+    );
+
+    if (levelData.electromagnets?.length > 0) {
+      // Add magnets to the game engine
+      levelData.electromagnets.forEach((magnet) => {
+        dispatch(placeMagnet(magnet));
+      });
+    }
 
     // Set up event listeners
     const unsubscribeWin = gameEngine.onWin(() => {
@@ -66,8 +134,10 @@ export const useGameEngineBridge = (
   }, [levelData, containerRef]);
 
   useEffect(() => {
+    if (!levelData || !containerRef.current) return;
+
     if (gameStatus === 'idle' && gameEngine.engine === null) {
-      gameEngine.initialize(levelData!, containerRef.current!);
+      gameEngine.initialize(levelData, containerRef.current);
     }
   }, [gameStatus, levelData, containerRef]);
 
@@ -76,17 +146,23 @@ export const useGameEngineBridge = (
     if (!magnets) return;
 
     // Update magnets in the physics engine
-    gameEngine.updateMagnets(magnets);
+    gameEngine.updateMagnets(Array.from(magnets));
+
+    // Ensure restrictedMovement is set on the Matter.js body for each magnet
+    // Array.from(magnets).forEach((magnet) => {
+    //   if (magnet.body) {
+    //     magnet.body.restrictedMovement = magnet?.restrictedMovement || 'none';
+    //   }
+    // });
   }, [magnets]);
 
   // Handle game status changes (play, pause, etc.)
   useEffect(() => {
-    console.log('AAAAAAAAAAAAAAA');
-    // Stop any existing game loop
-    if (gameTimerRef.current) {
-      cancelAnimationFrame(gameTimerRef.current);
-      gameTimerRef.current = null;
-    }
+    // // Stop any existing game loop
+    // if (gameTimerRef.current) {
+    //   cancelAnimationFrame(gameTimerRef.current);
+    //   gameTimerRef.current = null;
+    // }
 
     // Sync game engine status with Redux status
     gameEngine.setGameStatus(gameStatus);
@@ -94,11 +170,13 @@ export const useGameEngineBridge = (
     if (gameStatus === 'playing') {
       // Start game loop
       const gameLoop = () => {
+        console.log('🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀');
+
         // Update physics
         gameEngine.update();
 
         // Apply magnetic forces
-        gameEngine.applyMagneticForces(magnets);
+        gameEngine.applyMagneticForces(Array.from(magnets));
 
         // Update elapsed time in Redux
         dispatch(updateElapsedTime(gameEngine.getElapsedTime()));
@@ -135,6 +213,6 @@ export const useGameEngineBridge = (
   return {
     resetBall: () => gameEngine.resetBall(),
     getEngine: () => gameEngine,
-    recreateGameInstance,
+    // recreateGameInstance,
   };
 };

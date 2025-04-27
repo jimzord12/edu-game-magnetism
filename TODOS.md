@@ -72,6 +72,26 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
 - [ ] Add retry mechanism for failed storage operations
 - [ ] Add storage quota management
 
+### Game Mechanics
+
+- [ ] Display the time that the game/simulation has been running for the current player.
+- [ ] Magnets require a couple of behavioral enhancements:
+  - [ ] Magnets should be able to be placed on the game canvas and then moved around.
+  - [ ] Magnets should be able to be removed from the game canvas.
+  - [x] Magnets should have a default size and shape.
+  - [x] Magnets should have a default color, depending on their polarity.
+  - [ ] Magnets should have a default strength, but can be strengthened or weakened by the player.
+  - [ ] Magnets should NOT be able to be dragged when the game is at "playing" state.
+  - [x] Magnets should have a default polarity, but can be reversed by the player.
+  - [ ] Magnets should have a default position, but can be moved by the player.
+  - [ ] Magnets should have the ability to have their movement restricted to either horizontal or vertical.
+  - [ ] The Magnet placement and the Magnet dragging should be done in a way that one is not interfering with another. Basically, you cannot place and drag a Magnet at the same time.
+- [ ] When the game is paused, the player should be able to see the current state of the game, including the position of all magnets and their strengths.
+- [ ] When the player has won or lost the game,
+  - [ ] the game should display a message indicating the outcome of the game.
+  - [ ] The game should stop updating the game engine.
+- [ ] We need the ability to make level entities, like walls, hazards, magnets, etc. to be move on a specific repeated fashion.
+
 ---
 
 ## 🧪 Behavior Flow (UI Logic)

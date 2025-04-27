@@ -1,13 +1,21 @@
 // GameEngine.ts - A singleton physics engine that persists regardless of React's lifecycle
 
-import Matter from 'matter-js';
+import Matter, { Events, MouseConstraint } from 'matter-js';
 import p5 from 'p5';
 import { Ball } from '@/models/Ball';
 import { Wall } from '@/models/Wall';
-import { BASE_CONFIG, GAME_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
+import {
+  BASE_CONFIG,
+  GAME_CONFIG,
+  OBJECT_TYPES,
+  SANDBOX_CONFIG,
+} from '@/config/gameConfig';
 import { ILevel } from '@/features/levels/types';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { GameState } from '../../types';
+import { createMouseOptionsElectro } from '@/utils/attachMatterMouseConstraintWithRestriction';
+import { isMagnetClicked } from '@/features/sandbox/helpers';
+import { willNewMagnetOverlap } from '../../utils';
 
 type GameEventCallback = (data?: unknown) => void;
 
@@ -15,20 +23,22 @@ type GameEventCallback = (data?: unknown) => void;
  * Singleton GameEngine class that manages the Matter.js physics world and p5.js rendering
  * This decouples the physics state from React's component lifecycle
  */
-class GameEngine {
-  private static instance: GameEngine | null = null;
+class GameEngineElectro {
+  private static instance: GameEngineElectro | null = null;
   public engine: Matter.Engine | null = null;
   private p5Instance: p5 | null = null;
   private ball: Ball | null = null;
   private target: Ball | null = null; // Target is also represented as a Ball model for simplicity
-  private containerElement: HTMLElement | null = null;
+  public containerElement: HTMLElement | null = null;
   private currentLevel: ILevel<'electromagnet'> | null = null;
   private walls: Wall[] = []; // Changed from wallBodies: Matter.Body[]
-  private isWorldReady: boolean = false;
+  public isWorldReady: boolean = false;
   private startTime: number | null = null;
   private magnets: ElectroMagnet[] = [];
   private gameStatus: GameState = 'idle';
-  private isInitialized: boolean = false;
+  public isInitialized: boolean = false;
+  private mouseConstraint: Matter.MouseConstraint | null = null;
+  private selectedMagnet: ElectroMagnet | null = null;
 
   // Event callbacks
   private onCollisionCallbacks: GameEventCallback[] = [];
@@ -36,17 +46,21 @@ class GameEngine {
   private onWinCallbacks: GameEventCallback[] = [];
   private onLoseCallbacks: GameEventCallback[] = [];
 
+  // React Bridges
+  public onUpdateTime: ((time: number) => void) | null = null;
+  public onGameStatusChange: ((status: string) => void) | null = null;
+
   // Prevent direct instantiation outside this class
   private constructor() {}
 
   /**
    * Get the singleton instance
    */
-  public static getInstance(): GameEngine {
-    if (!GameEngine.instance) {
-      GameEngine.instance = new GameEngine();
+  public static getInstance(): GameEngineElectro {
+    if (!GameEngineElectro.instance) {
+      GameEngineElectro.instance = new GameEngineElectro();
     }
-    return GameEngine.instance;
+    return GameEngineElectro.instance;
   }
 
   /**
@@ -54,33 +68,56 @@ class GameEngine {
    */
   public initialize(
     levelData: ILevel<'electromagnet'>,
-    container: HTMLElement
+    container: HTMLElement,
+    onPlaceMagnet?: (x: number, y: number) => void,
+    onUpdateTime?: (time: number) => void,
+    onGameStatusChange?: (status: string) => void
   ): void {
-    // If already initialized with the same level, don't reinitialize
-    if (this.isInitialized && this.currentLevel?.id === levelData.id) {
-      console.log('Game engine already initialized with this level');
-      return;
-    }
-
     // Clean up previous instance if it exists
     this.cleanup();
+
+    console.log('Level data:', levelData);
+    console.log('Container element:', container);
+    console.log('onPlaceMagnet:', onPlaceMagnet);
+    console.log('onUpdateTime:', onUpdateTime);
+
+    this.onUpdateTime = onUpdateTime || null; // Default to no-op if not provided
+    this.onGameStatusChange = onGameStatusChange || null; // Default to no-op if not provided
 
     this.currentLevel = levelData;
     this.containerElement = container;
     this.isWorldReady = false;
     this.gameStatus = 'idle';
-    this.walls = []; // Clear walls array
-
-    // Create Matter.js engine
-    this.engine = Matter.Engine.create();
-    this.engine.gravity = { ...GAME_CONFIG.WORLD.GRAVITY };
 
     // Create p5 sketch
     const sketch = (p: p5) => {
+      console.log('SKETCH: p5 instance:', p);
+
+      this.walls = []; // Clear walls array
+
+      // Create Matter.js engine
+      this.engine = Matter.Engine.create();
+      this.engine.gravity = { ...GAME_CONFIG.WORLD.GRAVITY };
+
+      let mouseConstraint: MouseConstraint;
+
       p.setup = () => {
         p.createCanvas(levelData.canvasSize.width, levelData.canvasSize.height);
-        p.frameRate(60);
+
+        // p.frameRate(60);
         console.log('GameEngine: p5 setup complete for level:', levelData.id);
+
+        if (this.engine === null) {
+          console.error('⛔⛔ Engine not initialized! ⛔⛔');
+          return;
+        }
+        const mouseOptions = createMouseOptionsElectro(p);
+        this.mouseConstraint = MouseConstraint.create(
+          this.engine!,
+          mouseOptions
+        );
+        mouseConstraint = this.mouseConstraint;
+        Matter.World.add(this.engine.world, mouseConstraint);
 
         //// --- Create Game Objects --- ////
         // Create Ball
@@ -108,24 +145,45 @@ class GameEngine {
           },
         });
 
-        // Load Walls & Hazards (using the Wall model)
-        // Walls and Hazards are expected to be pre-instantiated in levelData.walls
+        //// ---- Load Level Entity Objects ---- ////
         this.walls = levelData.walls;
+        const levelMagnets = levelData.electromagnets || [];
 
         //// --- Add Game Objects to the Physics World --- ////
 
         // Add elements to world
-        this.walls.forEach((wall) => {
-          Matter.World.add(this.engine!.world, wall.body);
-        });
+        const wallBodies = this.walls.map((wall) => wall.body);
+        const ballBody = this.ball.body!;
+        const targetBody = this.target.body!;
+        const levelMagnetsBodies = levelMagnets.map((magnet) => magnet.body);
+        this.magnets.push(...(levelData.electromagnets || []));
 
-        Matter.World.add(this.engine!.world, this.ball.body);
-        Matter.World.add(this.engine!.world, this.target.body);
+        const magnetBodies = this.magnets.map((magnet) => magnet.body);
+
+        const allBodies = [
+          ballBody,
+          targetBody,
+          ...levelMagnetsBodies,
+          ...wallBodies,
+          ...magnetBodies,
+        ];
+
+        Matter.World.add(this.engine.world, allBodies); // Add all bodies to the world
+
+        // Add the mouse constraint to world separately to ensure it's added after bodies
 
         //// --- Collisions --- ////
 
+        Events.on(mouseConstraint, 'startdrag', (e) => {
+          console.log('▶︎ start dragging body:', e);
+        });
+
+        Events.on(mouseConstraint, 'enddrag', (e) => {
+          console.log('◻︎ stopped dragging body:', e);
+        });
+
         // Collision events
-        Matter.Events.on(this.engine!, 'collisionStart', (event) => {
+        Matter.Events.on(this.engine, 'collisionStart', (event) => {
           event.pairs.forEach((pair) => {
             const { bodyA, bodyB } = pair;
             const labels = [bodyA.label, bodyB.label];
@@ -164,6 +222,32 @@ class GameEngine {
       };
 
       p.draw = () => {
+        // Game State Management
+        switch (this.gameStatus) {
+          case 'idle':
+            this.update(); // Update the game engine
+            break;
+          case 'playing':
+            this.update(); // Update the game engine
+            onGameStatusChange?.('playing'); // Notify game status change
+            break;
+          case 'paused':
+            // this.update(); // Update the game engine
+            onGameStatusChange?.('paused'); // Notify game status change
+            break;
+          case 'won':
+            onGameStatusChange?.('won'); // Notify game status change
+            // Do nothing, just render the current state
+            break;
+          case 'lost':
+            onGameStatusChange?.('lost'); // Notify game status change
+            // Do nothing, just render the current state
+            break;
+
+          default:
+            break;
+        }
+
         p.background(220);
 
         // Render Walls and Hazards (using their own render methods)
@@ -201,14 +285,84 @@ class GameEngine {
         // Notify render listeners
         this.onRenderCallbacks.forEach((cb) => cb());
       };
+
+      // Handle mousePressed for magnet placement
+      p.mousePressed = () => {
+        //// ---- Mouse constraint setup ---- ////
+        // We create a single mouse constraint here in setup
+        // and it will be the only one used throughout
+        if (!this.engine || !this.mouseConstraint) {
+          console.log('Setup - Engine created:', this.engine);
+        }
+
+        console.log('Mouse pressed - mouseConstraint:', this.mouseConstraint);
+
+        if (!onPlaceMagnet || !this.currentLevel) return;
+
+        // Only allow placement if game is idle or paused
+        if (!(this.gameStatus === 'idle' || this.gameStatus === 'paused'))
+          return;
+
+        // Enforce magnet limit
+        if (this.magnets.length < this.currentLevel.availableMagnets) {
+          const margin = 20;
+          const x = p.mouseX;
+          const y = p.mouseY;
+
+          // Enforce border margin
+          if (
+            x < margin ||
+            x > this.currentLevel.canvasSize.width - margin ||
+            y < margin ||
+            y > this.currentLevel.canvasSize.height - margin
+          ) {
+            return;
+          }
+
+          // Enforce no overlapping magnets
+          const isOverlapping = willNewMagnetOverlap(
+            { position: { x, y }, radius: SANDBOX_CONFIG.MAGNETS.RADIUS },
+            this.magnets.map((m) => m.body)
+          );
+
+          if (!isOverlapping) {
+            console.log(
+              'Magnet placement failed: Overlapping with existing magnets!'
+            );
+            onPlaceMagnet(x, y);
+          } else {
+            this.handleMagnetSelection();
+          }
+        }
+
+        // Only handle magnet selection if we have a valid mouse constraint
+        if (this.isWorldReady && this.isInitialized && this.mouseConstraint) {
+          console.log('Starting Handle Magnet Selection...'); // Debugging log
+          this.handleMagnetSelection(); // Handle magnet selection on mouse press
+        } else {
+          console.log(
+            'Cannot handle magnet selection - not ready or no mouseConstraint'
+          );
+        }
+      };
+
+      p.mouseReleased = () => {
+        this.onMouseUp();
+      };
     };
+
+    console.log('Before P5 Init: ', this.containerElement);
 
     // Create p5 instance
     if (this.containerElement) {
       this.containerElement.innerHTML = '';
       this.p5Instance = new p5(sketch, this.containerElement);
+      console.log('p5Instance: ', this.p5Instance);
       this.isInitialized = true;
     }
+
+    // Don't create a second mouse constraint here!
+    // The one created in p.setup is sufficient
   }
 
   /**
@@ -250,37 +404,42 @@ class GameEngine {
   /**
    * Update the physics world (called from game loop or Redux)
    */
-  public update(deltaTime: number = GAME_CONFIG.WORLD.PHYSICS_TIMESTEP): void {
-    if (
-      !this.engine ||
-      !this.isWorldReady ||
-      this.gameStatus !== 'playing' ||
-      !this.ball || // Add null check for ball
-      !this.currentLevel // Add null check for currentLevel
-    )
-      return;
+  public update(): void {
+    if (!this.engine) return;
+    if (!this.isWorldReady) return;
+    if (!this.ball) return;
+    if (!this.currentLevel) return;
 
-    Matter.Engine.update(this.engine, deltaTime);
-
-    // Check if ball is out of bounds
-    const ballPos = this.ball.body.position;
-    const canvasWidth = this.currentLevel.canvasSize.width;
-    const canvasHeight = this.currentLevel.canvasSize.height;
-
-    if (
-      ballPos.x < -25 ||
-      ballPos.x > canvasWidth + 25 ||
-      ballPos.y < -25 ||
-      ballPos.y > canvasHeight + 25
-    ) {
-      console.log('Game Over: Ball went out of bounds!');
-      this.setGameStatus('lost'); // Callbacks handled by setGameStatus
-      return; // Stop further updates in this frame if lost
-    }
-
-    if (this.startTime === null) {
+    // ---- Game Time Management ---- //
+    if (this.startTime === null && this.gameStatus === 'idle') {
+      // The Game is in 'idle' Mode.
+      console.log('[Game Time Management] - Game is idle!');
+    } else if (this.startTime === null && this.gameStatus === 'playing') {
+      console.log('[Game Time Management] - Game started!');
+      // The Game is starting
       this.startTime = Date.now();
+    } else if (this.startTime !== null && this.gameStatus === 'paused') {
+      // The Game is Paused
+      console.log('[Game Time Management] - Game paused!');
+    } else {
+      // The Game is running
+      if (this.startTime === null) {
+        console.error('Start time is null, cannot calculate elapsed time!');
+        return;
+      }
+
+      this.applyMagneticForces(this.magnets); // Apply magnetic forces to the ball
+
+      const elapsedTime = (Date.now() - this.startTime) / 1000; // in seconds
+      if (this.onUpdateTime) {
+        this.onUpdateTime(elapsedTime); // Call the callback with elapsed time
+      }
+      console.log('Elapsed Time: ', elapsedTime); // Log the elapsed time
     }
+
+    this.hasBallExceededBounds(); // Check if the ball is out of bounds
+
+    Matter.Engine.update(this.engine);
   }
 
   /**
@@ -338,12 +497,20 @@ class GameEngine {
 
     this.magnets = magnets;
 
+    console.log('[GameEngine] Updating magnets:', magnets);
+
     const world = this.engine.world;
 
     // Remove existing magnet bodies
     const allBodies = Matter.Composite.allBodies(world);
     allBodies.forEach((body) => {
-      if (body.label === OBJECT_TYPES.MAGNET) {
+      if (
+        [
+          OBJECT_TYPES.MAGNET,
+          OBJECT_TYPES.MAGNET_ATTRACT,
+          OBJECT_TYPES.MAGNET_REPEL,
+        ].includes(body.label)
+      ) {
         Matter.World.remove(world, body, true);
       }
     });
@@ -370,6 +537,7 @@ class GameEngine {
     let totalForce = { x: 0, y: 0 };
 
     magnets.forEach((magnet) => {
+      console.log('[applyMagneticForces]: Magnet: ', magnet); // Debugging log
       if (!magnet.isActive) return;
 
       const magnetPos = {
@@ -379,10 +547,7 @@ class GameEngine {
       const direction = Matter.Vector.sub(magnetPos, ballPos);
       const distanceSq = Matter.Vector.magnitudeSquared(direction);
 
-      if (
-        distanceSq > GAME_CONFIG.MAGNETS.MAX_DISTANCE ** 2 ||
-        distanceSq < GAME_CONFIG.MAGNETS.MIN_DISTANCE ** 2
-      ) {
+      if (distanceSq > GAME_CONFIG.MAGNETS.MAX_DISTANCE ** 2) {
         return;
       }
 
@@ -402,6 +567,19 @@ class GameEngine {
       totalForce = Matter.Vector.add(totalForce, force);
     });
 
+    Matter.Body.applyForce(this.ball.body, ballPos, totalForce);
+  }
+
+  /**
+   * Remove magnetic forces from the ball
+   */
+  public removeMagneticForces(): void {
+    if (!this.ball || !this.engine || !this.isWorldReady) return;
+
+    const ballPos = this.ball.body.position;
+    const totalForce = { x: 0, y: 0 };
+
+    // Apply zero force to the ball
     Matter.Body.applyForce(this.ball.body, ballPos, totalForce);
   }
 
@@ -505,6 +683,96 @@ class GameEngine {
       this.startTime = Date.now();
     }
   }
+
+  /**
+   * Get the HTMLCanvasElement used by p5.js
+   */
+  public getCanvasElement(): HTMLCanvasElement | null {
+    if (this.p5Instance && this.p5Instance.drawingContext) {
+      return this.p5Instance.drawingContext.canvas as HTMLCanvasElement;
+    }
+    return null;
+  }
+
+  private handleMagnetSelection() {
+    // First check if the world and engine are actually ready
+    if (!this.isWorldReady || !this.isInitialized) {
+      console.log('Game world not ready for magnet selection');
+      return;
+    }
+
+    console.log('Mouse constraint: ', this.mouseConstraint); // Debugging log
+    console.log('Engine: ', this.engine); // Debugging log
+    if (this.mouseConstraint === null || this.engine === null) return;
+
+    // Get mouse position from constraint
+    const mousePos = this.mouseConstraint.mouse.position;
+    if (!mousePos) return;
+
+    // Additional debugging
+    console.log('Mouse position: ', mousePos);
+    console.log('Available magnets: ', this.magnets.length);
+
+    // Find which magnet is being clicked
+    const selectedMagnet = this.magnets.find((entity) => {
+      if (!entity.body.label.startsWith('magnet')) return false;
+
+      return isMagnetClicked(
+        mousePos,
+        entity.body.position,
+        SANDBOX_CONFIG.MAGNETS.RADIUS
+      );
+    }) as ElectroMagnet | undefined;
+
+    if (selectedMagnet) {
+      console.log('Selected magnet:', selectedMagnet);
+      this.selectedMagnet = selectedMagnet;
+      Matter.Body.setStatic(selectedMagnet.body, false); // Make dynamic while dragging
+    }
+  }
+
+  private handleMagnetRelease() {
+    if (this.selectedMagnet) {
+      Matter.Body.setStatic(this.selectedMagnet.body, true); // Make static again
+      this.selectedMagnet = null;
+    }
+  }
+
+  /**
+   * Set the mouse constraint
+   */
+  public setMouseConstraint(mouseConstraint: Matter.MouseConstraint) {
+    this.mouseConstraint = mouseConstraint;
+  }
+
+  /**
+   * Handle mouse up event to release the magnet
+   */
+  public onMouseUp() {
+    this.handleMagnetRelease();
+  }
+
+  public hasBallExceededBounds(): boolean {
+    if (!this.ball || !this.currentLevel) return false;
+    // Check if ball is out of bounds
+    const ballPos = this.ball.body.position;
+    const canvasWidth = this.currentLevel.canvasSize.width;
+    const canvasHeight = this.currentLevel.canvasSize.height;
+
+    if (
+      ballPos.x < -25 ||
+      ballPos.x > canvasWidth + 25 ||
+      ballPos.y < -25 ||
+      ballPos.y > canvasHeight + 25
+    ) {
+      console.log('Game Over: Ball went out of bounds!');
+      this.setGameStatus('lost'); // Callbacks handled by setGameStatus
+      return true;
+    }
+    return false;
+  }
+
+  //// ---- DEBUGGING ---- ////
 }
 
-export default GameEngine;
+export default GameEngineElectro;

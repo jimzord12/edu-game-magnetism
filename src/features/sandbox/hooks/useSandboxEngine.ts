@@ -32,6 +32,7 @@ export const useSandboxEngine = ({ containerRef }: UseSandboxEngineProps) => {
 
   const [canvasSize] = useState({ width: 800, height: 600 }); // Fixed size for sandbox
 
+  // Logic for mouse dragging magnets
   const handleMagnetSelection = useCallback(() => {
     if (!mouseConstraintRef.current || !engineRef.current) return;
 
@@ -39,7 +40,7 @@ export const useSandboxEngine = ({ containerRef }: UseSandboxEngineProps) => {
     const mousePos = mouseConstraintRef.current.mouse.position;
     if (!mousePos) return;
 
-    // Find which magnet is being clicked
+    /// ---- The problem the 2 handlers solve is that magnets were static, therefore could not be dragged ---- ///
     const selectedMagnet = dynamicEntitiesRef.current.find((entity) => {
       if (!(entity instanceof Magnet)) return false;
       return isMagnetClicked(
@@ -52,13 +53,15 @@ export const useSandboxEngine = ({ containerRef }: UseSandboxEngineProps) => {
     if (selectedMagnet) {
       selectedMagnetRef.current = selectedMagnet;
       Matter.Body.setStatic(selectedMagnet.body, false); // Make dynamic while dragging
+      console.log('Selected magnet:', selectedMagnet);
     }
   }, [
     mouseConstraintRef.current,
     engineRef.current,
-    selectedMagnetRef.current,
+    // selectedMagnetRef.current,
   ]);
 
+  // Logic for mouse dragging magnets
   const handleMagnetRelease = useCallback(() => {
     if (selectedMagnetRef.current) {
       Matter.Body.setStatic(selectedMagnetRef.current.body, true); // Make static again
@@ -229,6 +232,7 @@ export const useSandboxEngine = ({ containerRef }: UseSandboxEngineProps) => {
       p.mousePressed = () => {
         if (mouseConstraintRef.current) {
           console.log('🐭 Mouse is Pressed!');
+          console.log('Mouse Constraint: ', mouseConstraintRef.current);
           handleMagnetSelection(); // Check for magnet selection
         }
       };

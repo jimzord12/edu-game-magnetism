@@ -7,15 +7,12 @@ import {
   pauseGame,
   resumeGame,
   placeMagnet,
-  setSelectedElectromagnet,
 } from '../../features/games/electroMagnets/slices/electroGameSlice';
 
 import { ILevel, ILevelElectroMagnet } from '@/features/levels/types';
 import ElectroGameCanvas from '@/features/games/electroMagnets/components/ElectroGameCanvas';
 import ElectromagnetPanel from '@/features/games/electroMagnets/components/ElectromagnetPanel';
-import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { getElectroMagnetLevels } from '@/config/levels';
-import useForceRerender from '@/hooks/useForceRerender';
 
 const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
   return getElectroMagnetLevels().find((level) => level.id === id) || null;
@@ -24,7 +21,7 @@ const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
 const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
   const levelId = levelIdStr ? parseInt(levelIdStr) : null;
-  const { forceUpdate } = useForceRerender();
+  // const { forceUpdate } = useForceRerender();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
@@ -32,10 +29,22 @@ const GamePage: React.FC = () => {
     levelId: currentLevelId,
     placedMagnets,
     elapsedTime,
-    selectedElectromagnet,
+    // selectedElectromagnet,
   } = useAppSelector((state) => state.electroGame);
   const [currentLevelData, setCurrentLevelData] =
     useState<ILevelElectroMagnet | null>(null);
+
+  // Add Level Magnets to the Redux Slice
+  useEffect(() => {
+    if (
+      currentLevelData?.electromagnets &&
+      currentLevelData?.electromagnets.length > 0
+    ) {
+      currentLevelData.electromagnets.forEach((magnet) => {
+        dispatch(placeMagnet(magnet));
+      });
+    }
+  }, [currentLevelData, dispatch]);
 
   useEffect(() => {
     if (levelId) {
@@ -60,7 +69,7 @@ const GamePage: React.FC = () => {
     } else if (gameStatus === 'paused') {
       dispatch(resumeGame());
     } else if (gameStatus === 'idle' && currentLevelData) {
-      if (placedMagnets.length > 0) {
+      if (placedMagnets.size > 0) {
         dispatch(startGame());
       } else {
         alert('Place at least one magnet to start!');
@@ -79,63 +88,26 @@ const GamePage: React.FC = () => {
     }
   };
 
-  const findMagnetById = (
-    id: number,
-    magnets: ElectroMagnet[]
-  ): ElectroMagnet | null => {
-    return magnets.find((m) => m.id === id) || null;
-  };
+  // const findMagnetById = (
+  //   id: number,
+  //   magnets: ElectroMagnet[]
+  // ): ElectroMagnet | null => {
+  //   return magnets.find((m) => m.id === id) || null;
+  // };
 
-  const handleMagnetClick = (
-    event: React.MouseEvent,
-    magnet: ElectroMagnet
-  ) => {
-    event.stopPropagation();
-    if (gameStatus !== 'idle') return;
+  // const handleMagnetClick = (
+  //   event: React.MouseEvent,
+  //   magnet: ElectroMagnet
+  // ) => {
+  //   event.stopPropagation();
+  //   if (gameStatus !== 'idle') return;
 
-    const _magnet = findMagnetById(magnet.id, placedMagnets);
-    if (!_magnet) return;
-    console.log('Magnet clicked:', magnet.id);
-    dispatch(setSelectedElectromagnet(_magnet));
-    forceUpdate();
-  };
-
-  const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    // Allow placing magnets when game is either idle or paused
-    if ((gameStatus !== 'idle' && gameStatus !== 'paused') || !currentLevelData)
-      return;
-
-    const canvasRect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - canvasRect.left;
-    const y = event.clientY - canvasRect.top;
-
-    const margin = 20;
-    if (
-      x < margin ||
-      x > currentLevelData.canvasSize.width - margin ||
-      y < margin ||
-      y > currentLevelData.canvasSize.height - margin
-    ) {
-      console.log('Cannot place magnet near border.');
-      return;
-    }
-
-    if (placedMagnets.length < currentLevelData.availableMagnets) {
-      const newElectroMagnet = new ElectroMagnet({
-        x,
-        y,
-        isAttracting: true,
-        matterOptions: {
-          isSensor: currentLevelData.magnetsOnlySensors,
-        },
-      });
-      dispatch(placeMagnet(newElectroMagnet));
-    } else {
-      alert(
-        `You can only place ${currentLevelData.availableMagnets} Electromagnets.`
-      );
-    }
-  };
+  //   const _magnet = findMagnetById(magnet.id, Array.from(placedMagnets));
+  //   if (!_magnet) return;
+  //   console.log('Magnet clicked:', magnet.id);
+  //   dispatch(setSelectedElectromagnet(_magnet));
+  //   forceUpdate();
+  // };
 
   if (!currentLevelData) {
     return (
@@ -165,14 +137,14 @@ const GamePage: React.FC = () => {
             <div className="button-group">
               <button
                 className={`game-btn primary-btn ${
-                  placedMagnets.length <= 0 &&
+                  placedMagnets.size <= 0 &&
                   gameStatus === 'idle' &&
                   'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={handleStartPause}
                 disabled={
                   !levelId ||
-                  (gameStatus === 'idle' && placedMagnets.length === 0)
+                  (gameStatus === 'idle' && placedMagnets.size === 0)
                 }
               >
                 {gameStatus === 'playing'
@@ -214,7 +186,7 @@ const GamePage: React.FC = () => {
               <div className="stat-item">
                 <span>Electromagnets:</span>
                 <span className="stat-value">
-                  {placedMagnets.length} / {currentLevelData.availableMagnets}
+                  {placedMagnets.size} / {currentLevelData.availableMagnets}
                 </span>
               </div>
             </div>
@@ -251,18 +223,18 @@ const GamePage: React.FC = () => {
         </div>
         <div
           className="game-canvas-wrapper"
-          onClick={handleCanvasClick}
+          // onClick={handleCanvasClick}
           style={{
             cursor:
               (gameStatus === 'idle' || gameStatus === 'paused') &&
-              placedMagnets.length < currentLevelData.availableMagnets
+              placedMagnets.size < currentLevelData.availableMagnets
                 ? 'crosshair'
                 : 'default',
             width: currentLevelData.canvasSize.width,
             height: currentLevelData.canvasSize.height,
           }}
         >
-          {gameStatus === 'idle' && (
+          {/* {gameStatus === 'idle' && (
             <div
               className="magnet-overlay"
               style={{
@@ -270,7 +242,7 @@ const GamePage: React.FC = () => {
                 height: currentLevelData.canvasSize.height,
               }}
             >
-              {placedMagnets.map((magnet) => (
+              {Array.from(placedMagnets).map((magnet) => (
                 <div
                   key={magnet.id}
                   onClick={(e) => handleMagnetClick(e, magnet)}
@@ -295,11 +267,14 @@ const GamePage: React.FC = () => {
                 />
               ))}
             </div>
-          )}
+          )} */}
           <ElectroGameCanvas levelData={currentLevelData} />
         </div>
       </div>
-      <ElectromagnetPanel gameStatus={gameStatus} magnets={placedMagnets} />
+      <ElectromagnetPanel
+        gameStatus={gameStatus}
+        magnets={Array.from(placedMagnets)}
+      />
       <div className="navigation-footer">
         <button
           className="game-btn secondary-btn"

@@ -51,7 +51,7 @@ function App() {
   const LazyAppRouter = lazy(() =>
     import('./router').then((module) => {
       if (import.meta.env.DEV) {
-        return waitFor(1000).then(() => ({ default: module.AppRouter }));
+        return waitFor(200).then(() => ({ default: module.AppRouter }));
       }
       return { default: module.AppRouter };
     })
