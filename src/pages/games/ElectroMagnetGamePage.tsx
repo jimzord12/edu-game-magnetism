@@ -69,10 +69,12 @@ const GamePage: React.FC = () => {
     } else if (gameStatus === 'paused') {
       dispatch(resumeGame());
     } else if (gameStatus === 'idle' && currentLevelData) {
-      if (placedMagnets.size > 0) {
+      if (placedMagnets.size >= currentLevelData.minMagnetsToStart) {
         dispatch(startGame());
       } else {
-        alert('Place at least one magnet to start!');
+        alert(
+          `Place at least ${currentLevelData.minMagnetsToStart} magnets to start!`
+        );
       }
     } else if (gameStatus === 'won' || gameStatus === 'lost') {
       if (levelId) {
@@ -137,14 +139,15 @@ const GamePage: React.FC = () => {
             <div className="button-group">
               <button
                 className={`game-btn primary-btn ${
-                  placedMagnets.size <= 0 &&
+                  placedMagnets.size < currentLevelData.minMagnetsToStart &&
                   gameStatus === 'idle' &&
                   'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={handleStartPause}
                 disabled={
                   !levelId ||
-                  (gameStatus === 'idle' && placedMagnets.size === 0)
+                  (gameStatus === 'idle' &&
+                    placedMagnets.size < currentLevelData.minMagnetsToStart)
                 }
               >
                 {gameStatus === 'playing'

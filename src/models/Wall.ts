@@ -2,6 +2,7 @@ import p5 from 'p5';
 import Matter, { IBodyDefinition } from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
 import { Identifiable } from './base/Identifiable';
+import { MovementPattern } from '@/features/games/types';
 
 interface WallConstructorProps {
   x: number;
@@ -10,6 +11,7 @@ interface WallConstructorProps {
   // Optional configuration overrides
   matterOptions?: Matter.IBodyDefinition;
   isHazard?: boolean; // Added for spikes
+  movementPattern?: MovementPattern;
 }
 
 const defaultMatterOptions: IBodyDefinition = {
@@ -25,6 +27,7 @@ export class Wall extends Identifiable {
   public readonly body: Matter.Body; // The physics body
   dimensions: { width: number; height: number };
   public isHazard: boolean; // Added
+  public movementPattern: MovementPattern | undefined; // Movement pattern for the wall
 
   constructor({
     x,
@@ -32,6 +35,7 @@ export class Wall extends Identifiable {
     dimensions,
     matterOptions = defaultMatterOptions,
     isHazard = false, // Default to false
+    movementPattern,
   }: WallConstructorProps) {
     super();
     this.isHazard = isHazard;
@@ -50,6 +54,7 @@ export class Wall extends Identifiable {
       }
     );
     this.dimensions = dimensions;
+    this.movementPattern = movementPattern; // Assign the movement pattern
 
     if (this.isHazard) {
       console.log('☢️ Created this Hazard: ', this);

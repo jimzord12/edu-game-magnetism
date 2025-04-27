@@ -14,6 +14,7 @@ export interface ILevelBase {
   walls: Wall[];
   // hazards?: Wall[]; // Added optional hazards array
   availableMagnets: number; // How many magnets the player can place
+  minMagnetsToStart: number; // Minimum magnets to start the level
 
   timeLimit?: number;
   progress: ILevelProgress;

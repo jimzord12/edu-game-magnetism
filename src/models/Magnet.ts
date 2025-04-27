@@ -2,6 +2,7 @@ import p5 from 'p5';
 import Matter from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES, GAME_CONFIG } from '@/config/gameConfig';
 import { Identifiable } from './base/Identifiable';
+import { MovementPattern } from '@/features/games/types';
 
 export type MovementRestriction = 'horizontal' | 'vertical' | 'none';
 
@@ -20,6 +21,7 @@ export interface MagnetConstructorProps {
   strength?: number;
   readonly restrictedMovement?: MovementRestriction; // Restrict movement to horizontal or vertical
   isRemovable?: boolean; // Whether the magnet can be removed by the player
+  movementPattern?: MovementPattern;
 }
 
 export class Magnet extends Identifiable {
@@ -30,6 +32,7 @@ export class Magnet extends Identifiable {
   };
   public strength: number; // [min, max]
   public isRemovable: boolean;
+  public movementPattern: MovementPattern | undefined; // Movement pattern for the magnet
 
   // Private properties for configuration
   protected readonly magnetRadius: number;
@@ -42,6 +45,7 @@ export class Magnet extends Identifiable {
     isAttracting,
     matterOptions = {},
     renderConfig = {},
+    movementPattern,
     strength = GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH,
     restrictedMovement = 'none',
     isRemovable = true,
@@ -50,6 +54,7 @@ export class Magnet extends Identifiable {
     this.isAttracting = isAttracting;
     this.strength = strength;
     this.isRemovable = isRemovable;
+    this.movementPattern = movementPattern; // Assign the movement pattern
 
     // Determine configuration, using defaults from SANDBOX_CONFIG if not provided
     this.magnetRadius = renderConfig.radius ?? SANDBOX_CONFIG.MAGNETS.RADIUS;
@@ -78,7 +83,7 @@ export class Magnet extends Identifiable {
 
     // Create the Matter.js body
     this.body = Object.assign(_body, { restrictedMovement });
-    console.log('🐦‍🔥 Created this Ball: ', this);
+    console.log('🐦‍🔥 Created this Magnet: ', this);
 
     // Optionally, still add customData if direct body iteration is needed elsewhere
     // this.body.customData = { isMagnet: true, isAttracting: this.isAttracting };

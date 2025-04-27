@@ -3,6 +3,7 @@ import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Wall } from '@/models/Wall';
 
 const thinWallDimensions = { width: 10, height: 50 };
+const thinLongWallDimensions = { width: 10, height: 300 };
 
 // Id Convention:
 // 100 - 199: Magnet Level
@@ -29,6 +30,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       completed: false,
       bestTime: undefined,
     },
+    minMagnetsToStart: 1,
   },
   {
     id: 101,
@@ -50,6 +52,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       completed: false,
       bestTime: undefined,
     },
+    minMagnetsToStart: 1,
   },
   {
     id: 102,
@@ -71,6 +74,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       completed: false,
       bestTime: undefined,
     },
+    minMagnetsToStart: 1,
   },
 
   // Add more levels here...
@@ -86,44 +90,54 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
     targetPosition: { x: 700, y: 300 },
     walls: [
       new Wall({
-        x: 400,
-        y: 5,
-        dimensions: thinWallDimensions,
-        isHazard: true,
+        x: 650,
+        y: 250,
+        dimensions: thinLongWallDimensions,
+        isHazard: false,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 6,
+          speed: 2.5,
+          startDelay: 1,
+          loop: true,
+        },
       }),
-      new Wall({
-        x: 400,
-        y: 595,
-        dimensions: thinWallDimensions,
-        isHazard: true,
-      }),
-      new Wall({
-        x: 5,
-        y: 300,
-        dimensions: thinWallDimensions,
-        isHazard: true,
-      }),
+      // new Wall({
+      //   x: 400,
+      //   y: 595,
+      //   dimensions: thinWallDimensions,
+      //   isHazard: true,
+      // }),
+      // new Wall({
+      //   x: 5,
+      //   y: 300,
+      //   dimensions: thinWallDimensions,
+      //   isHazard: true,
+      // }),
     ],
-    availableMagnets: 4,
+    availableMagnets: 2, // Number of magnets the player can place
+    minMagnetsToStart: 1, // Minimum magnets to start the level
     electromagnets: [
       new ElectroMagnet({
         x: 200,
         y: 300,
         isAttracting: true,
         isRemovable: false,
-        restrictedMovement: 'vertical',
+        restrictedMovement: 'none',
         matterOptions: {
           isSensor: true,
         },
       }),
-      new ElectroMagnet({
-        x: 400,
-        y: 500,
-        isAttracting: true,
-        isRemovable: false,
-        restrictedMovement: 'horizontal',
-      }),
+      // new ElectroMagnet({
+      //   x: 400,
+      //   y: 500,
+      //   isAttracting: true,
+      //   isRemovable: false,
+      //   restrictedMovement: 'none',
+      // }),
     ],
+    // electromagnets: [],
     progress: {
       completed: false,
       bestTime: undefined,
@@ -143,6 +157,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
     availableMagnets: 2,
+    minMagnetsToStart: 1,
     electromagnets: [],
 
     progress: {
@@ -163,6 +178,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
     availableMagnets: 2,
+    minMagnetsToStart: 1,
     electromagnets: [],
     progress: {
       completed: false,

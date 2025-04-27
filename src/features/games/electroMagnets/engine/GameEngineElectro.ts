@@ -39,6 +39,7 @@ class GameEngineElectro {
   public isInitialized: boolean = false;
   private mouseConstraint: Matter.MouseConstraint | null = null;
   private selectedMagnet: ElectroMagnet | null = null;
+  private selectedMagnetPrevPos: Matter.Vector | null = null;
 
   // Event callbacks
   private onCollisionCallbacks: GameEventCallback[] = [];
@@ -172,14 +173,37 @@ class GameEngineElectro {
 
         // Add the mouse constraint to world separately to ensure it's added after bodies
 
-        //// --- Collisions --- ////
+        //// ---- EVENTS ---- ////
 
-        Events.on(mouseConstraint, 'startdrag', (e) => {
-          console.log('▶︎ start dragging body:', e);
+        // Mouse events
+        // Events.on(mouseConstraint, 'mousemove', (e) => {
+        //   console.log('◻︎ mouse move:', e);
+        //   if (this.mouseConstraint !== null) {
+        //     console.log('Mouse constraint:', this.mouseConstraint.body);
+        //   }
+        // });
+
+        Events.on(mouseConstraint, 'startdrag', (event) => {
+          const e = event as unknown as Matter.IMouseEvent<MouseConstraint> & {
+            body: Matter.Body & {
+              restrictedMovement?: 'horizontal' | 'vertical' | 'none';
+            };
+          };
+
+          const body = e.body;
+          if (!body) return;
+
+          if (body.restrictedMovement && body.restrictedMovement !== 'none') {
+            // this.selectedMagnet = body; // Save body
+            this.selectedMagnetPrevPos = { ...body.position }; // Save starting position
+          }
         });
 
         Events.on(mouseConstraint, 'enddrag', (e) => {
           console.log('◻︎ stopped dragging body:', e);
+          if (this.mouseConstraint !== null) {
+            this.selectedMagnetPrevPos = null;
+          }
         });
 
         // Collision events
@@ -226,9 +250,15 @@ class GameEngineElectro {
         switch (this.gameStatus) {
           case 'idle':
             this.update(); // Update the game engine
+            this.applyEntityMovements();
+            this.applyMagnetMovementRestrictions(); // Apply movement restrictions
+
             break;
           case 'playing':
             this.update(); // Update the game engine
+            this.applyEntityMovements();
+            this.applyMagnetMovementRestrictions(); // Apply movement restrictions
+
             onGameStatusChange?.('playing'); // Notify game status change
             break;
           case 'paused':
@@ -291,20 +321,22 @@ class GameEngineElectro {
         //// ---- Mouse constraint setup ---- ////
         // We create a single mouse constraint here in setup
         // and it will be the only one used throughout
+        console.log('Mouse pressed - mouseConstraint:', this.mouseConstraint);
         if (!this.engine || !this.mouseConstraint) {
           console.log('Setup - Engine created:', this.engine);
         }
 
-        console.log('Mouse pressed - mouseConstraint:', this.mouseConstraint);
-
         if (!onPlaceMagnet || !this.currentLevel) return;
 
         // Only allow placement if game is idle or paused
-        if (!(this.gameStatus === 'idle' || this.gameStatus === 'paused'))
-          return;
+        // if (!(this.gameStatus === 'idle' || this.gameStatus === 'paused'))
+        //   return;
 
         // Enforce magnet limit
-        if (this.magnets.length < this.currentLevel.availableMagnets) {
+        if (
+          (this.gameStatus === 'idle' || this.gameStatus === 'paused') &&
+          this.magnets.length < this.currentLevel.availableMagnets
+        ) {
           const margin = 20;
           const x = p.mouseX;
           const y = p.mouseY;
@@ -331,18 +363,19 @@ class GameEngineElectro {
             );
             onPlaceMagnet(x, y);
           } else {
+            console.log('🚀🚀🚀 Starting Handle Magnet Selection...'); // Debugging log
             this.handleMagnetSelection();
           }
-        }
-
-        // Only handle magnet selection if we have a valid mouse constraint
-        if (this.isWorldReady && this.isInitialized && this.mouseConstraint) {
-          console.log('Starting Handle Magnet Selection...'); // Debugging log
-          this.handleMagnetSelection(); // Handle magnet selection on mouse press
         } else {
-          console.log(
-            'Cannot handle magnet selection - not ready or no mouseConstraint'
-          );
+          // Only handle magnet selection if we have a valid mouse constraint
+          if (this.isWorldReady && this.isInitialized && this.mouseConstraint) {
+            console.log('Starting Handle Magnet Selection...'); // Debugging log
+            this.handleMagnetSelection(); // Handle magnet selection on mouse press
+          } else {
+            console.log(
+              'Cannot handle magnet selection - not ready or no mouseConstraint'
+            );
+          }
         }
       };
 
@@ -434,7 +467,7 @@ class GameEngineElectro {
       if (this.onUpdateTime) {
         this.onUpdateTime(elapsedTime); // Call the callback with elapsed time
       }
-      console.log('Elapsed Time: ', elapsedTime); // Log the elapsed time
+      // console.log('Elapsed Time: ', elapsedTime); // Log the elapsed time
     }
 
     this.hasBallExceededBounds(); // Check if the ball is out of bounds
@@ -537,7 +570,6 @@ class GameEngineElectro {
     let totalForce = { x: 0, y: 0 };
 
     magnets.forEach((magnet) => {
-      console.log('[applyMagneticForces]: Magnet: ', magnet); // Debugging log
       if (!magnet.isActive) return;
 
       const magnetPos = {
@@ -568,6 +600,53 @@ class GameEngineElectro {
     });
 
     Matter.Body.applyForce(this.ball.body, ballPos, totalForce);
+  }
+
+  private applyMagnetMovementRestrictions(): void {
+    if (
+      this.mouseConstraint &&
+      this.selectedMagnet &&
+      this.selectedMagnetPrevPos
+    ) {
+      const movement = this.selectedMagnet.body.restrictedMovement;
+      const mouse = this.mouseConstraint.mouse;
+
+      if (movement === 'horizontal') {
+        mouse.position.y = this.selectedMagnetPrevPos.y; // Lock Y
+      } else if (movement === 'vertical') {
+        mouse.position.x = this.selectedMagnetPrevPos.x; // Lock X
+      }
+    }
+  }
+
+  private applyEntityMovements() {
+    const updateEntity = <T extends Wall | ElectroMagnet>(entity: T) => {
+      if (entity.movementPattern === undefined) return;
+      if (entity.movementPattern.speed === undefined) return;
+      if (entity.movementPattern.amplitude === undefined) return;
+      if (entity.movementPattern.amplitude === undefined) return;
+
+      const { type, axis, amplitude, speed } = entity.movementPattern;
+      const { x: initialX, y: initialY } = entity.body.position;
+
+      if (type === 'oscillate') {
+        const offset = Math.sin(this.getElapsedTime() * speed) * amplitude;
+        if (axis === 'horizontal') {
+          Matter.Body.setPosition(entity.body, {
+            x: initialX + offset,
+            y: initialY,
+          });
+        } else if (axis === 'vertical') {
+          Matter.Body.setPosition(entity.body, {
+            x: initialX,
+            y: initialY + offset,
+          });
+        }
+      }
+    };
+
+    this.walls.forEach(updateEntity);
+    this.magnets.forEach(updateEntity);
   }
 
   /**
@@ -701,8 +780,10 @@ class GameEngineElectro {
       return;
     }
 
-    console.log('Mouse constraint: ', this.mouseConstraint); // Debugging log
-    console.log('Engine: ', this.engine); // Debugging log
+    console.log(
+      '[handleMagnetSelection] #1: Mouse constraint: ',
+      this.mouseConstraint
+    ); // Debugging log
     if (this.mouseConstraint === null || this.engine === null) return;
 
     // Get mouse position from constraint
@@ -710,8 +791,10 @@ class GameEngineElectro {
     if (!mousePos) return;
 
     // Additional debugging
-    console.log('Mouse position: ', mousePos);
-    console.log('Available magnets: ', this.magnets.length);
+    console.log(
+      '[handleMagnetSelection] #2: Available magnets: ',
+      this.magnets.length
+    );
 
     // Find which magnet is being clicked
     const selectedMagnet = this.magnets.find((entity) => {
@@ -725,9 +808,17 @@ class GameEngineElectro {
     }) as ElectroMagnet | undefined;
 
     if (selectedMagnet) {
-      console.log('Selected magnet:', selectedMagnet);
+      console.log(
+        '[handleMagnetSelection] #3: Selected magnet:',
+        selectedMagnet
+      );
       this.selectedMagnet = selectedMagnet;
       Matter.Body.setStatic(selectedMagnet.body, false); // Make dynamic while dragging
+      console.log(
+        'Selected magnet, is Static:',
+        this.selectedMagnet.body.isStatic
+      ); // Debugging log
+      console.log('[handleMagnetSelection] #4: Game State:', this.gameStatus);
     }
   }
 

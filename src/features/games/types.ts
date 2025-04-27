@@ -45,3 +45,22 @@ export interface UseElectroMagnetGameEngineProps
 export type UseGameEngineProps<T extends GameType> = T extends 'magnet'
   ? UseMagnetGameEngineProps
   : UseElectroMagnetGameEngineProps;
+
+export type MovementType = 'oscillate' | 'circular' | 'linear'; // You can extend this later
+
+export interface MovementPattern {
+  type: MovementType;
+
+  // For "oscillate" and "linear" types
+  axis?: 'horizontal' | 'vertical'; // Optional (but required for oscillate and linear)
+  amplitude?: number; // How far the entity moves from its original position (for oscillation)
+  speed?: number; // How fast it moves (affects frequency for oscillation)
+
+  // For "circular" type
+  radius?: number; // Radius of the circular path
+  center?: { x: number; y: number }; // Optional, defaults to initial position
+
+  // Optional extras for all types
+  startDelay?: number; // Delay in seconds before movement starts
+  loop?: boolean; // Whether the movement repeats (default true)
+}
