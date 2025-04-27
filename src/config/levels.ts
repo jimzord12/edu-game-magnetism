@@ -86,42 +86,63 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
     gameType: 'electromagnet',
     name: 'The Basics',
     canvasSize: { width: 1200, height: 800 },
-    ballStart: { x: 100, y: 300 },
-    targetPosition: { x: 700, y: 300 },
+    ballStart: { x: 100, y: 400 },
+    targetPosition: { x: 1100, y: 400 },
     walls: [
       new Wall({
-        x: 650,
+        x: 800,
+        y: 400,
+        dimensions: thinLongWallDimensions,
+
+        // movementPattern: {
+        //   type: 'oscillate',
+        //   axis: 'vertical',
+        //   amplitude: 6,
+        //   speed: 2.5,
+        //   startDelay: 1,
+        //   loop: true,
+        // },
+      }),
+      new Wall({
+        x: 1050,
         y: 250,
         dimensions: thinLongWallDimensions,
-        isHazard: false,
-        movementPattern: {
-          type: 'oscillate',
-          axis: 'vertical',
-          amplitude: 6,
-          speed: 2.5,
-          startDelay: 1,
-          loop: true,
+        matterOptions: {
+          angle: Math.PI / 4, // Rotate the wall by 45 degrees
         },
       }),
-      // new Wall({
-      //   x: 400,
-      //   y: 595,
-      //   dimensions: thinWallDimensions,
-      //   isHazard: true,
-      // }),
-      // new Wall({
-      //   x: 5,
-      //   y: 300,
-      //   dimensions: thinWallDimensions,
-      //   isHazard: true,
-      // }),
+      new Wall({
+        x: 1050,
+        y: 525,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: -Math.PI / 4, // Rotate the wall by 45 degrees
+        },
+      }),
+      new Wall({
+        x: 500,
+        y: 550,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: Math.PI / 2, // Rotate the wall by 90 degrees
+        },
+      }),
+      new Wall({
+        x: 500,
+        y: 250,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: Math.PI / 2, // Rotate the wall by 45 degrees
+        },
+        // isHazard: true,
+      }),
     ],
     availableMagnets: 2, // Number of magnets the player can place
     minMagnetsToStart: 1, // Minimum magnets to start the level
     electromagnets: [
       new ElectroMagnet({
-        x: 200,
-        y: 300,
+        x: 325,
+        y: 400,
         isAttracting: true,
         isRemovable: false,
         restrictedMovement: 'none',
