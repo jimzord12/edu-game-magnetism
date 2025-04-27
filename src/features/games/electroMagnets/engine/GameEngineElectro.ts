@@ -624,13 +624,23 @@ class GameEngineElectro {
       if (entity.movementPattern === undefined) return;
       if (entity.movementPattern.speed === undefined) return;
       if (entity.movementPattern.amplitude === undefined) return;
-      if (entity.movementPattern.amplitude === undefined) return;
+
+      if (
+        entity.movementPattern.startDelay &&
+        entity.movementPattern.startDelay > this.getElapsedTime()
+      )
+        return;
 
       const { type, axis, amplitude, speed } = entity.movementPattern;
       const { x: initialX, y: initialY } = entity.body.position;
 
       if (type === 'oscillate') {
-        const offset = Math.sin(this.getElapsedTime() * speed) * amplitude;
+        const direction = entity.movementPattern.direction || 1;
+        const delay = entity.movementPattern.startDelay || 0;
+        const offset =
+          Math.sin(this.getElapsedTime() * speed + delay) *
+          amplitude *
+          direction; // Re-enable offset calculation
         if (axis === 'horizontal') {
           Matter.Body.setPosition(entity.body, {
             x: initialX + offset,

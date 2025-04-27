@@ -150,15 +150,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
           isSensor: true,
         },
       }),
-      // new ElectroMagnet({
-      //   x: 400,
-      //   y: 500,
-      //   isAttracting: true,
-      //   isRemovable: false,
-      //   restrictedMovement: 'none',
-      // }),
     ],
-    // electromagnets: [],
     progress: {
       completed: false,
       bestTime: undefined,
@@ -169,22 +161,112 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
     id: 201,
     gameType: 'electromagnet',
     name: 'The Maze',
-    canvasSize: { width: 800, height: 600 },
-    ballStart: { x: 100, y: 300 },
-    targetPosition: { x: 700, y: 300 },
+    canvasSize: { width: 1200, height: 800 },
+    ballStart: { x: 100, y: 400 },
+    targetPosition: { x: 1100, y: 400 },
     walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
+      new Wall({
+        x: 800,
+        y: 250,
+        dimensions: thinLongWallDimensions,
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 15,
+          speed: 2.5,
+          startDelay: 0.35,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 1050,
+        y: 200,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: Math.PI / 4, // Rotate the wall by 45 degrees
+        },
+        isHazard: false,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 6,
+          speed: 1.5,
+          startDelay: 0.25,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 1050,
+        y: 625,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: -Math.PI / 4, // Rotate the wall by 45 degrees
+        },
+        isHazard: false,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 6,
+          speed: 2,
+          startDelay: 1,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 500,
+        y: 625,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: Math.PI / 4, // Rotate the wall by 90 degrees
+        },
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 8,
+          speed: 2.5,
+          startDelay: 0.6,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 500,
+        y: 250,
+        dimensions: thinLongWallDimensions,
+        matterOptions: {
+          angle: -Math.PI / 4, // Rotate the wall by 45 degrees
+        },
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 7,
+          speed: 2,
+          startDelay: 0.45,
+          loop: true,
+        },
+      }),
     ],
-    availableMagnets: 2,
-    minMagnetsToStart: 1,
-    electromagnets: [],
-
+    availableMagnets: 2, // Number of magnets the player can place
+    minMagnetsToStart: 1, // Minimum magnets to start the level
+    electromagnets: [
+      new ElectroMagnet({
+        x: 325,
+        y: 400,
+        isAttracting: true,
+        isRemovable: false,
+        restrictedMovement: 'none',
+        matterOptions: {
+          isSensor: true,
+        },
+      }),
+    ],
     progress: {
       completed: false,
       bestTime: undefined,
     },
+    magnetsOnlySensors: true, // Magnets are only sensors, no physical bodies
   },
   {
     id: 202,

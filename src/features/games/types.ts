@@ -63,4 +63,6 @@ export interface MovementPattern {
   // Optional extras for all types
   startDelay?: number; // Delay in seconds before movement starts
   loop?: boolean; // Whether the movement repeats (default true)
+
+  direction?: 1 | -1; // For circular movement
 }
