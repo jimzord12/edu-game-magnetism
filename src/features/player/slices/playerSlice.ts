@@ -12,10 +12,10 @@ interface PlayerState {
   error: string | null;
 }
 
-const isDevelopment = import.meta.env.MODE === 'development';
+const testingMode = true;
 
 const initialState: PlayerState = {
-  currentPlayer: isDevelopment
+  currentPlayer: testingMode
     ? {
         id: 1,
         username: 'testUser',
