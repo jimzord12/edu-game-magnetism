@@ -28,7 +28,7 @@ export const useGameEngineMagnet = ({
 
   const gameEngine = GameEngineMagnets.getInstance(); // <-- Not Instantiated here
   const onPlaceMagnet = (x: number, y: number) => {
-    const newElectroMagnet = new Magnet({
+    const newMagnet = new Magnet({
       x,
       y,
       isAttracting: true,
@@ -38,7 +38,7 @@ export const useGameEngineMagnet = ({
         isSensor: levelData?.magnetsOnlySensors,
       },
     });
-    dispatch(placeMagnet(newElectroMagnet));
+    dispatch(placeMagnet(newMagnet));
   };
 
   const handleUpdateTime = (time: number) => {

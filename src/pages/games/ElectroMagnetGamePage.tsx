@@ -38,7 +38,6 @@ const GamePage: React.FC = () => {
 
   // Add Level Magnets to the Redux Slice
   useEffect(() => {
-    console.log('llllllllllllllllllllllllllllllllllllllll');
     if (
       currentLevelData?.electromagnets &&
       currentLevelData?.electromagnets.length > 0

@@ -25,9 +25,9 @@ const findLevelById = (id: number): ILevel<'magnet'> | null => {
   return getMagnetLevels().find((level) => level.id === id) || null;
 };
 
-const findMagnetById = (id: number, magnets: Magnet[]): Magnet | null => {
-  return magnets.find((m) => m.id === id) || null;
-};
+// const findMagnetById = (id: number, magnets: Magnet[]): Magnet | null => {
+//   return magnets.find((m) => m.id === id) || null;
+// };
 
 const getTotalPermittedMagnets = (levelData: ILevel<'magnet'>) =>
   levelData.availableMagnets;
@@ -72,10 +72,6 @@ const GamePage: React.FC = () => {
   });
 
   useEffect(() => {
-    console.log(placedMagnets);
-  }, [placedMagnets]);
-
-  useEffect(() => {
     if (gameStatus === 'won' && currentLevelId) {
       console.log(
         `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
@@ -112,49 +108,49 @@ const GamePage: React.FC = () => {
     navigate('/levels');
   };
 
-  const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (gameStatus !== 'idle' || !currentLevelData) return;
+  // const handleCanvasClick = (event: React.MouseEvent<HTMLDivElement>) => {
+  //   if (gameStatus !== 'idle' || !currentLevelData) return;
 
-    const canvasRect = event.currentTarget.getBoundingClientRect();
-    const x = event.clientX - canvasRect.left;
-    const y = event.clientY - canvasRect.top;
+  //   const canvasRect = event.currentTarget.getBoundingClientRect();
+  //   const x = event.clientX - canvasRect.left;
+  //   const y = event.clientY - canvasRect.top;
 
-    const margin = 20;
-    if (
-      x < margin ||
-      x > currentLevelData.canvasSize.width - margin ||
-      y < margin ||
-      y > currentLevelData.canvasSize.height - margin
-    ) {
-      console.log('Cannot place magnet near border.');
-      return;
-    }
+  //   const margin = 20;
+  //   if (
+  //     x < margin ||
+  //     x > currentLevelData.canvasSize.width - margin ||
+  //     y < margin ||
+  //     y > currentLevelData.canvasSize.height - margin
+  //   ) {
+  //     console.log('Cannot place magnet near border.');
+  //     return;
+  //   }
 
-    const permittedNumOfMagnets = currentLevelData.availableMagnets;
-    // currentLevelData.availableMagnets.attract +
-    // currentLevelData.availableMagnets.repel;
+  //   const permittedNumOfMagnets = currentLevelData.availableMagnets;
+  //   // currentLevelData.availableMagnets.attract +
+  //   // currentLevelData.availableMagnets.repel;
 
-    if (placedMagnets.length < permittedNumOfMagnets) {
-      const newMagnet = new Magnet({
-        x,
-        y,
-        isAttracting: true,
-      });
-      dispatch(placeMagnet(newMagnet));
-      dispatch(setSelectedMagnet(newMagnet));
-    } else {
-      alert(`You can only place ${currentLevelData.availableMagnets} magnets.`);
-    }
-  };
+  //   if (placedMagnets.length < permittedNumOfMagnets) {
+  //     const newMagnet = new Magnet({
+  //       x,
+  //       y,
+  //       isAttracting: true,
+  //     });
+  //     dispatch(placeMagnet(newMagnet));
+  //     dispatch(setSelectedMagnet(newMagnet));
+  //   } else {
+  //     alert(`You can only place ${currentLevelData.availableMagnets} magnets.`);
+  //   }
+  // };
 
-  const handleMagnetClick = (event: React.MouseEvent, Magnet: Magnet) => {
-    event.stopPropagation();
-    if (gameStatus !== 'idle') return;
+  // const handleMagnetClick = (event: React.MouseEvent, Magnet: Magnet) => {
+  //   event.stopPropagation();
+  //   if (gameStatus !== 'idle') return;
 
-    const magnet = findMagnetById(Magnet.id, placedMagnets);
-    if (!magnet) return;
-    dispatch(setSelectedMagnet(magnet));
-  };
+  //   const magnet = findMagnetById(Magnet.id, placedMagnets);
+  //   if (!magnet) return;
+  //   dispatch(setSelectedMagnet(magnet));
+  // };
 
   if (!currentLevelData) {
     return (
@@ -286,7 +282,7 @@ const GamePage: React.FC = () => {
 
         <div
           className="game-canvas-wrapper"
-          onClick={handleCanvasClick}
+          // onClick={handleCanvasClick}
           style={{
             cursor:
               gameStatus === 'idle' &&
@@ -295,7 +291,7 @@ const GamePage: React.FC = () => {
                 : 'default',
           }}
         >
-          {gameStatus === 'idle' && (
+          {/* {gameStatus === 'idle' && (
             <div
               className="magnet-overlay"
               style={{
@@ -326,7 +322,7 @@ const GamePage: React.FC = () => {
                 />
               ))}
             </div>
-          )}
+          )} */}
           <GameCanvas levelData={currentLevelData} />
         </div>
       </div>

@@ -30,6 +30,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       bestTime: undefined,
     },
     minMagnetsToStart: 1,
+    magnetsOnlySensors: true,
   },
   {
     id: 101,
@@ -132,7 +133,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         // isHazard: true,
       }),
     ],
-    availableMagnets: 2, // Number of magnets the player can place
+    availableMagnets: 4, // Number of magnets the player can place
     minMagnetsToStart: 1, // Minimum magnets to start the level
     electromagnets: [
       new ElectroMagnet({
@@ -270,7 +271,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
     name: 'The Maze',
     canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 35, y: 35 },
-    targetPosition: { x: -700, y: -300 },
+    targetPosition: { x: 1087.5, y: 770 },
     walls: MAZE_1200x800,
     availableMagnets: 2,
     minMagnetsToStart: 1,
