@@ -8,13 +8,11 @@ import {
   loadLevel,
   startGame,
   pauseGame,
-  placeMagnet,
   resetGame,
   setSelectedMagnet,
 } from '../../features/games/magnets/slices/magnetGameSlice';
 
 import { ILevel, ILevelMagnet } from '@/features/levels/types';
-import { Magnet } from '@/models/Magnet';
 import { getMagnetLevels } from '@/config/levels';
 import { useUnmountEffect } from '@/hooks/useUnmountEffect';
 import '../../styles/MagnetGamePage.css';
