@@ -1,8 +1,8 @@
 import p5 from 'p5';
 import Matter from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES, GAME_CONFIG } from '@/config/gameConfig';
-import { Identifiable } from './base/Identifiable';
 import { MovementPattern } from '@/features/games/types';
+import { Point } from './base/Point';
 
 export type MovementRestriction = 'horizontal' | 'vertical' | 'none';
 
@@ -24,7 +24,7 @@ export interface MagnetConstructorProps {
   movementPattern?: MovementPattern;
 }
 
-export class Magnet extends Identifiable {
+export class Magnet extends Point {
   // Public properties
   public isAttracting: boolean;
   public readonly body: Matter.Body & {
@@ -50,7 +50,7 @@ export class Magnet extends Identifiable {
     restrictedMovement = 'none',
     isRemovable = true,
   }: MagnetConstructorProps) {
-    super(id);
+    super(x, y, id);
     this.isAttracting = isAttracting;
     this.strength = strength;
     this.isRemovable = isRemovable;

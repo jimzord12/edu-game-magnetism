@@ -1,3 +1,4 @@
+import { MAZE_1200x800 } from '@/features/levels/maze';
 import { ILevelElectroMagnet, ILevelMagnet } from '@/features/levels/types';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Wall } from '@/models/Wall';
@@ -160,25 +161,11 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 201,
     gameType: 'electromagnet',
-    name: 'The Maze',
+    name: 'The Survivor',
     canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 100, y: 400 },
     targetPosition: { x: 1100, y: 400 },
     walls: [
-      new Wall({
-        x: 800,
-        y: 250,
-        dimensions: thinLongWallDimensions,
-        isHazard: true,
-        movementPattern: {
-          type: 'oscillate',
-          axis: 'vertical',
-          amplitude: 15,
-          speed: 2.5,
-          startDelay: 0.35,
-          loop: true,
-        },
-      }),
       new Wall({
         x: 1050,
         y: 200,
@@ -190,8 +177,8 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         movementPattern: {
           type: 'oscillate',
           axis: 'vertical',
-          amplitude: 6,
-          speed: 1.5,
+          amplitude: 200,
+          speed: 2,
           startDelay: 0.25,
           loop: true,
         },
@@ -207,12 +194,27 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         movementPattern: {
           type: 'oscillate',
           axis: 'vertical',
-          amplitude: 6,
+          amplitude: 200,
           speed: 2,
           startDelay: 1,
           loop: true,
         },
       }),
+      new Wall({
+        x: 800,
+        y: 350,
+        dimensions: thinLongWallDimensions,
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 350,
+          speed: 3,
+          startDelay: 0.35,
+          loop: true,
+        },
+      }),
+
       new Wall({
         x: 500,
         y: 625,
@@ -224,7 +226,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         movementPattern: {
           type: 'oscillate',
           axis: 'vertical',
-          amplitude: 8,
+          amplitude: 200,
           speed: 2.5,
           startDelay: 0.6,
           loop: true,
@@ -241,7 +243,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         movementPattern: {
           type: 'oscillate',
           axis: 'vertical',
-          amplitude: 7,
+          amplitude: 250,
           speed: 2,
           startDelay: 0.45,
           loop: true,
@@ -258,7 +260,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
         isRemovable: false,
         restrictedMovement: 'none',
         matterOptions: {
-          isSensor: true,
+          isSensor: false,
         },
       }),
     ],
@@ -271,15 +273,11 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 202,
     gameType: 'electromagnet',
-    name: 'The Survivor',
-    canvasSize: { width: 800, height: 600 },
-    ballStart: { x: 100, y: 300 },
-    targetPosition: { x: 700, y: 300 },
-    walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
-    ],
+    name: 'The Maze',
+    canvasSize: { width: 1200, height: 800 },
+    ballStart: { x: 35, y: 35 },
+    targetPosition: { x: -700, y: -300 },
+    walls: MAZE_1200x800,
     availableMagnets: 2,
     minMagnetsToStart: 1,
     electromagnets: [],

@@ -1,12 +1,12 @@
 import { useCallback, useState, useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from './reduxHooks';
+import { useAppDispatch, useAppSelector } from '../../../hooks/reduxHooks';
 import {
   loginPlayer,
   createNewPlayer,
   logout,
   clearError,
-} from '../features/player/slices/playerSlice';
-import { useLocalStorage } from './useLocalStorage';
+} from '../../player/slices/playerSlice';
+import { useLocalStorage } from '../../../hooks/useLocalStorage';
 
 export const useAuth = () => {
   const dispatch = useAppDispatch();

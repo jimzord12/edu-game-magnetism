@@ -36,6 +36,7 @@
       "@services/*": ["./src/services/*"],
       "@store/*": ["./src/store/*"],
       "@assets/*": ["./src/assets/*"],
+      "@utils/*": ["./src/utils/*"]
     },
     "types": ["node", "vitest/globals"]
   },

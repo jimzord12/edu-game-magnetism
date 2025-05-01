@@ -192,7 +192,7 @@ const GamePage: React.FC = () => {
             <div className="button-group">
               <button
                 className={`game-btn primary-btn ${
-                  placedMagnets.length <= currentLevelData.minMagnetsToStart &&
+                  placedMagnets.length < currentLevelData.minMagnetsToStart &&
                   'opacity-50 cursor-not-allowed'
                 }`}
                 onClick={handleStartPause}

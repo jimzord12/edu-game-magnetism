@@ -1,8 +1,8 @@
 import p5 from 'p5';
 import Matter, { IBodyDefinition } from 'matter-js';
 import { SANDBOX_CONFIG, OBJECT_TYPES } from '@/config/gameConfig';
-import { Identifiable } from './base/Identifiable';
 import { MovementPattern } from '@/features/games/types';
+import { Point } from './base/Point';
 
 interface WallConstructorProps {
   x: number;
@@ -22,7 +22,7 @@ const defaultMatterOptions: IBodyDefinition = {
   friction: SANDBOX_CONFIG.WALL.FRICTION,
 };
 
-export class Wall extends Identifiable {
+export class Wall extends Point {
   // Public properties
   public readonly body: Matter.Body; // The physics body
   dimensions: { width: number; height: number };
@@ -37,7 +37,7 @@ export class Wall extends Identifiable {
     isHazard = false, // Default to false
     movementPattern,
   }: WallConstructorProps) {
-    super();
+    super(x, y);
     this.isHazard = isHazard;
 
     // Create the Matter.js body

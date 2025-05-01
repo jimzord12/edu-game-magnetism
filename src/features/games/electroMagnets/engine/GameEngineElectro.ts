@@ -632,7 +632,7 @@ class GameEngineElectro {
         return;
 
       const { type, axis, amplitude, speed } = entity.movementPattern;
-      const { x: initialX, y: initialY } = entity.body.position;
+      const { x: initialX, y: initialY } = entity;
 
       if (type === 'oscillate') {
         const direction = entity.movementPattern.direction || 1;

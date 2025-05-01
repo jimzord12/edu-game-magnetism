@@ -92,6 +92,12 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
   - [ ] The game should stop updating the game engine.
 - [ ] We need the ability to make level entities, like walls, hazards, magnets, etc. to be move on a specific repeated fashion.
 
+### Chores
+
+- [ ] Create a Magnets' GameEngine Variant
+- [ ] Create upgrade the current useGameEngine Hook in Magnets feature to support the new GameEngine variant.
+- [ ] Make Levels be able to have their own Gravity.
+
 ---
 
 ## 🧪 Behavior Flow (UI Logic)

@@ -12,16 +12,13 @@ interface PlayerState {
   error: string | null;
 }
 
-const testingMode = true;
-
 const initialState: PlayerState = {
-  currentPlayer: testingMode
-    ? {
-        id: 1,
-        username: 'testUser',
-        gamesPlayed: 0,
-      }
-    : null,
+  currentPlayer: {
+    id: 1,
+    username: 'testUser',
+    gamesPlayed: 0,
+  },
+  // currentPlayer: null,
   loading: false,
   error: null,
 };

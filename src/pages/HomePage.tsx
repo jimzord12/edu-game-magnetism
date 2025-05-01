@@ -1,14 +1,19 @@
 // src/pages/HomePage.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
+import { useAuth } from '../features/auth/hooks/useAuth';
 import '../styles/HomePage.css';
 import { exportDatabase, deleteDatabase } from '../db/helpers';
+import { useLocalStorage } from '@/hooks/useLocalStorage';
 
 const HomePage: React.FC = () => {
   const { currentPlayer, isLoading, error, login, createAccount, logout } =
     useAuth();
   const [username, setUsername] = useState('test');
+  const [isLoggedIn, setWillStayLoggedIn] = useLocalStorage<{
+    stay: boolean;
+    username: string;
+  }>('willStayLoggedIn', { stay: false, username: '' });
   const [isCreating, setIsCreating] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
@@ -35,6 +40,23 @@ const HomePage: React.FC = () => {
       setIsDeleting(false);
     }
   };
+
+  // Login User if the "Stay Logged In" checkbox is checked
+  useEffect(() => {
+    const autoLogin = async () => {
+      if (isLoggedIn.stay && isLoggedIn.username) {
+        try {
+          await login(isLoggedIn.username);
+        } catch (error) {
+          console.error('Error logging in:', error);
+        }
+      } else {
+        localStorage.removeItem('currentPlayer');
+      }
+    };
+
+    autoLogin();
+  }, []);
 
   // Focus input on mount and when switching modes
   useEffect(() => {
@@ -74,7 +96,11 @@ const HomePage: React.FC = () => {
             <div className="player-info">
               <span>Welcome, {currentPlayer.username}!</span>
               <button
-                onClick={logout}
+                onClick={() => {
+                  logout();
+                  setWillStayLoggedIn({ stay: false, username: '' });
+                  setUsername('');
+                }}
                 className="auth-button"
                 aria-label="Log out of your account"
               >
@@ -118,6 +144,22 @@ const HomePage: React.FC = () => {
                 {isCreating ? 'Already have an account?' : 'Need an account?'}
                 <span className="keyboard-hint">(Shift + Enter)</span>
               </button>
+              <div className="flex items-center justify-center gap-2 text-gray-600">
+                <input
+                  type="checkbox"
+                  name="stayLoggedIn"
+                  id="stayLoggedIn"
+                  className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                  value={isLoggedIn.stay ? 'true' : 'false'}
+                  onChange={(e) => {
+                    setWillStayLoggedIn({
+                      stay: e.target.checked,
+                      username,
+                    });
+                  }}
+                />
+                <label htmlFor="stayLoggedIn">Stay Logged In?</label>
+              </div>
               {error && (
                 <div className="auth-error" id="auth-error" role="alert">
                   {error}
