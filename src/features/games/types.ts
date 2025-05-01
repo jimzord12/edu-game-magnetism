@@ -21,13 +21,13 @@ export interface IGameState<T extends GameType> {
 }
 
 export interface UseGameEnginePropsBase {
-  gameStatus: GameState;
+  // gameStatus: GameState;
   containerRef: React.RefObject<HTMLDivElement | null>;
 }
 
 export interface UseMagnetGameEngineProps extends UseGameEnginePropsBase {
   levelData: ILevelMagnet | null;
-  magnets: Magnet[];
+  // magnets: Magnet[];
 }
 
 export interface UseElectroMagnetGameEngineProps

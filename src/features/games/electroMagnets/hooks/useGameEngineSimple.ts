@@ -72,7 +72,7 @@ export const useGameEngineSimple = (
 
     // Instantiate the GameEngine singleton
     const gameEngine = GameEngineElectro.getInstance(); // <-- Not Instantiated here
-    console.log('[useEffect]: ontainerRef.current:', containerRef.current);
+    console.log('[useEffect]: ContainerRef.current:', containerRef.current);
     gameEngine.initialize(
       levelData,
       containerRef.current,

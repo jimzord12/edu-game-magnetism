@@ -30,7 +30,8 @@ const findMagnetById = (id: number, magnets: Magnet[]): Magnet | null => {
 };
 
 const getTotalPermittedMagnets = (levelData: ILevel<'magnet'>) =>
-  levelData.availableMagnets.attract + levelData.availableMagnets.repel;
+  levelData.availableMagnets;
+// levelData.availableMagnets.attract + levelData.availableMagnets.repel;
 
 const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
@@ -129,9 +130,9 @@ const GamePage: React.FC = () => {
       return;
     }
 
-    const permittedNumOfMagnets =
-      currentLevelData.availableMagnets.attract +
-      currentLevelData.availableMagnets.repel;
+    const permittedNumOfMagnets = currentLevelData.availableMagnets;
+    // currentLevelData.availableMagnets.attract +
+    // currentLevelData.availableMagnets.repel;
 
     if (placedMagnets.length < permittedNumOfMagnets) {
       const newMagnet = new Magnet({
@@ -142,12 +143,7 @@ const GamePage: React.FC = () => {
       dispatch(placeMagnet(newMagnet));
       dispatch(setSelectedMagnet(newMagnet));
     } else {
-      alert(
-        `You can only place ${
-          currentLevelData.availableMagnets.attract +
-          currentLevelData.availableMagnets.repel
-        } magnets.`
-      );
+      alert(`You can only place ${currentLevelData.availableMagnets} magnets.`);
     }
   };
 

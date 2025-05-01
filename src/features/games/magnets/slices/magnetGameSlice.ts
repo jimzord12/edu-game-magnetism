@@ -1,18 +1,27 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IGameState } from '../../types';
+import { GameState } from '../../types';
 import { Magnet } from '@/models/Magnet';
+import GameEngineMagnets from '../engine/GameEngineMagnets';
 
-const initialState: IGameState<'magnet'> & { selectedMagnet: Magnet | null } = {
+interface MagnetGameState {
+  levelId: number | null;
+  placedMagnets: Magnet[];
+  status: GameState;
+  elapsedTime: number;
+  selectedMagnet: Magnet | null;
+}
+
+const initialState: MagnetGameState = {
   levelId: null,
   status: 'idle',
-  ballPosition: { x: 0, y: 0 }, // Initial placeholder
   placedMagnets: [],
   elapsedTime: 0,
   selectedMagnet: null,
-  ball: null,
-  engine: null,
-  startTime: null,
-  target: null,
+  // ballPosition: { x: 0, y: 0 }, // Initial placeholder
+  // ball: null,
+  // engine: null,
+  // startTime: null,
+  // target: null,
 };
 
 const magnetGameSlice = createSlice({
@@ -20,11 +29,13 @@ const magnetGameSlice = createSlice({
   initialState,
   reducers: {
     loadLevel: (state, action: PayloadAction<number>) => {
+      // Reset everything for a new level
       state.levelId = action.payload;
-      state.status = 'idle'; // Or 'playing' if auto-starts
-      state.placedMagnets = []; // Reset magnets for the new level
+      state.placedMagnets = [];
+      state.status = 'idle';
       state.elapsedTime = 0;
-      // Ball position will be set by the game engine based on level data
+      state.selectedMagnet = null;
+      GameEngineMagnets.getInstance().cleanup(); // Cleanup previous game engine instance
     },
     startGame: (state) => {
       if (state.levelId) {
@@ -94,13 +105,13 @@ const magnetGameSlice = createSlice({
         );
       }
     },
-    updateBallPosition: (
-      state,
-      action: PayloadAction<{ x: number; y: number }>
-    ) => {
-      // Use sparingly - primarily for UI display if needed outside canvas
-      state.ballPosition = action.payload;
-    },
+    // updateBallPosition: (
+    //   state,
+    //   action: PayloadAction<{ x: number; y: number }>
+    // ) => {
+    //   // Use sparingly - primarily for UI display if needed outside canvas
+    //   state.ballPosition = action.payload;
+    // },
     updateElapsedTime: (state, action: PayloadAction<number>) => {
       state.elapsedTime = action.payload;
     },
@@ -111,7 +122,15 @@ const magnetGameSlice = createSlice({
       // Need criteria for losing (e.g., time limit, ball out of bounds?)
       state.status = 'lost';
     },
-    resetGame: () => initialState, // Reset to initial state
+    resetGame: (state) => {
+      // Reset the game state to initial state
+      state.levelId = null;
+      state.placedMagnets = [];
+      state.status = 'idle';
+      state.elapsedTime = 0;
+      state.selectedMagnet = null;
+      GameEngineMagnets.getInstance().cleanup(); // Cleanup previous game engine instance
+    },
 
     setSelectedMagnet: (state, action: PayloadAction<Magnet | null>) => {
       state.selectedMagnet = action.payload;
@@ -129,7 +148,7 @@ export const {
   placeMagnet,
   removeMagnet,
   toggleMagnetPolarity,
-  updateBallPosition,
+  // updateBallPosition,
   updateElapsedTime,
   levelWon,
   levelLost,

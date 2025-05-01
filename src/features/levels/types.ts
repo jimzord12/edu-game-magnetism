@@ -1,4 +1,5 @@
 import { ElectroMagnet } from '@/models/ElectroMagnet';
+import { Magnet } from '@/models/Magnet';
 import { Wall } from '@/models/Wall';
 
 export type GameType = 'magnet' | 'electromagnet';
@@ -24,10 +25,8 @@ export interface ILevelBase {
 
 export interface ILevelMagnet extends Omit<ILevelBase, 'availableMagnets'> {
   gameType: 'magnet';
-  availableMagnets: {
-    attract: number;
-    repel: number;
-  };
+  availableMagnets: number;
+  magnets: Magnet[]; // Array of placed magnets
 }
 
 export interface ILevelElectroMagnet extends ILevelBase {

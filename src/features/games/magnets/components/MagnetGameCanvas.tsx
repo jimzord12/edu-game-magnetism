@@ -1,6 +1,5 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { useGameEngineMagnet } from '../hooks/useGameEngineMagnet';
-import { useAppSelector } from '../../../../hooks/reduxHooks';
 import { GameType, ILevel } from '@/features/levels/types';
 
 interface GameCanvasProps<T extends GameType> {
@@ -11,26 +10,24 @@ const MagnetGameCanvas: React.FC<GameCanvasProps<'magnet'>> = ({
   levelData,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { placedMagnets, status: gameStatus } = useAppSelector(
-    (state) => state.magnetGame
-  );
+  // const { placedMagnets, status: gameStatus } = useAppSelector(
+  //   (state) => state.magnetGame
+  // );
 
   // Use the custom hook to manage the p5/Matter instance
-  const { resetBall } = useGameEngineMagnet({
+  useGameEngineMagnet({
     levelData,
-    magnets: placedMagnets,
-    gameStatus,
     containerRef,
   });
 
-  // Effect to reset ball when level changes or game resets externally
-  useEffect(() => {
-    if (gameStatus === 'idle' && levelData) {
-      // resetBall(); // Reset ball when entering idle state for a level
-      // Note: Resetting might be better handled inside the hook's setup
-      //       or triggered by a specific 'reset level' action.
-    }
-  }, [gameStatus, levelData, resetBall]);
+  // // Effect to reset ball when level changes or game resets externally
+  // useEffect(() => {
+  //   if (gameStatus === 'idle' && levelData) {
+  //     // resetBall(); // Reset ball when entering idle state for a level
+  //     // Note: Resetting might be better handled inside the hook's setup
+  //     //       or triggered by a specific 'reset level' action.
+  //   }
+  // }, [gameStatus, levelData]);
 
   return (
     <div className="game-canvas-container">

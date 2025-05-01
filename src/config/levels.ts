@@ -23,10 +23,8 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
-    availableMagnets: {
-      attract: 3,
-      repel: 0,
-    },
+    magnets: [],
+    availableMagnets: 3,
     progress: {
       completed: false,
       bestTime: undefined,
@@ -45,10 +43,8 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
-    availableMagnets: {
-      attract: 3,
-      repel: 0,
-    },
+    magnets: [],
+    availableMagnets: 2,
     progress: {
       completed: false,
       bestTime: undefined,
@@ -67,10 +63,8 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
       new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
     ],
-    availableMagnets: {
-      attract: 3,
-      repel: 0,
-    },
+    magnets: [],
+    availableMagnets: 1,
     progress: {
       completed: false,
       bestTime: undefined,
