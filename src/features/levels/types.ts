@@ -4,6 +4,8 @@ import { Wall } from '@/models/Wall';
 
 export type GameType = 'magnet' | 'electromagnet';
 
+// Cangaasd
+
 // Represents the static definition of a level
 export interface ILevelBase {
   id: number;
