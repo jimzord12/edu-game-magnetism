@@ -1,3 +1,4 @@
+import { createBoundingWallsForCanvas } from '@/features/games/utils';
 import {
   EASY_MAZE_1200x800,
   ELECTRO_MAZE_1200x800,
@@ -8,7 +9,17 @@ import { Wall } from '@/models/Wall';
 
 const thinWallDimensions = { width: 10, height: 50 };
 const thinLongWallDimensions = { width: 10, height: 300 };
+const thinShortWallDimensions = { width: 10, height: 150 };
 const canvasSize = { width: 1220, height: 800 };
+const Degrees = {
+  90: Math.PI / 2,
+  180: Math.PI,
+  270: (3 * Math.PI) / 2,
+  360: 2 * Math.PI,
+  45: Math.PI / 4,
+  135: (3 * Math.PI) / 4,
+  225: (5 * Math.PI) / 4,
+};
 
 // Id Convention:
 // 100 - 199: Magnet Level
@@ -19,13 +30,32 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
     id: 100,
     gameType: 'magnet',
     name: 'The Basics',
-    canvasSize,
+    canvasSize: { width: 800, height: 600 },
     ballStart: { x: 100, y: 300 },
     targetPosition: { x: 700, y: 300 },
     walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
+      ...createBoundingWallsForCanvas({ width: 800, height: 600 }),
+      new Wall({ x: 50, y: 300, dimensions: thinWallDimensions }),
+      new Wall({ x: 700, y: 225, dimensions: thinWallDimensions }),
+      new Wall({
+        x: 650,
+        y: 250,
+        dimensions: thinWallDimensions,
+        matterOptions: { angle: Degrees[135] },
+      }),
+      new Wall({
+        x: 625,
+        y: 300,
+        dimensions: thinWallDimensions,
+        matterOptions: { angle: Degrees[90] },
+      }),
+      new Wall({
+        x: 650,
+        y: 350,
+        dimensions: thinWallDimensions,
+        matterOptions: { angle: Degrees[45] },
+      }),
+      new Wall({ x: 700, y: 375, dimensions: thinWallDimensions }),
     ],
     magnets: [],
     availableMagnets: 3,
@@ -35,18 +65,92 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
     },
     minMagnetsToStart: 1,
     magnetsOnlySensors: true,
+    canBeDragged: false, // Whether the magnets can be dragged or not
   },
   {
     id: 101,
     gameType: 'magnet',
     name: 'Tricky Walls',
     canvasSize,
-    ballStart: { x: 100, y: 300 },
-    targetPosition: { x: 700, y: 300 },
+    ballStart: { x: 75, y: 400 },
+    targetPosition: { x: 1150, y: 400 },
     walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
+      new Wall({
+        x: 650,
+        y: 150,
+        dimensions: thinShortWallDimensions,
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 300,
+          speed: 2,
+          startDelay: 1,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 850,
+        y: 350,
+        dimensions: thinShortWallDimensions,
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 300,
+          speed: 2,
+          startDelay: 0.5,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 1050,
+        y: 625,
+        dimensions: thinShortWallDimensions,
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 300,
+          speed: 2,
+          startDelay: 0,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 400,
+        y: 225,
+        dimensions: thinShortWallDimensions,
+        matterOptions: {
+          angle: Degrees[45],
+        },
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 300,
+          speed: 2,
+          startDelay: 0.25,
+          loop: true,
+        },
+      }),
+      new Wall({
+        x: 200,
+        y: 525,
+        dimensions: thinShortWallDimensions,
+        matterOptions: {
+          angle: Degrees[135],
+        },
+        isHazard: true,
+        movementPattern: {
+          type: 'oscillate',
+          axis: 'vertical',
+          amplitude: 300,
+          speed: 2,
+          startDelay: 0,
+          loop: true,
+        },
+      }),
     ],
     magnets: [],
     availableMagnets: 2,
@@ -55,6 +159,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       bestTime: undefined,
     },
     minMagnetsToStart: 1,
+    canBeDragged: true, // Whether the magnets can be dragged or not
   },
   {
     id: 102,
@@ -71,6 +176,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
       bestTime: undefined,
     },
     minMagnetsToStart: 1,
+    canBeDragged: true, // Whether the magnets can be dragged or not
   },
 
   // Add more levels here...

@@ -14,7 +14,7 @@ import { ILevel } from '@/features/levels/types';
 import { GameState } from '../../types';
 import { createMouseOptionsElectro } from '@/utils/attachMatterMouseConstraintWithRestriction';
 import { isMagnetClicked } from '@/features/sandbox/helpers';
-import { willNewMagnetOverlap } from '../../utils';
+import { isOverlappingWith, willNewMagnetOverlap } from '../../utils';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Magnet } from '@/models/Magnet';
 
@@ -327,7 +327,7 @@ class GameEngineMagnets {
           console.log('Setup - Engine created:', this.engine);
         }
 
-        if (!onPlaceMagnet || !this.currentLevel) return;
+        if (!onPlaceMagnet || !this.currentLevel || !this.ball) return;
 
         // Only allow placement if game is idle or paused
         // if (!(this.gameStatus === 'idle' || this.gameStatus === 'paused'))
@@ -353,12 +353,22 @@ class GameEngineMagnets {
           }
 
           // Enforce no overlapping magnets
-          const isOverlapping = willNewMagnetOverlap(
+          const isOverlappingWIthMagnets = willNewMagnetOverlap(
             { position: { x, y }, radius: SANDBOX_CONFIG.MAGNETS.RADIUS },
             this.magnets.map((m) => m.body)
           );
 
-          if (!isOverlapping) {
+          const isOverlappingWithBall = isOverlappingWith(
+            {
+              position: { x, y },
+              radius: GAME_CONFIG.BALL.RADIUS + 5,
+            },
+            [this.ball.body]
+          );
+
+          console.log('isOverlappingWIthMagnets: ', isOverlappingWIthMagnets);
+          console.log('isOverlappingWithBall: ', isOverlappingWithBall);
+          if (!isOverlappingWIthMagnets && !isOverlappingWithBall) {
             console.log(
               'Magnet placement failed: Overlapping with existing magnets!'
             );
@@ -822,7 +832,15 @@ class GameEngineMagnets {
         selectedMagnet
       );
       this.selectedMagnet = selectedMagnet;
-      Matter.Body.setStatic(selectedMagnet.body, false); // Make dynamic while dragging
+
+      if (this.currentLevel?.canBeDragged !== undefined) {
+        Matter.Body.setStatic(
+          selectedMagnet.body,
+          !this.currentLevel.canBeDragged
+        ); // Make dynamic while dragging
+      } else {
+        Matter.Body.setStatic(selectedMagnet.body, false);
+      }
       console.log(
         'Selected magnet, is Static:',
         this.selectedMagnet.body.isStatic

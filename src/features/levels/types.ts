@@ -27,6 +27,7 @@ export interface ILevelMagnet extends Omit<ILevelBase, 'availableMagnets'> {
   gameType: 'magnet';
   availableMagnets: number;
   magnets: Magnet[]; // Array of placed magnets
+  canBeDragged: boolean; // Whether the magnets can be dragged or not
 }
 
 export interface ILevelElectroMagnet extends ILevelBase {
