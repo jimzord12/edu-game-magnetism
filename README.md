@@ -167,7 +167,7 @@ npm install
 3. Set up the database:
 
 ```bash
-npm run db:migrate
+npm run gen:migrations
 ```
 
 ### Running the Application
@@ -186,7 +186,7 @@ npm run dev
 - `npm run build` - Build for production
 - `npm run lint` - Run ESLint
 - `npm run test` - Run tests
-- `npm run db:migrate` - Run database migrations
+- `npm run gen:migrations` - Run database migrations
 
 ## Game Architecture
 

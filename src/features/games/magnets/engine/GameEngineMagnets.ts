@@ -12,7 +12,7 @@ import {
 } from '@/config/gameConfig';
 import { ILevel } from '@/features/levels/types';
 import { GameState } from '../../types';
-import { createMouseOptionsElectro } from '@/utils/attachMatterMouseConstraintWithRestriction';
+import { createMouseOptionsElectro } from '@/utils/engine-utils';
 import { isMagnetClicked } from '@/features/sandbox/helpers';
 import { isOverlappingWith, willNewMagnetOverlap } from '../../utils';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
