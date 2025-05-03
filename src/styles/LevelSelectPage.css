@@ -47,8 +47,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  max-width: 350px;
+  /* width: 100%; */
+  max-width: 650px;
   background: rgb(255, 255, 255);
   padding: 1.8rem;
   border-radius: 12px;

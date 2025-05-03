@@ -28,7 +28,7 @@ const LevelSelectPage: React.FC = () => {
           <div className="category-title">
             <h2 className="text-2xl italic text-shadow-lg/30">
               <span className="text-red-500">Mag</span>
-              <span className="text-blue-500">nets</span>
+              <span className="text-blue-500">nets 🧲</span>
             </h2>
           </div>
           <ul className="levels-list">
@@ -48,9 +48,9 @@ const LevelSelectPage: React.FC = () => {
         <div className="category-column">
           <div className="category-title">
             <h2 className="text-2xl italic text-shadow-lg/30">
-              <span className="text-amber-400">Electro</span>
+              <span className="text-amber-400">⚡ Electro</span>
               <span className="text-red-500">Mag</span>
-              <span className="text-blue-500">nets</span>
+              <span className="text-blue-500">nets 🧲</span>
             </h2>
           </div>
           <ul className="levels-list">

@@ -29,6 +29,8 @@ const magnetGameSlice = createSlice({
   initialState,
   reducers: {
     loadLevel: (state, action: PayloadAction<number>) => {
+      console.log('⛔⛔⛔ [Redux] - loadLevel');
+
       // Reset everything for a new level
       state.levelId = action.payload;
       state.placedMagnets = [];
@@ -38,9 +40,8 @@ const magnetGameSlice = createSlice({
       GameEngineMagnets.getInstance().cleanup(); // Cleanup previous game engine instance
     },
     startGame: (state) => {
-      if (state.levelId) {
+      if (state.status === 'idle' || state.status === 'paused') {
         state.status = 'playing';
-        state.elapsedTime = 0;
       }
     },
     pauseGame: (state) => {
@@ -113,6 +114,7 @@ const magnetGameSlice = createSlice({
     //   state.ballPosition = action.payload;
     // },
     updateElapsedTime: (state, action: PayloadAction<number>) => {
+      console.log('[MAGNET] - Redux - updateElapsedTime', action.payload);
       state.elapsedTime = action.payload;
     },
     levelWon: (state) => {

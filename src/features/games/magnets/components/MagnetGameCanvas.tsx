@@ -6,9 +6,11 @@ interface GameCanvasProps<T extends GameType> {
   levelData: ILevel<T> | null;
 }
 
-const MagnetGameCanvas: React.FC<GameCanvasProps<'magnet'>> = ({
-  levelData,
-}) => {
+const MagnetGameCanvas: React.FC<
+  GameCanvasProps<'magnet'> & {
+    forceRerender: () => void;
+  }
+> = ({ levelData, forceRerender }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   // const { placedMagnets, status: gameStatus } = useAppSelector(
   //   (state) => state.magnetGame
@@ -18,6 +20,7 @@ const MagnetGameCanvas: React.FC<GameCanvasProps<'magnet'>> = ({
   useGameEngineMagnet({
     levelData,
     containerRef,
+    forceRerender,
   });
 
   // // Effect to reset ball when level changes or game resets externally

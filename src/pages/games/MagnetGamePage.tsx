@@ -16,6 +16,7 @@ import { ILevel, ILevelMagnet } from '@/features/levels/types';
 import { getMagnetLevels } from '@/config/levels';
 import { useUnmountEffect } from '@/hooks/useUnmountEffect';
 import '../../styles/MagnetGamePage.css';
+import useForceRerender from '@/hooks/useForceRerender';
 
 // ---- Utility Functions
 
@@ -35,7 +36,6 @@ const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
   const levelId = levelIdStr ? parseInt(levelIdStr) : null;
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
   const {
     status: gameStatus,
     levelId: currentLevelId,
@@ -43,10 +43,16 @@ const GamePage: React.FC = () => {
     elapsedTime,
     selectedMagnet,
   } = useAppSelector((state) => state.magnetGame);
+  const dispatch = useAppDispatch();
   const [currentLevelData, setCurrentLevelData] = useState<ILevelMagnet | null>(
     null
   );
+  const { forceUpdate, value } = useForceRerender();
   // const [selectedMagnet, setSelectedMagnet] = useState<Magnet | null>(null);
+
+  useEffect(() => {
+    console.log('GamePage - elapsedTime', elapsedTime);
+  }, [elapsedTime, value]);
 
   useEffect(() => {
     if (levelId) {
@@ -69,13 +75,13 @@ const GamePage: React.FC = () => {
     dispatch(resetGame());
   });
 
-  useEffect(() => {
-    if (gameStatus === 'won' && currentLevelId) {
-      console.log(
-        `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
-      );
-    }
-  }, [gameStatus, currentLevelId, elapsedTime, dispatch]);
+  // useEffect(() => {
+  //   if (gameStatus === 'won' && currentLevelId) {
+  //     console.log(
+  //       `Level ${currentLevelId} completed! Time: ${elapsedTime.toFixed(2)}s`
+  //     );
+  //   }
+  // }, [gameStatus, currentLevelId, elapsedTime, dispatch]);
 
   const handleStartPause = () => {
     if (gameStatus === 'playing') {
@@ -321,7 +327,10 @@ const GamePage: React.FC = () => {
               ))}
             </div>
           )} */}
-          <GameCanvas levelData={currentLevelData} />
+          <GameCanvas
+            levelData={currentLevelData}
+            forceRerender={forceUpdate}
+          />
         </div>
       </div>
       <MagnetPanel

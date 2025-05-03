@@ -1,10 +1,14 @@
-import { MAZE_1200x800 } from '@/features/levels/maze';
+import {
+  EASY_MAZE_1200x800,
+  ELECTRO_MAZE_1200x800,
+} from '@/features/levels/maze';
 import { ILevelElectroMagnet, ILevelMagnet } from '@/features/levels/types';
 import { ElectroMagnet } from '@/models/ElectroMagnet';
 import { Wall } from '@/models/Wall';
 
 const thinWallDimensions = { width: 10, height: 50 };
 const thinLongWallDimensions = { width: 10, height: 300 };
+const canvasSize = { width: 1220, height: 800 };
 
 // Id Convention:
 // 100 - 199: Magnet Level
@@ -15,7 +19,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
     id: 100,
     gameType: 'magnet',
     name: 'The Basics',
-    canvasSize: { width: 800, height: 600 },
+    canvasSize,
     ballStart: { x: 100, y: 300 },
     targetPosition: { x: 700, y: 300 },
     walls: [
@@ -36,7 +40,7 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
     id: 101,
     gameType: 'magnet',
     name: 'Tricky Walls',
-    canvasSize: { width: 800, height: 600 },
+    canvasSize,
     ballStart: { x: 100, y: 300 },
     targetPosition: { x: 700, y: 300 },
     walls: [
@@ -55,15 +59,11 @@ const MAGNET_LEVELS: ILevelMagnet[] = [
   {
     id: 102,
     gameType: 'magnet',
-    name: 'Ice Hockey',
-    canvasSize: { width: 800, height: 600 },
-    ballStart: { x: 100, y: 300 },
-    targetPosition: { x: 700, y: 300 },
-    walls: [
-      new Wall({ x: 400, y: 5, dimensions: thinWallDimensions }),
-      new Wall({ x: 400, y: 595, dimensions: thinWallDimensions }),
-      new Wall({ x: 5, y: 300, dimensions: thinWallDimensions }),
-    ],
+    name: 'The Maze',
+    canvasSize: { width: 1200, height: 800 },
+    ballStart: { x: 35, y: 300 },
+    targetPosition: { x: 337.5, y: 300 },
+    walls: EASY_MAZE_1200x800,
     magnets: [],
     availableMagnets: 1,
     progress: {
@@ -80,7 +80,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 200,
     gameType: 'electromagnet',
-    name: 'The Basics',
+    name: 'The Basics v2',
     canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 100, y: 400 },
     targetPosition: { x: 1100, y: 400 },
@@ -156,7 +156,7 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 201,
     gameType: 'electromagnet',
-    name: 'The Survivor',
+    name: 'Tricky Walls v2',
     canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 100, y: 400 },
     targetPosition: { x: 1100, y: 400 },
@@ -268,11 +268,11 @@ const ELECTRO_MAGNET_LEVELS: ILevelElectroMagnet[] = [
   {
     id: 202,
     gameType: 'electromagnet',
-    name: 'The Maze',
+    name: 'The Maze v2',
     canvasSize: { width: 1200, height: 800 },
     ballStart: { x: 35, y: 35 },
     targetPosition: { x: 1087.5, y: 770 },
-    walls: MAZE_1200x800,
+    walls: ELECTRO_MAZE_1200x800,
     availableMagnets: 2,
     minMagnetsToStart: 1,
     electromagnets: [],

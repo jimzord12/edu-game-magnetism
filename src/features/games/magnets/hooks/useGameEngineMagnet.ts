@@ -18,8 +18,9 @@ export const useGameEngineMagnet = ({
   levelData,
   // magnets,
   // gameStatus,
+  forceRerender,
   containerRef,
-}: UseGameEngineProps<'magnet'>) => {
+}: UseGameEngineProps<'magnet'> & { forceRerender: () => void }) => {
   // Get Redux state
   const { status: gameStatus, placedMagnets: magnets } = useAppSelector(
     (state) => state.magnetGame
@@ -42,7 +43,9 @@ export const useGameEngineMagnet = ({
   };
 
   const handleUpdateTime = (time: number) => {
+    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     dispatch(updateElapsedTime(time));
+    forceRerender();
   };
 
   const handleGameStatusChange = (status: string) => {

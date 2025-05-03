@@ -123,8 +123,8 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
 
 ## Deployment
 
-- [ ] Create a new branch for the player management feature
-- [ ] Create a new branch for the player management feature
+- [ ] Create a new branch for the final version of the app
+- [ ] Build and preview the app using **Electron** and **Vite**
 - [ ] Review and merge the player management feature branch
 
 ---

@@ -456,6 +456,7 @@ class GameEngineMagnets {
       // The Game is Paused
       console.log('[Game Time Management] - Game paused!');
     } else {
+      console.log('Elapsed Time: '); // Log the elapsed time
       // The Game is running
       if (this.startTime === null) {
         console.error('Start time is null, cannot calculate elapsed time!');
@@ -468,7 +469,6 @@ class GameEngineMagnets {
       if (this.onUpdateTime) {
         this.onUpdateTime(elapsedTime); // Call the callback with elapsed time
       }
-      // console.log('Elapsed Time: ', elapsedTime); // Log the elapsed time
     }
 
     this.hasBallExceededBounds(); // Check if the ball is out of bounds

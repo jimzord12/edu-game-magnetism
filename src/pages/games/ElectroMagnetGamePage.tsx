@@ -14,7 +14,7 @@ import { ILevel, ILevelElectroMagnet } from '@/features/levels/types';
 import ElectroGameCanvas from '@/features/games/electroMagnets/components/ElectroGameCanvas';
 import ElectromagnetPanel from '@/features/games/electroMagnets/components/ElectromagnetPanel';
 import { getElectroMagnetLevels } from '@/config/levels';
-import useForceRerender from '@/hooks/useForceRerender';
+// import useForceRerender from '@/hooks/useForceRerender';
 
 const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
   return getElectroMagnetLevels().find((level) => level.id === id) || null;
@@ -23,7 +23,7 @@ const findLevelById = (id: number): ILevel<'electromagnet'> | null => {
 const GamePage: React.FC = () => {
   const { levelId: levelIdStr } = useParams<{ levelId: string }>();
   const levelId = levelIdStr ? parseInt(levelIdStr) : null;
-  const { value, forceUpdate } = useForceRerender(); // Updated to use the correct variable name
+  // const { value, forceUpdate } = useForceRerender(); // Updated to use the correct variable name
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
@@ -46,7 +46,8 @@ const GamePage: React.FC = () => {
         dispatch(placeMagnet(magnet));
       });
     }
-  }, [currentLevelData, dispatch, value]);
+  }, [currentLevelData, dispatch]);
+  // }, [currentLevelData, dispatch, value]);
 
   useEffect(() => {
     if (levelId) {
@@ -63,7 +64,8 @@ const GamePage: React.FC = () => {
     } else {
       navigate('/levels');
     }
-  }, [levelId, dispatch, navigate, currentLevelId, value]);
+  }, [levelId, dispatch, navigate, currentLevelId]);
+  // }, [levelId, dispatch, navigate, currentLevelId, value]);
 
   const handleStartPause = () => {
     if (gameStatus === 'playing') {
@@ -89,7 +91,7 @@ const GamePage: React.FC = () => {
   const handleReset = () => {
     if (levelId) {
       dispatch(loadLevel(levelId));
-      forceUpdate(); // Force a re-render to update the UI
+      // forceUpdate(); // Force a re-render to update the UI
     }
   };
 
