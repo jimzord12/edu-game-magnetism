@@ -10,6 +10,7 @@ An interactive physics-based educational game that teaches magnetism concepts th
 - [Architecture](#architecture)
 - [Development Setup](#development-setup)
 - [Game Architecture](#game-architecture)
+- [Deployment](#deployment)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -20,12 +21,15 @@ This project is a physics-based puzzle game where players manipulate magnetic fi
 ### Key Features
 
 - **Two Game Modes:**
-  - Regular Magnets: Place attracting/repelling magnets strategically
-  - Electromagnets: Advanced mode with controllable magnetic field strength
+  - **Regular Magnets**: Place attracting/repelling magnets strategically
+  - **Electromagnets**: Advanced mode with controllable magnetic field strength
+- **Magnetism & Electromagnetism knowledge-testing Quiz**
 - **Level-based Progression System**
 - **Interactive Sandbox Mode**
 - **Real-time Physics Simulation**
 - **Visual Magnetic Field Representation**
+- **User Authentication and Player Management**
+- **Data persistence** using SQLite3 through OPFS (Origin Private File System)
 
 ## Technical Stack
 
@@ -34,7 +38,7 @@ This project is a physics-based puzzle game where players manipulate magnetic fi
 - **Physics Engine:** Matter.js
 - **Rendering:** p5.js
 - **Database:** SQLite with Drizzle ORM
-- **Testing:** Jest
+- **Testing:** Vitest + React Testing Library
 
 ## Architecture
 
@@ -141,7 +145,7 @@ src/
 
 ### Prerequisites
 
-- Node.js (v16 or higher)
+- Node.js (v18 or higher)
 - npm or yarn
 - SQLite
 
@@ -214,10 +218,168 @@ The game uses Matter.js for physics simulation with custom implementations for:
    - No restrictions on magnet placement
    - Educational tool for understanding magnetic fields
 
+## Deployment
+
+### 🚀 Deploying Vite + React App to GitHub Pages with GitHub Actions
+
+This guide helps you automate the deployment of your Vite + React app to GitHub Pages using GitHub Actions.
+
+---
+
+### ✅ Prerequisites
+
+- Your app is built with **Vite + React**
+
+  ```bash
+  npm run build
+  ```
+
+- Repository hosted on **GitHub**
+- Default branch is `main` (adjust if it's `master`)
+
+---
+
+### 📦 1. Install `gh-pages`
+
+```bash
+npm install --save-dev gh-pages
+```
+
+---
+
+### ⚙️ 2. Update `vite.config.ts`
+
+Set the correct `base` path to match your repo name:
+For example, if your repo url is `https://github.com/<your-username>/my-portfolio`, set the base to `/my-portfolio/`.
+
+```ts
+// vite.config.ts
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+  base: '/<your-repo-name>/', // e.g., '/my-portfolio/'
+});
+```
+
+---
+
+### 📜 3. Add Scripts to `package.json`
+
+```json
+"scripts": {
+  "dev": "vite",
+  "build": "vite build",
+  "preview": "vite preview",
+  "deploy": "gh-pages -d dist" // <-- Only this Does NOT exist
+}
+```
+
+---
+
+### 🛠️ 4. Create GitHub Actions Workflow
+
+Create the following file (if it doesn't exist) after cloning the repo:
+
+**`.github/workflows/deploy.yml`**
+
+```yaml
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Change if your default branch is different
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the site
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+```
+
+---
+
+### 🌐 5. Enable GitHub Pages
+
+In your GitHub repository:
+
+- Go to **Settings** → **Pages**
+- Select source: `gh-pages` branch, folder: `/ (root)`
+
+---
+
+### ✅ Result
+
+- Every push to `main` triggers the deployment
+- Your site will be live at:
+
+  ```
+  https://<your-username>.github.io/<your-repo-name>/
+  ```
+
+---
+
+### 🧪 Optional
+
+To preview your production build locally:
+
+```bash
+npm run preview
+```
+
+---
+
+Happy shipping! 🚀
+
 ## Contributing
 
 We welcome contributions! Please read our contributing guidelines and code of conduct before submitting pull requests.
 
 ## License
 
-[Add your license here]
+This project is licensed under the MIT License:
+
+MIT License
+
+Copyright (c) [2025] [Dimitrios Stamatakis] (replace with your name)
+
+```
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```

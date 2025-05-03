@@ -121,11 +121,21 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
 
 ---
 
+## Deployment
+
+- [ ] Create a new branch for the player management feature
+- [ ] Create a new branch for the player management feature
+- [ ] Review and merge the player management feature branch
+
+---
+
 ## 💡 Why This Matters
 
 - [x] Encourages kids to take ownership of their progress
 - [x] Enables personalized game data (scores, attempts, progress)
 - [ ] Prepares the app for future leaderboard and PDF report features
+
+---
 
 ## 🆕 Future Improvements
 
@@ -134,7 +144,3 @@ Create a custom hook that wraps `playerSlice` logic. It should expose all Redux 
 - [ ] Add parental controls
 - [ ] Implement data export/backup feature
 - [ ] Add player statistics dashboard
-
-## For Later but Do Not Forget
-
-- Game & GameSession Services are implemented but NOT used yet!
