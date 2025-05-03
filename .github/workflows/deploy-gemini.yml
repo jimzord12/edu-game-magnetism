@@ -3,19 +3,18 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - gemini-pro-2.5
+      - first-release
   workflow_dispatch:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+# permissions:
+#   contents: read
+#   pages: write
+#   id-token: write
 
 jobs:
-  build:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    container:
-      image: node:20 # Use a stable Node.js version
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,7 +22,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20 # Use a stable Node.js version
+          node-version: 22 # Use a stable Node.js version
           cache: 'npm'
 
       - name: Install dependencies
