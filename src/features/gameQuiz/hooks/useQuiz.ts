@@ -77,9 +77,10 @@ export function useQuiz() {
       dispatch(setCurrentQuestion(nextQuestion));
     } else {
       // Quiz is complete
-      const finalScore = isCorrect ? quizState.score + 1 : quizState.score;
       try {
-        await dispatch(saveQuizScore({ playerId, score: finalScore })).unwrap();
+        await dispatch(
+          saveQuizScore({ playerId, score: quizState.score })
+        ).unwrap();
         await dispatch(fetchPlayerScores(playerId)).unwrap();
         dispatch(completeQuiz());
       } catch (error) {

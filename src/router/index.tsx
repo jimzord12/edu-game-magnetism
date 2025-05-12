@@ -5,7 +5,7 @@ import MagnetsGamePage from '../pages/games/MagnetGamePage';
 import ElectroMagnetsGamePage from '../pages/games/ElectroMagnetGamePage';
 import SandboxPage from '../pages/SandboxPage';
 import GameQuizPage from '../pages/GameQuizPage';
-import { routePath } from './routePath';
+import { routePath } from './routes';
 import { PrivateRoute } from './PrivateRoute';
 
 

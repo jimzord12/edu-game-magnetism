@@ -733,9 +733,10 @@ class GameEngineElectro {
 
   public onWin(callback: GameEventCallback): () => void {
     this.onWinCallbacks.push(callback);
-    return () => {
+    const unsubscribe = () => {
       this.onWinCallbacks = this.onWinCallbacks.filter((cb) => cb !== callback);
     };
+    return unsubscribe;
   }
 
   public onLose(callback: GameEventCallback): () => void {

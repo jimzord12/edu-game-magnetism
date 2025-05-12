@@ -28,6 +28,7 @@ export const useGameEngineMagnet = ({
   const dispatch = useAppDispatch();
 
   const gameEngine = GameEngineMagnets.getInstance(); // <-- Not Instantiated here
+
   const onPlaceMagnet = (x: number, y: number) => {
     const newMagnet = new Magnet({
       x,
@@ -43,7 +44,6 @@ export const useGameEngineMagnet = ({
   };
 
   const handleUpdateTime = (time: number) => {
-    console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
     dispatch(updateElapsedTime(time));
     forceRerender();
   };
