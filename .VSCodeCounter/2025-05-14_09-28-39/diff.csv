@@ -1,0 +1,109 @@
+"filename", "language", "TypeScript", "JSON", "Markdown", "JSON with Comments", "CSS", "MS SQL", "TypeScript JSX", "JavaScript", "comment", "blank", "total"
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\.github\copilot-instructions.md", "Markdown", 0, 0, 155, 0, 0, 0, 0, 0, 0, 70, 225
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\CHANGELOG.md", "Markdown", 0, 0, 37, 0, 0, 0, 0, 0, 0, 15, 52
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\CONTRIBUTING.md", "Markdown", 0, 0, 173, 0, 0, 0, 0, 0, 0, 68, 241
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\DRAFT.md", "Markdown", 0, 0, 79, 0, 0, 0, 0, 0, 0, 22, 101
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\DeveloperManual.md", "Markdown", 0, 0, 222, 0, 0, 0, 0, 0, 0, 87, 309
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\README.md", "Markdown", 0, 0, 220, 0, 0, 0, 0, 0, 0, 111, 331
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\TODOS.md", "Markdown", 0, 0, 107, 0, 0, 0, 0, 0, 0, 40, 147
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\UserManual.md", "Markdown", 0, 0, 40, 0, 0, 0, 0, 0, 0, 27, 67
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\bun.lock", "JSON with Comments", 0, 0, 0, 639, 0, 0, 0, 0, 0, 587, 1226
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\0001_panoramic_wallow.sql", "MS SQL", 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\0002_tearful_norman_osborn.sql", "MS SQL", 0, 0, 0, 0, 0, 7, 0, 0, 0, 1, 8
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\0001_snapshot.json", "JSON", 0, 202, 0, 0, 0, 0, 0, 0, 0, 0, 202
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\0002_snapshot.json", "JSON", 0, 254, 0, 0, 0, 0, 0, 0, 0, 0, 254
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\_journal.json", "JSON", 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 14
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\BUGS.md", "Markdown", 0, 0, 119, 0, 0, 0, 0, 0, 0, 81, 200
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\GRID-MAZE.md", "Markdown", 0, 0, 71, 0, 0, 0, 0, 0, 0, 28, 99
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\difficulties.md", "Markdown", 0, 0, 15, 0, 0, 0, 0, 0, 0, 4, 19
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\draft-quick-overview.md", "Markdown", 0, 0, 78, 0, 0, 0, 0, 0, 0, 25, 103
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\how-to-skip-login.md", "Markdown", 0, 0, 1, 0, 0, 0, 0, 0, 0, 1, 2
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\package-lock.json", "JSON", 0, 420, 0, 0, 0, 0, 0, 0, 0, 0, 420
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\package.json", "JSON", 0, 4, 0, 0, 0, 0, 0, 0, 0, 0, 4
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\App.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 26, 0, 1, 3, 30
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\api\api.js", "JavaScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\assets\magnetism_electromagnetism_quiz.json", "JSON", 0, 1116, 0, 0, 0, 0, 0, 0, 0, 1, 1117
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\config\gameConfig.ts", "TypeScript", 11, 0, 0, 0, 0, 0, 0, 0, 0, 1, 12
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\config\levels.ts", "TypeScript", 338, 0, 0, 0, 0, 0, 0, 0, 9, 5, 352
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\constants\colorfulPalette.ts", "TypeScript", 14, 0, 0, 0, 0, 0, 0, 0, 0, 1, 15
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\__tests__\player.service.test.ts", "TypeScript", 33, 0, 0, 0, 0, 0, 0, 0, 1, 5, 39
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\client.ts", "TypeScript", 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 7
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\helpers.ts", "TypeScript", 49, 0, 0, 0, 0, 0, 0, 0, 15, 7, 71
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\runMigrations.ts", "TypeScript", 12, 0, 0, 0, 0, 0, 0, 0, 1, 1, 14
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\schema.ts", "TypeScript", 14, 0, 0, 0, 0, 0, 0, 0, 1, 2, 17
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\player.service.for-tests.ts", "TypeScript", 85, 0, 0, 0, 0, 0, 0, 0, 41, 12, 138
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\player.service.ts", "TypeScript", 24, 0, 0, 0, 0, 0, 0, 0, 3, 2, 29
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\quiz.service.ts", "TypeScript", 52, 0, 0, 0, 0, 0, 0, 0, 21, 9, 82
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\types.ts", "TypeScript", 8, 0, 0, 0, 0, 0, 0, 0, 0, 2, 10
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\auth\hooks\useAuth.ts", "TypeScript", 98, 0, 0, 0, 0, 0, 0, 0, 3, 10, 111
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\GameQuiz.css", "CSS", 0, 0, 0, 0, 205, 0, 0, 0, 0, 30, 235
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\GameQuiz.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 87, 0, 0, 10, 97
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\QuizQuestion.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 43, 0, 0, 6, 49
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\QuizResults.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 41, 0, 0, 6, 47
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\hooks\useQuiz.ts", "TypeScript", 108, 0, 0, 0, 0, 0, 0, 0, 7, 15, 130
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\slices\gameQuizSlice.ts", "TypeScript", 201, 0, 0, 0, 0, 0, 0, 0, 6, 16, 223
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\types.ts", "TypeScript", 41, 0, 0, 0, 0, 0, 0, 0, 0, 4, 45
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectroGameCanvas.css", "CSS", 0, 0, 0, 0, -36, 0, 0, 0, -1, -6, -43
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectroGameCanvas.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, -14, 0, -4, -1, -19
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectromagnetPanel.css", "CSS", 0, 0, 0, 0, 97, 0, 0, 0, 0, 1, 98
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectromagnetPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 125, 0, 5, 7, 137
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\engine\GameEngineElectro.ts", "TypeScript", 624, 0, 0, 0, 0, 0, 0, 0, 129, 128, 881
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\hooks\useGameEngineSimple.ts", "TypeScript", 82, 0, 0, 0, 0, 0, 0, 0, 7, 14, 103
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\slices\electroGameSlice.ts", "TypeScript", 104, 0, 0, 0, 0, 0, 0, 0, 5, 8, 117
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetGameCanvas.css", "CSS", 0, 0, 0, 0, -36, 0, 0, 0, -1, -6, -43
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetGameCanvas.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, -8, 0, 7, 0, -1
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetPanel.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 82, 0, 0, 5, 87
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\engine\GameEngineMagnets.ts", "TypeScript", 640, 0, 0, 0, 0, 0, 0, 0, 128, 129, 897
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\hooks\useGameEngine.ts", "TypeScript", -275, 0, 0, 0, 0, 0, 0, 0, -62, -48, -385
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\hooks\useGameEngineMagnet.ts", "TypeScript", 84, 0, 0, 0, 0, 0, 0, 0, 6, 16, 106
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\slices\magnetGameSlice.ts", "TypeScript", 39, 0, 0, 0, 0, 0, 0, 0, 19, 9, 67
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\types.ts", "TypeScript", 18, 0, 0, 0, 0, 0, 0, 0, 9, 6, 33
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\utils.ts", "TypeScript", 73, 0, 0, 0, 0, 0, 0, 0, 0, 8, 81
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\maze.ts", "TypeScript", 447, 0, 0, 0, 0, 0, 0, 0, 13, 8, 468
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\slices\levelSlice.ts", "TypeScript", 9, 0, 0, 0, 0, 0, 0, 0, 4, 0, 13
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\types.ts", "TypeScript", 6, 0, 0, 0, 0, 0, 0, 0, 2, 2, 10
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\player\slices\playerSlice.ts", "TypeScript", 76, 0, 0, 0, 0, 0, 0, 0, 4, 4, 84
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\sandbox\hooks\useSandboxEngine.ts", "TypeScript", 1, 0, 0, 0, 0, 0, 0, 0, 3, 0, 4
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Ball.ts", "TypeScript", 38, 0, 0, 0, 0, 0, 0, 0, 0, 8, 46
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Boundary.ts", "TypeScript", 36, 0, 0, 0, 0, 0, 0, 0, 0, 9, 45
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Polygon.ts", "TypeScript", 46, 0, 0, 0, 0, 0, 0, 0, 1, 8, 55
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Rect.ts", "TypeScript", 44, 0, 0, 0, 0, 0, 0, 0, 0, 11, 55
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\base\Identifiable.ts", "TypeScript", 11, 0, 0, 0, 0, 0, 0, 0, 0, 5, 16
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\electroMagnets\ElectroMagnetsGame.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 63, 0, 1, 18, 82
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\magnets\MagnetsGame.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 75, 0, 2, 22, 99
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useForceRerender.ts", "TypeScript", 9, 0, 0, 0, 0, 0, 0, 0, 0, 5, 14
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useLocalStorage.ts", "TypeScript", 33, 0, 0, 0, 0, 0, 0, 0, 11, 9, 53
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useMatterMouseConstraintWithRestriction.ts", "TypeScript", 0, 0, 0, 0, 0, 0, 0, 0, 70, 8, 78
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useUnmountEffect.ts", "TypeScript", 12, 0, 0, 0, 0, 0, 0, 0, 12, 5, 29
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\index.css", "CSS", 0, 0, 0, 0, 65, 0, 0, 0, 9, 14, 88
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Ball.ts", "TypeScript", 9, 0, 0, 0, 0, 0, 0, 0, 0, 1, 10
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\ElectroMagnet.ts", "TypeScript", 51, 0, 0, 0, 0, 0, 0, 0, 10, 9, 70
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Magnet.ts", "TypeScript", 16, 0, 0, 0, 0, 0, 0, 0, 0, 2, 18
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Wall.ts", "TypeScript", 15, 0, 0, 0, 0, 0, 0, 0, 0, 3, 18
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\base\Identifiable.ts", "TypeScript", 4, 0, 0, 0, 0, 0, 0, 0, 0, 1, 5
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\base\Point.ts", "TypeScript", 14, 0, 0, 0, 0, 0, 0, 0, 0, 4, 18
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\GameQuizPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 28, 0, 0, 4, 32
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\HomePage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 267, 0, 2, 14, 283
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\LevelSelectPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 17, 0, 0, 1, 18
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\SandboxPage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, -3, 0, -3, 3, -3
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\games\ElectroMagnetGamePage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, -6, 0, 38, -8, 24
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\games\MagnetGamePage.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 2, 0, 73, 4, 79
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\PrivateRoute.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 12, 0, 5, 7, 24
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\index.tsx", "TypeScript JSX", 0, 0, 0, 0, 0, 0, 40, 0, 0, 1, 41
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\routePath.ts", "TypeScript", -6, 0, 0, 0, 0, 0, 0, 0, -1, -1, -8
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\routes.ts", "TypeScript", 8, 0, 0, 0, 0, 0, 0, 0, 0, 1, 9
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\store\index.ts", "TypeScript", -3, 0, 0, 0, 0, 0, 0, 0, 5, 1, 3
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\store\rootReducer.ts", "TypeScript", 2, 0, 0, 0, 0, 0, 0, 0, -1, 0, 1
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\GameQuizPage.css", "CSS", 0, 0, 0, 0, 57, 0, 0, 0, 6, 10, 73
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\HomePage.css", "CSS", 0, 0, 0, 0, 238, 0, 0, 0, 2, 40, 280
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\LevelSelectPage.css", "CSS", 0, 0, 0, 0, 148, 0, 0, 0, 3, 24, 175
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\MagnetGamePage.css", "CSS", 0, 0, 0, 0, 273, 0, 0, 0, 2, 45, 320
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\SandboxPage.css", "CSS", 0, 0, 0, 0, 133, 0, 0, 0, 2, 20, 155
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\global.css", "CSS", 0, 0, 0, 0, -25, 0, 0, 0, -3, -7, -35
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\engine-utils.ts", "TypeScript", 33, 0, 0, 0, 0, 0, 0, 0, 2, 5, 40
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\grid-utils.ts", "TypeScript", 66, 0, 0, 0, 0, 0, 0, 0, 18, 12, 96
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\helpers.ts", "TypeScript", 53, 0, 0, 0, 0, 0, 0, 0, 28, 11, 92
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\tsconfig.app.json", "JSON", 0, 2, 0, 0, 0, 0, 0, 0, 0, 0, 2
+"c:\Users\jimzord12\GitHub\edu-game-magnetism\vite.config.ts", "TypeScript", 11, 0, 0, 0, 0, 0, 0, 0, -1, -1, 9
+"Total", "-", 3525, 2012, 1317, 639, 1119, 8, 877, 0, 675, 1925, 12097

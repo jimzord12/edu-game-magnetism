@@ -1,0 +1,199 @@
+Date : 2025-05-14 09:28:39
+Directory : c:\Users\jimzord12\GitHub\edu-game-magnetism
+Total : 107 files,  9497 codes, 675 comments, 1925 blanks, all 12097 lines
+
+Languages
++--------------------+------------+------------+------------+------------+------------+
+| language           | files      | code       | comment    | blank      | total      |
++--------------------+------------+------------+------------+------------+------------+
+| TypeScript         |         54 |      3,525 |        529 |        491 |      4,545 |
+| JSON               |          7 |      2,012 |          0 |          1 |      2,013 |
+| Markdown           |         13 |      1,317 |          0 |        579 |      1,896 |
+| CSS                |         11 |      1,119 |         19 |        165 |      1,303 |
+| TypeScript JSX     |         18 |        877 |        127 |        102 |      1,106 |
+| JSON with Comments |          1 |        639 |          0 |        587 |      1,226 |
+| MS SQL             |          2 |          8 |          0 |          1 |          9 |
+| JavaScript         |          1 |          0 |          0 |         -1 |         -1 |
++--------------------+------------+------------+------------+------------+------------+
+
+Directories
++------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                             | files      | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                |        107 |      9,497 |        675 |      1,925 |     12,097 |
+| . (Files)                                                                                                        |         12 |      1,954 |         -1 |        956 |      2,909 |
+| .github                                                                                                          |          1 |        155 |          0 |         70 |        225 |
+| drizzle                                                                                                          |          5 |        478 |          0 |          1 |        479 |
+| drizzle\migrations                                                                                               |          5 |        478 |          0 |          1 |        479 |
+| drizzle\migrations (Files)                                                                                       |          2 |          8 |          0 |          1 |          9 |
+| drizzle\migrations\meta                                                                                          |          3 |        470 |          0 |          0 |        470 |
+| my-documentation                                                                                                 |          5 |        284 |          0 |        139 |        423 |
+| src                                                                                                              |         84 |      6,626 |        676 |        759 |      8,061 |
+| src (Files)                                                                                                      |          2 |         91 |         10 |         17 |        118 |
+| src\api                                                                                                          |          1 |          0 |          0 |         -1 |         -1 |
+| src\assets                                                                                                       |          1 |      1,116 |          0 |          1 |      1,117 |
+| src\config                                                                                                       |          2 |        349 |          9 |          6 |        364 |
+| src\constants                                                                                                    |          1 |         14 |          0 |          1 |         15 |
+| src\db                                                                                                           |         10 |        284 |         83 |         39 |        406 |
+| src\db (Files)                                                                                                   |          6 |         90 |         17 |         11 |        118 |
+| src\db\__tests__                                                                                                 |          1 |         33 |          1 |          5 |         39 |
+| src\db\services                                                                                                  |          3 |        161 |         65 |         23 |        249 |
+| src\features                                                                                                     |         29 |      2,962 |        289 |        381 |      3,632 |
+| src\features\auth                                                                                                |          1 |         98 |          3 |         10 |        111 |
+| src\features\auth\hooks                                                                                          |          1 |         98 |          3 |         10 |        111 |
+| src\features\gameQuiz                                                                                            |          7 |        726 |         13 |         87 |        826 |
+| src\features\gameQuiz (Files)                                                                                    |          1 |         41 |          0 |          4 |         45 |
+| src\features\gameQuiz\components                                                                                 |          4 |        376 |          0 |         52 |        428 |
+| src\features\gameQuiz\hooks                                                                                      |          1 |        108 |          7 |         15 |        130 |
+| src\features\gameQuiz\slices                                                                                     |          1 |        201 |          6 |         16 |        223 |
+| src\features\games                                                                                               |         16 |      1,599 |        247 |        270 |      2,116 |
+| src\features\games (Files)                                                                                       |          2 |         91 |          9 |         14 |        114 |
+| src\features\games\electroMagnets                                                                                |          7 |        982 |        141 |        151 |      1,274 |
+| src\features\games\electroMagnets\components                                                                     |          4 |        172 |          0 |          1 |        173 |
+| src\features\games\electroMagnets\engine                                                                         |          1 |        624 |        129 |        128 |        881 |
+| src\features\games\electroMagnets\hooks                                                                          |          1 |         82 |          7 |         14 |        103 |
+| src\features\games\electroMagnets\slices                                                                         |          1 |        104 |          5 |          8 |        117 |
+| src\features\games\magnets                                                                                       |          7 |        526 |         97 |        105 |        728 |
+| src\features\games\magnets\components                                                                            |          3 |         38 |          6 |         -1 |         43 |
+| src\features\games\magnets\engine                                                                                |          1 |        640 |        128 |        129 |        897 |
+| src\features\games\magnets\hooks                                                                                 |          2 |       -191 |        -56 |        -32 |       -279 |
+| src\features\games\magnets\slices                                                                                |          1 |         39 |         19 |          9 |         67 |
+| src\features\levels                                                                                              |          3 |        462 |         19 |         10 |        491 |
+| src\features\levels (Files)                                                                                      |          2 |        453 |         15 |         10 |        478 |
+| src\features\levels\slices                                                                                       |          1 |          9 |          4 |          0 |         13 |
+| src\features\player                                                                                              |          1 |         76 |          4 |          4 |         84 |
+| src\features\player\slices                                                                                       |          1 |         76 |          4 |          4 |         84 |
+| src\features\sandbox                                                                                             |          1 |          1 |          3 |          0 |          4 |
+| src\features\sandbox\hooks                                                                                       |          1 |          1 |          3 |          0 |          4 |
+| src\games                                                                                                        |          7 |        313 |          4 |         81 |        398 |
+| src\games\classes                                                                                                |          5 |        175 |          1 |         41 |        217 |
+| src\games\classes (Files)                                                                                        |          4 |        164 |          1 |         36 |        201 |
+| src\games\classes\base                                                                                           |          1 |         11 |          0 |          5 |         16 |
+| src\games\electroMagnets                                                                                         |          1 |         63 |          1 |         18 |         82 |
+| src\games\magnets                                                                                                |          1 |         75 |          2 |         22 |         99 |
+| src\hooks                                                                                                        |          4 |         54 |         93 |         27 |        174 |
+| src\models                                                                                                       |          6 |        109 |         10 |         20 |        139 |
+| src\models (Files)                                                                                               |          4 |         91 |         10 |         15 |        116 |
+| src\models\base                                                                                                  |          2 |         18 |          0 |          5 |         23 |
+| src\pages                                                                                                        |          6 |        305 |        110 |         18 |        433 |
+| src\pages (Files)                                                                                                |          4 |        309 |         -1 |         22 |        330 |
+| src\pages\games                                                                                                  |          2 |         -4 |        111 |         -4 |        103 |
+| src\router                                                                                                       |          4 |         54 |          4 |          8 |         66 |
+| src\store                                                                                                        |          2 |         -1 |          4 |          1 |          4 |
+| src\styles                                                                                                       |          6 |        824 |         12 |        132 |        968 |
+| src\utils                                                                                                        |          3 |        152 |         48 |         28 |        228 |
++------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| filename                                                                                                         | language           | code       | comment    | blank      | total      |
++------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\.github\copilot-instructions.md                                     | Markdown           |        155 |          0 |         70 |        225 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\CHANGELOG.md                                                        | Markdown           |         37 |          0 |         15 |         52 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\CONTRIBUTING.md                                                     | Markdown           |        173 |          0 |         68 |        241 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\DRAFT.md                                                            | Markdown           |         79 |          0 |         22 |        101 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\DeveloperManual.md                                                  | Markdown           |        222 |          0 |         87 |        309 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\README.md                                                           | Markdown           |        220 |          0 |        111 |        331 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\TODOS.md                                                            | Markdown           |        107 |          0 |         40 |        147 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\UserManual.md                                                       | Markdown           |         40 |          0 |         27 |         67 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\bun.lock                                                            | JSON with Comments |        639 |          0 |        587 |      1,226 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\0001_panoramic_wallow.sql                        | MS SQL             |          1 |          0 |          0 |          1 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\0002_tearful_norman_osborn.sql                   | MS SQL             |          7 |          0 |          1 |          8 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\0001_snapshot.json                          | JSON               |        202 |          0 |          0 |        202 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\0002_snapshot.json                          | JSON               |        254 |          0 |          0 |        254 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\drizzle\migrations\meta\_journal.json                               | JSON               |         14 |          0 |          0 |         14 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\BUGS.md                                            | Markdown           |        119 |          0 |         81 |        200 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\GRID-MAZE.md                                       | Markdown           |         71 |          0 |         28 |         99 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\difficulties.md                                    | Markdown           |         15 |          0 |          4 |         19 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\draft-quick-overview.md                            | Markdown           |         78 |          0 |         25 |        103 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\my-documentation\how-to-skip-login.md                               | Markdown           |          1 |          0 |          1 |          2 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\package-lock.json                                                   | JSON               |        420 |          0 |          0 |        420 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\package.json                                                        | JSON               |          4 |          0 |          0 |          4 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\App.tsx                                                         | TypeScript JSX     |         26 |          1 |          3 |         30 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\api\api.js                                                      | JavaScript         |          0 |          0 |         -1 |         -1 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\assets\magnetism_electromagnetism_quiz.json                     | JSON               |      1,116 |          0 |          1 |      1,117 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\config\gameConfig.ts                                            | TypeScript         |         11 |          0 |          1 |         12 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\config\levels.ts                                                | TypeScript         |        338 |          9 |          5 |        352 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\constants\colorfulPalette.ts                                    | TypeScript         |         14 |          0 |          1 |         15 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\__tests__\player.service.test.ts                             | TypeScript         |         33 |          1 |          5 |         39 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\client.ts                                                    | TypeScript         |          7 |          0 |          0 |          7 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\helpers.ts                                                   | TypeScript         |         49 |         15 |          7 |         71 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\runMigrations.ts                                             | TypeScript         |         12 |          1 |          1 |         14 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\schema.ts                                                    | TypeScript         |         14 |          1 |          2 |         17 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services.ts                                                  | TypeScript         |          0 |          0 |         -1 |         -1 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\player.service.for-tests.ts                         | TypeScript         |         85 |         41 |         12 |        138 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\player.service.ts                                   | TypeScript         |         24 |          3 |          2 |         29 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\services\quiz.service.ts                                     | TypeScript         |         52 |         21 |          9 |         82 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\db\types.ts                                                     | TypeScript         |          8 |          0 |          2 |         10 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\auth\hooks\useAuth.ts                                  | TypeScript         |         98 |          3 |         10 |        111 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\GameQuiz.css                       | CSS                |        205 |          0 |         30 |        235 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\GameQuiz.tsx                       | TypeScript JSX     |         87 |          0 |         10 |         97 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\QuizQuestion.tsx                   | TypeScript JSX     |         43 |          0 |          6 |         49 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\components\QuizResults.tsx                    | TypeScript JSX     |         41 |          0 |          6 |         47 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\hooks\useQuiz.ts                              | TypeScript         |        108 |          7 |         15 |        130 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\slices\gameQuizSlice.ts                       | TypeScript         |        201 |          6 |         16 |        223 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\gameQuiz\types.ts                                      | TypeScript         |         41 |          0 |          4 |         45 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectroGameCanvas.css  | CSS                |        -36 |         -1 |         -6 |        -43 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectroGameCanvas.tsx  | TypeScript JSX     |        -14 |         -4 |         -1 |        -19 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectromagnetPanel.css | CSS                |         97 |          0 |          1 |         98 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\components\ElectromagnetPanel.tsx | TypeScript JSX     |        125 |          5 |          7 |        137 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\engine\GameEngineElectro.ts       | TypeScript         |        624 |        129 |        128 |        881 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\hooks\useGameEngineSimple.ts      | TypeScript         |         82 |          7 |         14 |        103 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\electroMagnets\slices\electroGameSlice.ts        | TypeScript         |        104 |          5 |          8 |        117 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetGameCanvas.css          | CSS                |        -36 |         -1 |         -6 |        -43 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetGameCanvas.tsx          | TypeScript JSX     |         -8 |          7 |          0 |         -1 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\components\MagnetPanel.tsx               | TypeScript JSX     |         82 |          0 |          5 |         87 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\engine\GameEngineMagnets.ts              | TypeScript         |        640 |        128 |        129 |        897 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\hooks\useGameEngine.ts                   | TypeScript         |       -275 |        -62 |        -48 |       -385 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\hooks\useGameEngineMagnet.ts             | TypeScript         |         84 |          6 |         16 |        106 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\magnets\slices\magnetGameSlice.ts                | TypeScript         |         39 |         19 |          9 |         67 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\types.ts                                         | TypeScript         |         18 |          9 |          6 |         33 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\games\utils.ts                                         | TypeScript         |         73 |          0 |          8 |         81 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\maze.ts                                         | TypeScript         |        447 |         13 |          8 |        468 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\slices\levelSlice.ts                            | TypeScript         |          9 |          4 |          0 |         13 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\levels\types.ts                                        | TypeScript         |          6 |          2 |          2 |         10 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\player\slices\playerSlice.ts                           | TypeScript         |         76 |          4 |          4 |         84 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\features\sandbox\hooks\useSandboxEngine.ts                      | TypeScript         |          1 |          3 |          0 |          4 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Ball.ts                                           | TypeScript         |         38 |          0 |          8 |         46 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Boundary.ts                                       | TypeScript         |         36 |          0 |          9 |         45 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Polygon.ts                                        | TypeScript         |         46 |          1 |          8 |         55 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\Rect.ts                                           | TypeScript         |         44 |          0 |         11 |         55 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\classes\base\Identifiable.ts                              | TypeScript         |         11 |          0 |          5 |         16 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\electroMagnets\ElectroMagnetsGame.tsx                     | TypeScript JSX     |         63 |          1 |         18 |         82 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\games\magnets\MagnetsGame.tsx                                   | TypeScript JSX     |         75 |          2 |         22 |         99 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useForceRerender.ts                                       | TypeScript         |          9 |          0 |          5 |         14 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useLocalStorage.ts                                        | TypeScript         |         33 |         11 |          9 |         53 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useMatterMouseConstraintWithRestriction.ts                | TypeScript         |          0 |         70 |          8 |         78 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\hooks\useUnmountEffect.ts                                       | TypeScript         |         12 |         12 |          5 |         29 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\index.css                                                       | CSS                |         65 |          9 |         14 |         88 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Ball.ts                                                  | TypeScript         |          9 |          0 |          1 |         10 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\ElectroMagnet.ts                                         | TypeScript         |         51 |         10 |          9 |         70 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Magnet.ts                                                | TypeScript         |         16 |          0 |          2 |         18 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\Wall.ts                                                  | TypeScript         |         15 |          0 |          3 |         18 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\base\Identifiable.ts                                     | TypeScript         |          4 |          0 |          1 |          5 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\models\base\Point.ts                                            | TypeScript         |         14 |          0 |          4 |         18 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\GameQuizPage.tsx                                          | TypeScript JSX     |         28 |          0 |          4 |         32 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\HomePage.tsx                                              | TypeScript JSX     |        267 |          2 |         14 |        283 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\LevelSelectPage.tsx                                       | TypeScript JSX     |         17 |          0 |          1 |         18 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\SandboxPage.tsx                                           | TypeScript JSX     |         -3 |         -3 |          3 |         -3 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\games\ElectroMagnetGamePage.tsx                           | TypeScript JSX     |         -6 |         38 |         -8 |         24 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\pages\games\MagnetGamePage.tsx                                  | TypeScript JSX     |          2 |         73 |          4 |         79 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\PrivateRoute.tsx                                         | TypeScript JSX     |         12 |          5 |          7 |         24 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\index.tsx                                                | TypeScript JSX     |         40 |          0 |          1 |         41 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\routePath.ts                                             | TypeScript         |         -6 |         -1 |         -1 |         -8 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\router\routes.ts                                                | TypeScript         |          8 |          0 |          1 |          9 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\store\index.ts                                                  | TypeScript         |         -3 |          5 |          1 |          3 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\store\rootReducer.ts                                            | TypeScript         |          2 |         -1 |          0 |          1 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\GameQuizPage.css                                         | CSS                |         57 |          6 |         10 |         73 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\HomePage.css                                             | CSS                |        238 |          2 |         40 |        280 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\LevelSelectPage.css                                      | CSS                |        148 |          3 |         24 |        175 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\MagnetGamePage.css                                       | CSS                |        273 |          2 |         45 |        320 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\SandboxPage.css                                          | CSS                |        133 |          2 |         20 |        155 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\styles\global.css                                               | CSS                |        -25 |         -3 |         -7 |        -35 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\engine-utils.ts                                           | TypeScript         |         33 |          2 |          5 |         40 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\grid-utils.ts                                             | TypeScript         |         66 |         18 |         12 |         96 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\src\utils\helpers.ts                                                | TypeScript         |         53 |         28 |         11 |         92 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\tsconfig.app.json                                                   | JSON               |          2 |          0 |          0 |          2 |
+| c:\Users\jimzord12\GitHub\edu-game-magnetism\vite.config.ts                                                      | TypeScript         |         11 |         -1 |         -1 |          9 |
+| Total                                                                                                            |                    |      9,497 |        675 |      1,925 |     12,097 |
++------------------------------------------------------------------------------------------------------------------+--------------------+------------+------------+------------+------------+
