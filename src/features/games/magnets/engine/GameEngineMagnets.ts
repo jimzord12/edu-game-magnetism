@@ -592,9 +592,10 @@ class GameEngineMagnets {
         return;
       }
 
+      const distance = Math.sqrt(distanceSq);
       const normalizedDirection = Matter.Vector.normalise(direction);
       const strengthFactor =
-        (GAME_CONFIG.MAGNETS.MAX_DISTANCE - distanceSq) /
+        (GAME_CONFIG.MAGNETS.MAX_DISTANCE - distance) /
         GAME_CONFIG.MAGNETS.MAX_DISTANCE;
       let forceMagnitude =
         GAME_CONFIG.MAGNETS.DEFAULT_STRENGTH * strengthFactor;
