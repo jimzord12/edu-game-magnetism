@@ -7,11 +7,11 @@ export default defineConfig({
   // const env = loadEnv(mode, process.cwd(), '');
 
   plugins: [react(), tailwindcss()],
-  base: `/`,
+  base: '/',
   // base: `/${env.GITHUB_REPO_NAME}/`,
-  optimizeDeps: {
-    exclude: ['sqlocal'],
-  },
+  // optimizeDeps: {
+  //   exclude: ['sqlocal'],
+  // },
   server: {
     headers: {
       'Cross-Origin-Opener-Policy': 'same-origin',
